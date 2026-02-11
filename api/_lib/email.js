@@ -13,7 +13,7 @@ async function sendLicenseEmail(to, customerName, licenseKey, tier) {
   const tierLabel = { personal: 'Personal', team: 'Team', site: 'Site License' }[tier] || tier;
 
   await resend.emails.send({
-    from: 'ModBus Pro <license@modbus.app>',
+    from: process.env.RESEND_FROM_EMAIL || 'ModBus Pro <license@modbus.app>',
     to: [to],
     subject: `Your ModBus Pro ${tierLabel} License Key`,
     html: `
