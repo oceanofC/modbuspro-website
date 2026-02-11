@@ -90,7 +90,8 @@ body {
 .nav-dropdown { position:relative; }
 .nav-dropdown > a { cursor:pointer; }
 .nav-dropdown > a::after { content:" \25BE"; font-size:0.7em; }
-.nav-dropdown-menu { display:none; position:absolute; top:100%; left:50%; transform:translateX(-50%); background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:0.5rem 0; min-width:200px; box-shadow:0 8px 30px rgba(0,0,0,0.3); margin-top:0.5rem; z-index:200; }
+.nav-dropdown-menu { display:none; position:absolute; top:100%; left:50%; transform:translateX(-50%); background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:0.5rem 0; padding-top:1rem; min-width:200px; box-shadow:0 8px 30px rgba(0,0,0,0.3); margin-top:0; z-index:200; }
+.nav-dropdown::after { content:''; position:absolute; top:100%; left:0; right:0; height:12px; }
 .nav-dropdown:hover .nav-dropdown-menu { display:block; }
 .nav-dropdown-menu a { display:block; padding:0.5rem 1rem; color:var(--text-dim); text-decoration:none; font-size:0.85rem; font-weight:500; transition:all 0.2s; white-space:nowrap; }
 .nav-dropdown-menu a:hover { color:var(--green); background:rgba(0,229,160,0.05); }

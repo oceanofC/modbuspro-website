@@ -59,7 +59,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .nav-dropdown{position:relative}
 .nav-dropdown>a{cursor:pointer}
 .nav-dropdown>a::after{content:" \25BE";font-size:0.65em;opacity:0.5}
-.dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px;min-width:200px;box-shadow:0 16px 48px rgba(0,0,0,0.4);z-index:200}
+.dropdown-menu{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px;padding-top:14px;min-width:200px;box-shadow:0 16px 48px rgba(0,0,0,0.4);z-index:200;margin-top:0}
+.nav-dropdown::after{content:'';position:absolute;top:100%;left:0;right:0;height:12px}
 .nav-dropdown:hover .dropdown-menu{display:block}
 .dropdown-menu a{display:block;padding:8px 12px;color:var(--text-secondary);text-decoration:none;font-size:13px;border-radius:6px;transition:all 0.1s}
 .dropdown-menu a:hover{color:var(--text);background:var(--surface-hover)}
