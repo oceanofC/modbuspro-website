@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Manual — ModBus Pro Complete Reference Guide | modbus.app</title>
+    <meta name="description" content="Complete user manual for ModBus Pro. Learn every feature: connections, register browser, slave simulator, scripting engine, data logging, engineering tools, and more.">
+    <meta name="keywords" content="ModBus Pro manual, ModBus Pro user guide, Modbus tool documentation, Modbus master software, Modbus slave simulator, Modbus scripting">
+    <link rel="canonical" href="https://modbus.app/user-manual.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://modbus.app/user-manual.html">
+    <meta property="og:title" content="User Manual — ModBus Pro Complete Reference Guide">
+    <meta property="og:description" content="Complete user manual for ModBus Pro. Learn every feature: connections, register browser, slave simulator, scripting engine, data logging, engineering tools, and more.">
+    <meta property="og:site_name" content="modbus.app">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="User Manual — ModBus Pro Complete Reference Guide">
+    <meta name="twitter:description" content="Complete user manual for ModBus Pro. Learn every feature from installation to advanced scripting.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.08);
+    --purple-border: rgba(167,139,250,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: center;
+}
+.nav-inner {
+    max-width: 1100px; width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--green); }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+.nav-dropdown { position: relative; }
+.nav-dropdown > a::after { content: " \25BE"; font-size: 0.7em; }
+.nav-dropdown-menu {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.5rem 0; min-width: 200px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3); z-index: 200;
+}
+.nav-dropdown-menu a {
+    display: block; padding: 0.5rem 1rem; color: var(--text-dim);
+    text-decoration: none; font-size: 0.85rem; transition: all 0.15s;
+}
+.nav-dropdown-menu a:hover { background: var(--bg-card-hover); color: var(--green); }
+.nav-dropdown:hover .nav-dropdown-menu { display: block; }
+
+/* LAYOUT */
+.manual-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 7rem 2rem 4rem;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+/* SIDEBAR TOC */
+.toc-sidebar {
+    position: sticky;
+    top: 80px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    padding-right: 1rem;
+    border-right: 1px solid var(--border);
+}
+.toc-sidebar::-webkit-scrollbar { width: 4px; }
+.toc-sidebar::-webkit-scrollbar-track { background: transparent; }
+.toc-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.toc-sidebar h3 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+}
+.toc-sidebar a {
+    display: block;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    padding: 0.3rem 0 0.3rem 0.75rem;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+    line-height: 1.4;
+}
+.toc-sidebar a:hover {
+    color: var(--green);
+    border-left-color: var(--green);
+}
+.toc-sidebar a.toc-active {
+    color: var(--green);
+    border-left-color: var(--green);
+    font-weight: 600;
+}
+.toc-section { margin-bottom: 0.25rem; }
+
+/* HERO */
+.manual-hero {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+}
+.manual-hero .breadcrumb {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.manual-hero .breadcrumb a { color: var(--green); text-decoration: none; }
+.manual-hero .breadcrumb a:hover { text-decoration: underline; }
+.manual-hero h1 {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.manual-hero .subtitle {
+    font-size: 1.1rem; color: var(--text-dim);
+    max-width: 640px; line-height: 1.6;
+}
+.manual-hero .meta {
+    display: flex; gap: 1.5rem; margin-top: 1.25rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono); flex-wrap: wrap;
+}
+.manual-hero .meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border); font-weight: 600;
+}
+
+/* GUIDE CONTENT */
+.guide-content h2 {
+    font-size: 1.6rem; font-weight: 700; margin: 3rem 0 1rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.guide-content h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.guide-content h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+.guide-content h4 {
+    font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.5rem;
+    color: var(--text);
+}
+.guide-content p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-content ul, .guide-content ol {
+    margin: 0 0 1.5rem 1.5rem; color: var(--text-dim);
+}
+.guide-content li { margin-bottom: 0.5rem; }
+.guide-content strong { color: var(--text); font-weight: 600; }
+.guide-content a { color: var(--green); text-decoration: none; }
+.guide-content a:hover { text-decoration: underline; }
+
+/* CODE BLOCKS */
+pre {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    line-height: 1.65; color: var(--text-dim);
+}
+code {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--bg-code); padding: 0.15rem 0.4rem;
+    border-radius: 4px; color: var(--green);
+}
+pre code { background: none; padding: 0; color: inherit; }
+.code-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+/* INFO BOXES */
+.info-box {
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; border-left: 3px solid;
+}
+.info-box.tip { background: var(--green-dim); border-color: var(--green); }
+.info-box.warning { background: var(--amber-dim); border-color: var(--amber); }
+.info-box.danger { background: var(--red-dim); border-color: var(--red); }
+.info-box.info { background: var(--blue-dim); border-color: var(--blue); }
+.info-box .box-title {
+    font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.info-box.tip .box-title { color: var(--green); }
+.info-box.warning .box-title { color: var(--amber); }
+.info-box.danger .box-title { color: var(--red); }
+.info-box.info .box-title { color: var(--blue); }
+.info-box p { margin-bottom: 0.5rem; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* TABLES */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0 1.5rem; font-size: 0.9rem;
+}
+.data-table th {
+    background: var(--bg-card); color: var(--green);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.75rem 1rem;
+    text-align: left; border-bottom: 2px solid var(--green-border);
+}
+.data-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table code { font-size: 0.8rem; }
+
+/* KEY-VALUE GRID */
+.kv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin: 1rem 0 1.5rem;
+}
+.kv-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+.kv-item .kv-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.2rem;
+}
+.kv-item .kv-value {
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h4 { color: var(--green); margin-bottom: 0.5rem; font-size: 1.1rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; font-size: 0.95rem; }
+.app-promo-badge {
+    display: inline-block; background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.75rem; border-radius: 4px;
+    font-size: 0.8rem; font-weight: 600; margin-bottom: 0.75rem;
+    border: 1px solid var(--green-border);
+}
+.app-promo-cta {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo-cta:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+
+/* BYTE ORDER DIAGRAM */
+.byte-diagram {
+    display: flex;
+    gap: 0.25rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+}
+.byte-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 40px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid;
+}
+.byte-cell.a { background: var(--green-dim); border-color: var(--green-border); color: var(--green); }
+.byte-cell.b { background: var(--blue-dim); border-color: var(--blue-border); color: var(--blue); }
+.byte-cell.c { background: var(--purple-dim); border-color: var(--purple-border); color: var(--purple); }
+.byte-cell.d { background: var(--amber-dim); border-color: var(--amber-border); color: var(--amber); }
+.byte-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-right: 0.75rem;
+    min-width: 55px;
+    font-weight: 600;
+}
+
+/* SHORTCUTS TABLE */
+.shortcut-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0 1.5rem;
+}
+.shortcut-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.9rem;
+}
+.shortcut-table td:first-child {
+    width: 180px;
+}
+.kbd {
+    display: inline-block;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text);
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .manual-wrapper {
+        grid-template-columns: 1fr;
+        padding: 6rem 1rem 3rem;
+    }
+    .toc-sidebar {
+        position: relative;
+        top: 0;
+        max-height: none;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding-right: 0;
+        padding-bottom: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .kv-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+    .nav-links { display:none; }
+    .manual-wrapper { padding: 5.5rem 1rem 2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="site-nav"><div class="nav-inner">
+    <a href="index.html" class="nav-logo">modbus<span class="dot">.</span>app</a>
+    <ul class="nav-links"><li><a href="index.html">Product</a></li><li class="nav-dropdown"><a href="#">Tools</a><div class="nav-dropdown-menu"><a href="number-converter.html">Number Converter</a><a href="modbus-frame-parser.html">Frame Parser</a><a href="modbus-address-calculator.html">Address Calculator</a><a href="modbus-baud-rate-calculator.html">Baud Rate Calculator</a></div></li><li><a href="read-modbus-data.html">Guides</a></li><li><a href="guides.html">Troubleshooting</a></li><li><a href="pricing.html">Pricing</a></li></ul>
+    <a href="index.html#download" class="nav-cta">Download Free</a>
+</div></nav>
+
+<div class="manual-wrapper">
+
+<!-- SIDEBAR TABLE OF CONTENTS -->
+<aside class="toc-sidebar" id="toc">
+    <h3>User Manual</h3>
+    <div class="toc-section"><a href="#getting-started">1. Getting Started</a></div>
+    <div class="toc-section"><a href="#connections">2. Connections</a></div>
+    <div class="toc-section"><a href="#register-browser">3. Register Browser</a></div>
+    <div class="toc-section"><a href="#device-library">4. Device Library</a></div>
+    <div class="toc-section"><a href="#slave-simulator">5. Slave Simulator</a></div>
+    <div class="toc-section"><a href="#scripting">6. Scripting Engine</a></div>
+    <div class="toc-section"><a href="#monitor">7. Communication Monitor</a></div>
+    <div class="toc-section"><a href="#discovery">8. Discovery</a></div>
+    <div class="toc-section"><a href="#data-logging">9. Data Logging</a></div>
+    <div class="toc-section"><a href="#tools">10. Engineering Tools</a></div>
+    <div class="toc-section"><a href="#settings">11. Settings</a></div>
+    <div class="toc-section"><a href="#function-codes">12. Function Code Reference</a></div>
+    <div class="toc-section"><a href="#troubleshooting">13. Troubleshooting</a></div>
+    <div class="toc-section"><a href="#keyboard-shortcuts">14. Keyboard Shortcuts</a></div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="guide-content">
+
+    <!-- HERO -->
+    <div class="manual-hero">
+        <div class="breadcrumb"><a href="index.html">Home</a> / User Manual</div>
+        <h1>ModBus Pro User Manual</h1>
+        <p class="subtitle">The complete reference guide to every feature in ModBus Pro. Whether you are commissioning your first Modbus device or debugging a 200-node RS485 network, this manual covers everything you need.</p>
+        <div class="meta">
+            <span class="tag">DOCUMENTATION</span>
+            <span>Updated Feb 2026</span>
+            <span>Version 1.x</span>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 1. GETTING STARTED -->
+    <!-- ============================================================ -->
+    <h2 id="getting-started">1. Getting Started</h2>
+
+    <h3>System Requirements</h3>
+    <p>ModBus Pro runs on Windows desktop systems. Minimum requirements:</p>
+    <ul>
+        <li><strong>Operating System:</strong> Windows 10 or Windows 11 (64-bit)</li>
+        <li><strong>RAM:</strong> 4 GB minimum, 8 GB recommended</li>
+        <li><strong>Disk Space:</strong> approximately 250 MB for installation</li>
+        <li><strong>Display:</strong> 1280 x 720 minimum resolution</li>
+        <li><strong>Network:</strong> Ethernet or Wi-Fi for Modbus TCP connections</li>
+        <li><strong>Serial:</strong> USB-to-RS485 adapter for Modbus RTU connections (driver must be installed)</li>
+    </ul>
+
+    <h3>Installation</h3>
+    <p>ModBus Pro is distributed as a portable ZIP archive. There is no installer wizard to run through.</p>
+    <ol>
+        <li>Download the ZIP file from <a href="https://modbus.app">modbus.app</a>.</li>
+        <li>Extract the ZIP to any folder on your computer (for example, <code>C:\ModBusPro</code> or your Desktop).</li>
+        <li>Open the extracted folder and double-click <strong>ModBus Pro.exe</strong> to launch the application.</li>
+    </ol>
+    <p>There is no need to run as administrator for normal operation. If you plan to use serial ports, make sure your USB-to-RS485 adapter drivers are already installed before launching the application.</p>
+
+    <div class="info-box tip">
+        <div class="box-title">Tip</div>
+        <p>Pin <strong>ModBus Pro.exe</strong> to your taskbar for quick access. Since there is no formal installer, Windows will not add it to your Start Menu automatically.</p>
+    </div>
+
+    <h3>First Launch</h3>
+    <p>When you first open ModBus Pro, you will see the main interface with a dark sidebar on the left and the connection bar at the top. The sidebar provides navigation between all major features: Register Browser, Device Library, Slave Simulator, Scripting, Communication Monitor, Discovery, Data Logging, Engineering Tools, and Settings.</p>
+    <p>The application starts in the <strong>Register Browser</strong> view by default. Before you can read any Modbus data, you need to configure and establish a connection using the connection bar at the top of the window.</p>
+
+    <h3>License and Trial</h3>
+    <p>ModBus Pro includes a <strong>7-day free trial</strong> with full access to every feature. No sign-up, no email address, and no credit card are required to start the trial.</p>
+    <p>After the trial expires, you can purchase a license key from the <a href="pricing.html">pricing page</a>. To activate your license:</p>
+    <ol>
+        <li>Open <strong>Settings</strong> from the sidebar.</li>
+        <li>Paste your license key into the activation field.</li>
+        <li>Click <strong>Activate</strong>. The application will verify your key online and unlock permanently.</li>
+    </ol>
+    <p>Each license key is valid for one computer. If you need to transfer your license to a different machine, deactivate it first in Settings, then re-activate on the new machine.</p>
+
+    <h3>UI Overview</h3>
+    <p>The interface is organized into three main areas:</p>
+    <ul>
+        <li><strong>Sidebar (left):</strong> Navigation between all application modules. Each icon represents a major feature area. Hover over icons to see labels.</li>
+        <li><strong>Connection Bar (top):</strong> Configure and manage your Modbus connection. Select the protocol (TCP or RTU), enter connection parameters, and connect or disconnect.</li>
+        <li><strong>Main Panel (center):</strong> The working area changes based on which module you have selected in the sidebar. This is where you interact with registers, view logs, run scripts, and use tools.</li>
+    </ul>
+
+
+    <!-- ============================================================ -->
+    <!-- 2. CONNECTIONS -->
+    <!-- ============================================================ -->
+    <h2 id="connections">2. Connections</h2>
+
+    <h3>Understanding the Connection Bar</h3>
+    <p>The connection bar runs along the top of the application and is always visible regardless of which module you are viewing. It contains all the parameters needed to establish a Modbus connection, a Connect/Disconnect button, and a status indicator showing your current connection state.</p>
+    <p>You can switch between <strong>Modbus TCP</strong> and <strong>Modbus RTU</strong> using the protocol selector on the left side of the connection bar.</p>
+
+    <h3>Creating a Modbus TCP Connection</h3>
+    <p>To connect to a Modbus device over TCP/IP (Ethernet):</p>
+    <ol>
+        <li>Select <strong>TCP</strong> as the protocol in the connection bar.</li>
+        <li>Enter the <strong>Host</strong> (IP address or hostname) of the target device. For example: <code>192.168.1.100</code></li>
+        <li>Enter the <strong>Port</strong>. The standard Modbus TCP port is <code>502</code>. Some devices use alternative ports like 503 or 5020.</li>
+        <li>Set the <strong>Unit ID</strong> (also called Slave ID). For most TCP devices this is <code>1</code>, but gateways that bridge to serial networks may require a specific Unit ID to address downstream devices.</li>
+        <li>Set the <strong>Timeout</strong> in milliseconds. The default of <code>3000</code> ms (3 seconds) works for most networks. Increase this for high-latency connections or slow devices.</li>
+        <li>Click <strong>Connect</strong>.</li>
+    </ol>
+
+    <h3>Creating a Modbus RTU Connection</h3>
+    <p>To connect to a Modbus device over a serial line (RS485/RS232):</p>
+    <ol>
+        <li>Select <strong>RTU</strong> as the protocol in the connection bar.</li>
+        <li>Select the <strong>COM Port</strong> from the dropdown. This lists all available serial ports on your system. If your USB-to-RS485 adapter does not appear, check that its drivers are installed.</li>
+        <li>Set the <strong>Baud Rate</strong>. Common values are <code>9600</code>, <code>19200</code>, <code>38400</code>, and <code>115200</code>. This must match the baud rate configured on the slave device.</li>
+        <li>Set <strong>Parity</strong>. Options are <code>None</code>, <code>Even</code>, or <code>Odd</code>. The most common Modbus default is <code>None</code> (with 2 stop bits) or <code>Even</code> (with 1 stop bit).</li>
+        <li>Set <strong>Data Bits</strong> to <code>8</code> (standard for Modbus RTU).</li>
+        <li>Set <strong>Stop Bits</strong> to <code>1</code> or <code>2</code> depending on your device configuration.</li>
+        <li>Set the <strong>Unit ID</strong> (Slave Address) of the device you want to communicate with (1-247).</li>
+        <li>Click <strong>Connect</strong>.</li>
+    </ol>
+
+    <div class="info-box warning">
+        <div class="box-title">Important</div>
+        <p>Every serial parameter (baud rate, parity, data bits, stop bits) must match between the master and the slave exactly. A mismatch in any single parameter will cause communication failures, typically resulting in timeout errors or CRC errors.</p>
+    </div>
+
+    <h3>Connecting and Disconnecting</h3>
+    <p>Click the <strong>Connect</strong> button to establish the connection. The status indicator will change to show that you are connected. To terminate the connection, click <strong>Disconnect</strong>. You can change connection parameters only while disconnected.</p>
+
+    <h3>Managing Multiple Profiles</h3>
+    <p>ModBus Pro allows you to save connection profiles so you do not have to re-enter parameters every time. When you have configured a connection, you can save it as a named profile. Switch between saved profiles using the profile dropdown. This is especially useful when you regularly work with multiple devices or sites.</p>
+
+    <h3>Connection Status Indicators</h3>
+    <p>The connection bar displays a colored indicator showing the current state:</p>
+    <ul>
+        <li><strong>Grey:</strong> Disconnected. No active connection.</li>
+        <li><strong>Green:</strong> Connected. Communication is active and healthy.</li>
+        <li><strong>Red/Orange:</strong> Error state. The connection attempt failed or was lost.</li>
+    </ul>
+
+    <h3>Troubleshooting Connection Issues</h3>
+    <p>If you cannot connect:</p>
+    <ul>
+        <li><strong>TCP:</strong> Verify the IP address is correct and the device is reachable (try pinging it). Make sure port 502 (or your configured port) is not blocked by a firewall. Check that no other application is already occupying the port.</li>
+        <li><strong>RTU:</strong> Verify the COM port is correct and not in use by another application. Double-check baud rate, parity, data bits, and stop bits against the device documentation. Ensure the RS485 wiring is correct (A/B polarity is a common source of confusion between manufacturers).</li>
+    </ul>
+
+
+    <!-- ============================================================ -->
+    <!-- 3. REGISTER BROWSER -->
+    <!-- ============================================================ -->
+    <h2 id="register-browser">3. Register Browser</h2>
+
+    <h3>Understanding Modbus Registers</h3>
+    <p>Modbus organizes data into four types of registers:</p>
+    <table class="data-table">
+        <thead><tr><th>Type</th><th>Function Code</th><th>Access</th><th>Data</th></tr></thead>
+        <tbody>
+            <tr><td><strong>Coils</strong></td><td>FC01 / FC05 / FC15</td><td>Read/Write</td><td>Single-bit (ON/OFF)</td></tr>
+            <tr><td><strong>Discrete Inputs</strong></td><td>FC02</td><td>Read Only</td><td>Single-bit (ON/OFF)</td></tr>
+            <tr><td><strong>Holding Registers</strong></td><td>FC03 / FC06 / FC16</td><td>Read/Write</td><td>16-bit word</td></tr>
+            <tr><td><strong>Input Registers</strong></td><td>FC04</td><td>Read Only</td><td>16-bit word</td></tr>
+        </tbody>
+    </table>
+    <p>Most real-world data (voltages, currents, power, temperatures, setpoints) lives in holding registers (FC03) or input registers (FC04). Coils and discrete inputs are used for digital signals like relay states, alarms, and control bits.</p>
+
+    <h3>Adding Registers Manually</h3>
+    <p>To add a register to the browser:</p>
+    <ol>
+        <li>Click the <strong>Add Register</strong> button.</li>
+        <li>Enter the register <strong>Address</strong> (0-based). For example, holding register 40001 in documentation is address <code>0</code> in ModBus Pro (since the application uses 0-based addressing).</li>
+        <li>Set the <strong>Quantity</strong> of registers to read in a single request (1 to 125 for holding/input registers).</li>
+        <li>Select the <strong>Function Code</strong> (FC01, FC02, FC03, or FC04).</li>
+        <li>Choose the <strong>Data Type</strong> for display interpretation.</li>
+        <li>Optionally set the <strong>Byte Order</strong>, <strong>Scale Factor</strong>, and <strong>Offset</strong>.</li>
+        <li>Give the register a descriptive <strong>Name</strong> (e.g., "Phase A Voltage").</li>
+    </ol>
+
+    <h3>Register Properties</h3>
+    <p>Each register entry in the browser has the following configurable properties:</p>
+    <ul>
+        <li><strong>Address:</strong> The 0-based Modbus register address.</li>
+        <li><strong>Quantity:</strong> How many consecutive registers to read in one request.</li>
+        <li><strong>Function Code:</strong> Which Modbus function to use (FC01-FC04 for reading).</li>
+        <li><strong>Data Type:</strong> How to interpret the raw register values (see Data Types section below).</li>
+        <li><strong>Byte Order:</strong> For multi-register types, how to arrange the bytes (see Byte Orders section below).</li>
+        <li><strong>Scale Factor:</strong> Multiply the raw value by this number. For example, a scale of <code>0.1</code> converts a raw value of 2345 to a display of 234.5.</li>
+        <li><strong>Offset:</strong> Add this value after scaling. Useful for sensors with non-zero baselines.</li>
+    </ul>
+
+    <h3>Reading Registers</h3>
+    <p>There are two ways to read register values:</p>
+    <ul>
+        <li><strong>Read Individual:</strong> Click the read icon on any single register entry to perform a one-time read of that register.</li>
+        <li><strong>Read All:</strong> Click the <strong>Read All</strong> button to send read requests for every register in your list in sequence.</li>
+    </ul>
+    <p>The value column updates immediately with the response data, interpreted according to your configured data type and byte order.</p>
+
+    <h3>Writing Registers</h3>
+    <p>For writable registers (coils via FC05/FC15, holding registers via FC06/FC16):</p>
+    <ul>
+        <li><strong>Write Single:</strong> Click the write icon on a register, enter the new value, and confirm. This uses FC06 (single register) or FC05 (single coil).</li>
+        <li><strong>Write Multiple:</strong> When a register entry has a quantity greater than 1, writing will use FC16 (multiple registers) or FC15 (multiple coils).</li>
+    </ul>
+
+    <div class="info-box danger">
+        <div class="box-title">Caution</div>
+        <p>Writing incorrect values to holding registers can change device configuration, trigger relay trips, modify setpoints, or cause equipment damage on live systems. Always verify the correct register address and value before writing, especially on production equipment.</p>
+    </div>
+
+    <h3>Continuous Polling</h3>
+    <p>To monitor registers in real time, use the <strong>Start Polling</strong> button. This continuously reads all registers at a configurable interval. You can set the polling interval in milliseconds (e.g., 1000 ms for once per second). Click <strong>Stop Polling</strong> to end continuous reading.</p>
+    <p>Polling is useful for monitoring live process values like voltage, current, temperature, or power that change over time.</p>
+
+    <h3>Data Types Explained</h3>
+    <p>ModBus Pro supports the following data types for interpreting raw register values:</p>
+    <table class="data-table">
+        <thead><tr><th>Data Type</th><th>Size</th><th>Range / Description</th></tr></thead>
+        <tbody>
+            <tr><td><code>Unsigned (UINT16)</code></td><td>1 register</td><td>0 to 65,535</td></tr>
+            <tr><td><code>Signed (INT16)</code></td><td>1 register</td><td>-32,768 to 32,767</td></tr>
+            <tr><td><code>Hex</code></td><td>1 register</td><td>Displays raw hex value (e.g., 0x1A2B)</td></tr>
+            <tr><td><code>Binary</code></td><td>1 register</td><td>Displays all 16 bits (e.g., 0000 0001 1010 0011)</td></tr>
+            <tr><td><code>Float32 (IEEE 754)</code></td><td>2 registers</td><td>Floating-point number (e.g., 234.56)</td></tr>
+            <tr><td><code>Int32</code></td><td>2 registers</td><td>-2,147,483,648 to 2,147,483,647</td></tr>
+            <tr><td><code>UInt32</code></td><td>2 registers</td><td>0 to 4,294,967,295</td></tr>
+        </tbody>
+    </table>
+    <p>Multi-register types (Float32, Int32, UInt32) occupy two consecutive 16-bit registers and require a byte order setting to decode correctly.</p>
+
+    <h3>Byte Orders Explained</h3>
+    <p>When a value spans two registers, the order of bytes matters. Different manufacturers use different conventions. ModBus Pro supports all four common byte orders:</p>
+
+    <p><strong>Example:</strong> The float value <code>123.456</code> is represented by bytes <code>42 F6 E9 79</code>. Here is how each byte order arranges them across Register 1 (high) and Register 2 (low):</p>
+
+    <div style="margin: 1.25rem 0;">
+        <div style="display:flex; align-items:center; margin-bottom:0.5rem;">
+            <span class="byte-label">ABCD</span>
+            <div class="byte-diagram" style="margin:0">
+                <div class="byte-cell a">42</div><div class="byte-cell b">F6</div><div class="byte-cell c">E9</div><div class="byte-cell d">79</div>
+            </div>
+            <span style="color:var(--text-muted); font-size:0.8rem; margin-left:1rem; font-family:var(--font-mono);">Big Endian</span>
+        </div>
+        <div style="display:flex; align-items:center; margin-bottom:0.5rem;">
+            <span class="byte-label">DCBA</span>
+            <div class="byte-diagram" style="margin:0">
+                <div class="byte-cell d">79</div><div class="byte-cell c">E9</div><div class="byte-cell b">F6</div><div class="byte-cell a">42</div>
+            </div>
+            <span style="color:var(--text-muted); font-size:0.8rem; margin-left:1rem; font-family:var(--font-mono);">Little Endian</span>
+        </div>
+        <div style="display:flex; align-items:center; margin-bottom:0.5rem;">
+            <span class="byte-label">BADC</span>
+            <div class="byte-diagram" style="margin:0">
+                <div class="byte-cell b">F6</div><div class="byte-cell a">42</div><div class="byte-cell d">79</div><div class="byte-cell c">E9</div>
+            </div>
+            <span style="color:var(--text-muted); font-size:0.8rem; margin-left:1rem; font-family:var(--font-mono);">Big Endian Byte Swap</span>
+        </div>
+        <div style="display:flex; align-items:center; margin-bottom:0.5rem;">
+            <span class="byte-label">CDAB</span>
+            <div class="byte-diagram" style="margin:0">
+                <div class="byte-cell c">E9</div><div class="byte-cell d">79</div><div class="byte-cell a">42</div><div class="byte-cell b">F6</div>
+            </div>
+            <span style="color:var(--text-muted); font-size:0.8rem; margin-left:1rem; font-family:var(--font-mono);">Little Endian Word Swap</span>
+        </div>
+    </div>
+
+    <p>If you are getting nonsensical values when reading Float32 or Int32 data, try each byte order until the values make sense. ModBus Pro's Engineering Tools include a converter that shows all four interpretations side by side.</p>
+
+    <div class="info-box info">
+        <div class="box-title">Note</div>
+        <p>The most common byte order for Modbus devices is <strong>ABCD</strong> (Big Endian), but many popular devices from manufacturers like Schneider and ABB use <strong>CDAB</strong> (Little Endian Word Swap). Always check the device documentation or use trial-and-error with known values.</p>
+    </div>
+
+    <h3>Scale Factor and Offset</h3>
+    <p>Many devices store scaled integer values instead of floating-point numbers. For example, a voltage of 234.5 V might be stored as the integer <code>2345</code> with an implied scale factor of 0.1. Configure the scale factor and offset in the register properties to have ModBus Pro display the correct engineering units automatically:</p>
+    <p><code>Displayed Value = (Raw Value x Scale Factor) + Offset</code></p>
+
+    <h3>Card View vs Table View</h3>
+    <p>The Register Browser offers two display layouts:</p>
+    <ul>
+        <li><strong>Card View:</strong> Each register is displayed as an individual card with its name, address, value, and controls. Ideal for monitoring a small number of important registers.</li>
+        <li><strong>Table View:</strong> All registers are displayed in a compact table format. Ideal for large register maps where you need to see many values at once. Multi-register reads are expanded to show individual values for each address.</li>
+    </ul>
+    <p>Toggle between views using the view selector in the toolbar.</p>
+
+    <h3>Filtering Registers</h3>
+    <p>When working with large register lists, use the filter/search bar to quickly find registers by name or address. The list updates in real time as you type.</p>
+
+
+    <!-- ============================================================ -->
+    <!-- 4. DEVICE LIBRARY -->
+    <!-- ============================================================ -->
+    <h2 id="device-library">4. Device Library</h2>
+
+    <h3>What It Is</h3>
+    <p>The Device Library is a built-in collection of <strong>82+ pre-built register maps</strong> for common industrial Modbus devices. Instead of manually entering register addresses, data types, and byte orders from a manufacturer's PDF, you can import a complete register map in one click.</p>
+
+    <h3>How to Import a Device</h3>
+    <ol>
+        <li>Navigate to the <strong>Device Library</strong> from the sidebar.</li>
+        <li>Browse or search for your device by name, manufacturer, or category.</li>
+        <li>Click on the device to see its register map details.</li>
+        <li>Click <strong>Import</strong> to load all registers into the Register Browser.</li>
+    </ol>
+    <p>After importing, all registers appear in the Register Browser with correct addresses, data types, byte orders, scale factors, and descriptive names already configured. You can then connect to your device and start reading immediately.</p>
+
+    <h3>Available Categories</h3>
+    <p>The library includes devices across a wide range of categories:</p>
+    <ul>
+        <li><strong>Power Meters:</strong> ABB M4M, Schneider PM5xxx, Siemens PAC, Accuenergy, Eastron SDM, Carlo Gavazzi, and more</li>
+        <li><strong>Variable Frequency Drives (VFDs):</strong> ABB ACS, Siemens, Danfoss, WEG, Yaskawa</li>
+        <li><strong>Solar Inverters:</strong> SMA, Fronius, Huawei, SolarEdge, GoodWe, Sungrow</li>
+        <li><strong>Protection Relays:</strong> ABB REF615, REX615, Schneider Sepam, SEL</li>
+        <li><strong>PLCs and Controllers:</strong> Phoenix Contact PLCnext, Siemens, Wago</li>
+        <li><strong>Battery/BESS:</strong> Envision, BYD, CATL BMS systems</li>
+        <li><strong>Environmental Sensors:</strong> Temperature, humidity, pressure transmitters</li>
+    </ul>
+
+    <h3>Searching and Filtering</h3>
+    <p>Use the search bar at the top of the Device Library to search by device name, manufacturer, or model number. You can also filter by category using the category tabs or dropdown.</p>
+
+    <h3>What Happens After Import</h3>
+    <p>Imported registers are added to your Register Browser workspace. They behave exactly like manually added registers: you can read them, write to them, poll them, and modify their properties. The import does not lock or restrict any settings.</p>
+
+
+    <!-- ============================================================ -->
+    <!-- 5. SLAVE SIMULATOR -->
+    <!-- ============================================================ -->
+    <h2 id="slave-simulator">5. Slave Simulator</h2>
+
+    <h3>What It Does</h3>
+    <p>The Slave Simulator turns your computer into a virtual Modbus slave (server) device. It listens on a TCP port for incoming Modbus requests and responds with the register values you configure. This is extremely useful for:</p>
+    <ul>
+        <li>Testing your Modbus master application without physical hardware</li>
+        <li>Simulating device responses during development</li>
+        <li>Training and learning Modbus communication</li>
+        <li>Verifying register maps before connecting to real devices</li>
+    </ul>
+
+    <h3>Setting Up a Slave</h3>
+    <ol>
+        <li>Navigate to the <strong>Slave Simulator</strong> from the sidebar.</li>
+        <li>Set the <strong>Unit ID</strong> that the simulated slave should respond to (default: 1).</li>
+        <li>Set the <strong>Port</strong> that the slave will listen on (default: 502). If port 502 is in use, try an alternative like 5020.</li>
+    </ol>
+
+    <h3>Adding Register Values</h3>
+    <p>The simulator supports all four register types: coils, discrete inputs, holding registers, and input registers. Each type has 10,000 addresses available (0 to 9,999).</p>
+    <p>To set register values:</p>
+    <ol>
+        <li>Select the register type (e.g., Holding Registers).</li>
+        <li>Enter the address and the value you want that register to hold.</li>
+        <li>For multi-register data types (Float32, Int32, UInt32), the simulator automatically writes to consecutive register addresses.</li>
+    </ol>
+    <p>You can set values using different data formats including unsigned, signed, hex, binary, Float32 (with Big Endian, Little Endian, and Byte Swap variants), Int32, and UInt32.</p>
+
+    <h3>Starting and Stopping the Slave</h3>
+    <p>Click <strong>Start</strong> to begin listening for incoming Modbus requests. The status indicator will show that the slave is running. Click <strong>Stop</strong> to shut down the slave server. While the slave is running, any Modbus master (including ModBus Pro itself) can connect to it.</p>
+
+    <h3>Testing Master-Slave Communication on Localhost</h3>
+    <p>A common workflow is to run both the slave simulator and the master on the same computer:</p>
+    <ol>
+        <li>Start the Slave Simulator on port 502 (or any available port).</li>
+        <li>Set some register values in the simulator.</li>
+        <li>Go to the Register Browser and configure a TCP connection to <code>127.0.0.1</code> (localhost) on the same port.</li>
+        <li>Connect and read registers. You should see the values you configured in the simulator.</li>
+    </ol>
+    <p>This is the fastest way to test and learn Modbus communication without any hardware.</p>
+
+    <h3>Multi-Register Data Formats</h3>
+    <p>When configuring Float32, Int32, or UInt32 values, the simulator uses two consecutive registers. The byte order used for encoding can be selected in the format dropdown. This lets you test how your master handles different byte order conventions.</p>
+
+
+    <!-- ============================================================ -->
+    <!-- 6. SCRIPTING ENGINE -->
+    <!-- ============================================================ -->
+    <h2 id="scripting">6. Scripting Engine</h2>
+
+    <h3>Overview</h3>
+    <p>The Scripting Engine lets you automate Modbus operations using JavaScript. Write scripts to read registers, process data, write values based on conditions, implement polling loops, and build complex automation sequences. Scripts run inside the application with access to a dedicated Modbus API.</p>
+
+    <h3>The Script Editor Interface</h3>
+    <p>The scripting view consists of:</p>
+    <ul>
+        <li><strong>Code Editor:</strong> A syntax-highlighted editor where you write your JavaScript code.</li>
+        <li><strong>Output Console:</strong> Displays log output from your script (info, success, warning, and error messages), each color-coded.</li>
+        <li><strong>Toolbar:</strong> Buttons to run, stop, and save your scripts.</li>
+    </ul>
+
+    <h3>Running and Stopping Scripts</h3>
+    <p>Click <strong>Run</strong> (or press <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span>) to execute the current script. The script runs asynchronously, so long-running scripts with delays will not freeze the interface. Click <strong>Stop</strong> to halt a running script at any time.</p>
+
+    <h3>Available API Reference</h3>
+    <p>Scripts have access to the following functions:</p>
+
+    <h4>Read Operations</h4>
+    <span class="code-label">Read holding registers</span>
+    <pre><code>const result = await modbus.readHoldingRegisters(address, quantity);
+// Returns an array of register values, e.g., [1234, 5678]</code></pre>
+
+    <span class="code-label">Read input registers</span>
+    <pre><code>const result = await modbus.readInputRegisters(address, quantity);</code></pre>
+
+    <span class="code-label">Read coils</span>
+    <pre><code>const result = await modbus.readCoils(address, quantity);
+// Returns an array of booleans, e.g., [true, false, true]</code></pre>
+
+    <span class="code-label">Read discrete inputs</span>
+    <pre><code>const result = await modbus.readDiscreteInputs(address, quantity);</code></pre>
+
+    <h4>Write Operations</h4>
+    <span class="code-label">Write a single holding register</span>
+    <pre><code>await modbus.writeRegister(address, value);</code></pre>
+
+    <span class="code-label">Write multiple holding registers</span>
+    <pre><code>await modbus.writeRegisters(address, [value1, value2, value3]);</code></pre>
+
+    <span class="code-label">Write a single coil</span>
+    <pre><code>await modbus.writeCoil(address, true);  // or false</code></pre>
+
+    <span class="code-label">Write multiple coils</span>
+    <pre><code>await modbus.writeCoils(address, [true, false, true, true]);</code></pre>
+
+    <h4>Utility Functions</h4>
+    <span class="code-label">Connection check, delay, and logging</span>
+    <pre><code>// Check connection status
+const connected = modbus.isConnected();
+
+// Pause execution for specified milliseconds
+await delay(1000);  // wait 1 second
+
+// Logging with different severity levels
+log.info("Reading registers...");
+log.success("Read complete: " + result);
+log.warn("Value exceeds threshold");
+log.error("Communication failed");
+
+// Data conversion utilities
+const floatVal = utils.toFloat32(reg1, reg2);  // Convert 2 registers to float
+const hexStr = utils.toHex(value);              // Convert to hex string</code></pre>
+
+    <h3>Example Scripts</h3>
+
+    <span class="code-label">Example: Continuous monitoring with alarm threshold</span>
+    <pre><code>// Monitor a temperature register and log warnings
+const TEMP_REGISTER = 100;
+const ALARM_THRESHOLD = 85.0;
+
+while (modbus.isConnected()) {
+    const regs = await modbus.readHoldingRegisters(TEMP_REGISTER, 2);
+    const temperature = utils.toFloat32(regs[0], regs[1]);
+
+    log.info("Temperature: " + temperature.toFixed(1) + " C");
+
+    if (temperature > ALARM_THRESHOLD) {
+        log.error("ALARM: Temperature " + temperature.toFixed(1) +
+                  " exceeds threshold " + ALARM_THRESHOLD);
+    }
+
+    await delay(2000);  // Poll every 2 seconds
+}</code></pre>
+
+    <span class="code-label">Example: Read and write registers</span>
+    <pre><code>// Read a setpoint, increase it by 10, and write it back
+const regs = await modbus.readHoldingRegisters(50, 1);
+log.info("Current setpoint: " + regs[0]);
+
+const newValue = regs[0] + 10;
+await modbus.writeRegister(50, newValue);
+log.success("New setpoint written: " + newValue);</code></pre>
+
+    <span class="code-label">Example: Scan a range of registers</span>
+    <pre><code>// Scan registers 0 to 99 and log non-zero values
+for (let addr = 0; addr < 100; addr++) {
+    const regs = await modbus.readHoldingRegisters(addr, 1);
+    if (regs[0] !== 0) {
+        log.info("Register " + addr + " = " + regs[0]);
+    }
+    await delay(100);  // Small delay between reads
+}</code></pre>
+
+    <h3>Writing Your Own Scripts</h3>
+    <p>Scripts are standard JavaScript with <code>async/await</code> support. All Modbus API calls return Promises, so always use <code>await</code> when calling them. You can use variables, loops, conditionals, functions, and any standard JavaScript features.</p>
+
+    <h3>Tips and Best Practices</h3>
+    <ul>
+        <li>Always add a <code>delay()</code> inside loops to avoid flooding the bus with requests. A 100-500 ms delay between reads is usually sufficient.</li>
+        <li>Use <code>modbus.isConnected()</code> as a loop condition so scripts stop gracefully when you disconnect.</li>
+        <li>Wrap Modbus calls in <code>try/catch</code> blocks to handle communication errors without crashing the script.</li>
+        <li>Use <code>log.info()</code> liberally to track what your script is doing. The output console is your primary debugging tool.</li>
+        <li>Save your scripts frequently using <span class="kbd">Ctrl</span>+<span class="kbd">S</span>.</li>
+    </ul>
+
+
+    <!-- ============================================================ -->
+    <!-- 7. COMMUNICATION MONITOR -->
+    <!-- ============================================================ -->
+    <h2 id="monitor">7. Communication Monitor</h2>
+
+    <h3>What It Shows</h3>
+    <p>The Communication Monitor displays a live log of all Modbus transactions between the master and slave. Every request (TX) and response (RX) is recorded with:</p>
+    <ul>
+        <li><strong>Timestamp:</strong> The exact time the frame was sent or received.</li>
+        <li><strong>Direction:</strong> TX (transmitted/sent by master) or RX (received from slave).</li>
+        <li><strong>Function Code:</strong> The Modbus function code used.</li>
+        <li><strong>Raw Data:</strong> The complete hex frame.</li>
+        <li><strong>Response Time:</strong> How long the slave took to respond (in milliseconds).</li>
+        <li><strong>Status:</strong> Whether the request succeeded or returned an error/exception.</li>
+    </ul>
+
+    <h3>Filtering Messages</h3>
+    <p>When the log gets busy, use the filter controls to show only the messages you care about. You can filter by function code, direction (TX only, RX only), or status (errors only). This is invaluable when debugging intermittent issues on a busy network.</p>
+
+    <h3>Exporting the Log</h3>
+    <p>Click the export button to save the entire communication log. This is useful for sharing diagnostic data with colleagues or equipment vendors when troubleshooting field issues.</p>
+
+    <h3>Understanding Response Times</h3>
+    <p>The response time column shows the elapsed time between sending a request and receiving the response. Healthy Modbus TCP responses are typically under 50 ms on a local network. RTU responses vary based on baud rate but should be consistent. Spikes in response time can indicate network congestion, device overload, or intermittent wiring issues.</p>
+
+
+    <!-- ============================================================ -->
+    <!-- 8. DISCOVERY -->
+    <!-- ============================================================ -->
+    <h2 id="discovery">8. Discovery</h2>
+
+    <h3>Auto-Scanning for Devices</h3>
+    <p>The Discovery feature lets you automatically find Modbus devices on your network without knowing their addresses in advance. This is especially useful when commissioning new sites or working with unfamiliar equipment.</p>
+
+    <h3>How It Works</h3>
+    <p>Discovery works by sending read requests to a range of addresses and checking for valid responses:</p>
+    <ul>
+        <li><strong>TCP Mode:</strong> Scans an IP address range (e.g., 192.168.1.1 to 192.168.1.254) on the specified port. For each IP, it sends a test read request and records devices that respond.</li>
+        <li><strong>RTU Mode:</strong> Scans a range of Unit IDs (e.g., 1 to 247) on the connected serial port. Each ID is probed with a test read.</li>
+    </ul>
+    <p>Configure the scan range, port (for TCP), and the function code/address used for the probe request, then start the scan. The process may take several minutes for large ranges.</p>
+
+    <h3>Interpreting Results</h3>
+    <p>Discovered devices appear in a results list showing the IP address or Unit ID, the response received, and any identifying information. From the results, you can quickly set up a connection to any discovered device.</p>
+
+
+    <!-- ============================================================ -->
+    <!-- 9. DATA LOGGING -->
+    <!-- ============================================================ -->
+    <h2 id="data-logging">9. Data Logging</h2>
+
+    <h3>Setting Up Data Logging</h3>
+    <p>Data Logging records register values over time to a file, letting you track trends, capture transient events, and build historical datasets for analysis.</p>
+
+    <h3>Configuring Registers and Intervals</h3>
+    <p>To set up a logging session:</p>
+    <ol>
+        <li>Navigate to the <strong>Data Logging</strong> module from the sidebar.</li>
+        <li>Select which registers to log. You can choose from the registers already configured in your Register Browser.</li>
+        <li>Set the <strong>logging interval</strong> (how often to read and record values). For example, every 1 second, every 5 seconds, or every 60 seconds.</li>
+        <li>Choose the output file location and name.</li>
+    </ol>
+    <p>The register count displayed reflects the total number of individual register addresses being logged, which accounts for the quantity field of each register definition. For example, a single entry reading 10 registers at address 100 counts as 10 logged registers.</p>
+
+    <h3>Starting and Stopping Logging</h3>
+    <p>Click <strong>Start Logging</strong> to begin recording. The application will read the selected registers at each interval and append the values to the log file. Click <strong>Stop Logging</strong> to finish the session and finalize the file.</p>
+
+    <h3>CSV Export Format</h3>
+    <p>Data is exported in CSV (comma-separated values) format, which can be opened in Excel, Google Sheets, or any data analysis tool. The CSV includes:</p>
+    <ul>
+        <li>A header row with column names (timestamp, register names)</li>
+        <li>One row per sample interval</li>
+        <li>ISO 8601 timestamps in the first column</li>
+        <li>Raw and/or scaled values for each register</li>
+    </ul>
+
+    <h3>Analysing Logged Data</h3>
+    <p>Open the exported CSV in your preferred tool to create charts, calculate statistics, or identify anomalies. Common analysis tasks include plotting voltage and current over time, detecting power quality events, tracking temperature trends, and verifying setpoint changes.</p>
+
+
+    <!-- ============================================================ -->
+    <!-- 10. ENGINEERING TOOLS -->
+    <!-- ============================================================ -->
+    <h2 id="tools">10. Engineering Tools</h2>
+
+    <p>ModBus Pro includes a suite of engineering tools accessible from the sidebar. These tools help with number conversion, protocol testing, and understanding Modbus internals.</p>
+
+    <h3>Number Converter</h3>
+    <p>Convert between decimal, hexadecimal, binary, Float32 (IEEE 754), and raw register values. Enter a value in any format and see the equivalent in all other formats instantly. This tool also shows all four byte order interpretations for Float32 values, making it easy to identify the correct byte order for your device.</p>
+
+    <h3>CRC-16 Calculator</h3>
+    <p>Calculate the Modbus CRC-16 checksum for any byte sequence. Enter a hex frame (without CRC) and the tool computes the CRC that should be appended. Useful for verifying frames captured on an oscilloscope or logic analyzer, or for manually constructing Modbus RTU packets.</p>
+
+    <h3>FC22 Mask Write Tool</h3>
+    <p>Function Code 22 (Mask Write Register) lets you modify individual bits within a holding register without overwriting the entire value. The tool provides a visual interface for setting the AND mask and OR mask, showing the bit-level effect on the register value. This is useful for toggling control bits without disturbing adjacent bits in the same register.</p>
+
+    <h3>FC23 Read/Write Multiple Tool</h3>
+    <p>Function Code 23 allows you to read and write registers in a single transaction. The tool lets you configure the read start address, read quantity, write start address, and write values, then sends the combined request. This can reduce round-trip communication time when you need to both read and write in the same cycle.</p>
+
+    <h3>Connection Test</h3>
+    <p>A simple diagnostic that verifies your connection by sending a test read request and measuring the response time. Useful for confirming basic connectivity before configuring a full register map.</p>
+
+    <h3>Exception Code Reference</h3>
+    <p>A built-in reference table listing all nine standard Modbus exception codes with their meaning, common causes, and recommended fixes:</p>
+    <table class="data-table">
+        <thead><tr><th>Code</th><th>Name</th><th>Common Cause</th></tr></thead>
+        <tbody>
+            <tr><td><code>01</code></td><td>Illegal Function</td><td>The function code is not supported by this device</td></tr>
+            <tr><td><code>02</code></td><td>Illegal Data Address</td><td>The register address does not exist on this device</td></tr>
+            <tr><td><code>03</code></td><td>Illegal Data Value</td><td>The value in the write request is outside the permitted range</td></tr>
+            <tr><td><code>04</code></td><td>Slave Device Failure</td><td>An internal error occurred in the slave device</td></tr>
+            <tr><td><code>05</code></td><td>Acknowledge</td><td>The device accepted the request but needs time to process it</td></tr>
+            <tr><td><code>06</code></td><td>Slave Device Busy</td><td>The device is processing another command; retry later</td></tr>
+            <tr><td><code>07</code></td><td>Negative Acknowledge</td><td>The device cannot perform the requested programming function</td></tr>
+            <tr><td><code>08</code></td><td>Memory Parity Error</td><td>The device detected a parity error in its extended memory</td></tr>
+            <tr><td><code>0A</code></td><td>Gateway Path Unavailable</td><td>The gateway could not find a route to the target device</td></tr>
+            <tr><td><code>0B</code></td><td>Gateway Target Failed to Respond</td><td>The device behind the gateway did not respond</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Function Code Reference</h3>
+    <p>A reference table listing all supported Modbus function codes with their purpose, data direction, and typical usage. See <a href="#function-codes">Section 12</a> for the full reference.</p>
+
+
+    <!-- ============================================================ -->
+    <!-- 11. SETTINGS -->
+    <!-- ============================================================ -->
+    <h2 id="settings">11. Settings</h2>
+
+    <h3>License Management</h3>
+    <p>The Settings page is where you manage your ModBus Pro license:</p>
+    <ul>
+        <li><strong>Activate:</strong> Enter your license key and click Activate. The application verifies the key online and unlocks all features permanently.</li>
+        <li><strong>Deactivate:</strong> If you need to move your license to another computer, deactivate it first. This frees the license for re-activation elsewhere.</li>
+        <li><strong>Transfer:</strong> Deactivate on the old machine, then activate on the new machine using the same key. Each key supports one active machine at a time.</li>
+    </ul>
+    <p>License status (active, trial, expired) is shown clearly on the settings page.</p>
+
+    <h3>Application Preferences</h3>
+    <p>Configure application-level settings such as default connection parameters, UI preferences, and logging options. Changes take effect immediately.</p>
+
+
+    <!-- ============================================================ -->
+    <!-- 12. FUNCTION CODE REFERENCE -->
+    <!-- ============================================================ -->
+    <h2 id="function-codes">12. Function Code Reference</h2>
+
+    <p>ModBus Pro supports the following standard Modbus function codes:</p>
+
+    <table class="data-table">
+        <thead><tr><th>FC</th><th>Name</th><th>Direction</th><th>Description</th></tr></thead>
+        <tbody>
+            <tr><td><code>01</code></td><td>Read Coils</td><td>Read</td><td>Read the ON/OFF status of 1 to 2000 coils. Returns packed bits (8 coils per byte, LSB first).</td></tr>
+            <tr><td><code>02</code></td><td>Read Discrete Inputs</td><td>Read</td><td>Read the ON/OFF status of 1 to 2000 discrete inputs. Same response format as FC01.</td></tr>
+            <tr><td><code>03</code></td><td>Read Holding Registers</td><td>Read</td><td>Read 1 to 125 consecutive 16-bit holding registers. The most commonly used function code for reading configuration and measurement data.</td></tr>
+            <tr><td><code>04</code></td><td>Read Input Registers</td><td>Read</td><td>Read 1 to 125 consecutive 16-bit input registers. Typically used for read-only process values like sensor measurements.</td></tr>
+            <tr><td><code>05</code></td><td>Write Single Coil</td><td>Write</td><td>Write a single coil to ON (<code>0xFF00</code>) or OFF (<code>0x0000</code>). The response echoes the request.</td></tr>
+            <tr><td><code>06</code></td><td>Write Single Register</td><td>Write</td><td>Write a single 16-bit value to a holding register. The response echoes the request.</td></tr>
+            <tr><td><code>15</code></td><td>Write Multiple Coils</td><td>Write</td><td>Write 1 to 1968 coils in a single request. Values are packed as bits, same as FC01 response format.</td></tr>
+            <tr><td><code>16</code></td><td>Write Multiple Registers</td><td>Write</td><td>Write 1 to 123 consecutive holding registers in a single request. Required for writing multi-register values like Float32.</td></tr>
+            <tr><td><code>22</code></td><td>Mask Write Register</td><td>Write</td><td>Modify individual bits in a holding register using AND and OR masks without overwriting unrelated bits.</td></tr>
+            <tr><td><code>23</code></td><td>Read/Write Multiple</td><td>Read+Write</td><td>Read and write registers in a single transaction. The write operation executes before the read.</td></tr>
+        </tbody>
+    </table>
+
+    <div class="info-box info">
+        <div class="box-title">Note</div>
+        <p>Not all devices support all function codes. If a device does not support a particular function code, it will return Exception Code 01 (Illegal Function). Check the device documentation for supported function codes.</p>
+    </div>
+
+
+    <!-- ============================================================ -->
+    <!-- 13. TROUBLESHOOTING -->
+    <!-- ============================================================ -->
+    <h2 id="troubleshooting">13. Troubleshooting</h2>
+
+    <h3>Common Connection Errors and Fixes</h3>
+
+    <h4>Timeout / No Response</h4>
+    <p>You send a request but never receive a response. Possible causes:</p>
+    <ul>
+        <li><strong>Wrong IP address or COM port.</strong> Double-check the connection parameters.</li>
+        <li><strong>Wrong Unit ID.</strong> The slave only responds to its configured address. Try Unit ID 1 if unsure.</li>
+        <li><strong>Firewall blocking port 502.</strong> Add a firewall rule to allow TCP traffic on the configured port.</li>
+        <li><strong>RTU parameter mismatch.</strong> Baud rate, parity, data bits, or stop bits do not match between master and slave.</li>
+        <li><strong>Wiring issue.</strong> For RS485, check A/B polarity, termination resistors, and cable continuity.</li>
+        <li><strong>Device is offline.</strong> Verify the device has power and is operational.</li>
+    </ul>
+    <p>Increase the timeout value to rule out slow responses. If increasing timeout does not help, the issue is likely connectivity, not timing.</p>
+
+    <h4>Connection Refused (TCP)</h4>
+    <p>The TCP connection is actively rejected by the target. This means the IP address is reachable but nothing is listening on the specified port. Check that the Modbus TCP service is enabled on the device and that you are using the correct port number.</p>
+
+    <h4>CRC Errors (RTU)</h4>
+    <p>CRC errors indicate data corruption on the serial line. Common causes include electrical noise (especially near VFDs or motors), incorrect wiring, missing termination resistors, or ground loops. Check your RS485 wiring and shielding.</p>
+
+    <h3>"SerialPort is not defined"</h3>
+    <p>This error means the serial port library is not available. This typically happens if:</p>
+    <ul>
+        <li>The native serial port module was not included in the build.</li>
+        <li>Your USB-to-RS485 adapter driver is not installed or not functioning.</li>
+    </ul>
+    <p>Ensure your adapter is plugged in and its drivers are installed. Restart the application after connecting the adapter.</p>
+
+    <h3>Exception Codes</h3>
+    <p>When a slave device rejects a request, it returns an exception response instead of the requested data. The exception code tells you why. See the <a href="#tools">Engineering Tools</a> section for a complete reference of all exception codes, their causes, and solutions.</p>
+
+    <h3>Reading Wrong Values</h3>
+    <p>If you are getting values that look like garbage or are clearly wrong:</p>
+    <ul>
+        <li><strong>Wrong byte order:</strong> This is the most common cause for Float32/Int32 values. Try all four byte orders (ABCD, DCBA, BADC, CDAB).</li>
+        <li><strong>Wrong data type:</strong> Make sure you are interpreting the register with the correct type (unsigned vs signed, 16-bit vs 32-bit).</li>
+        <li><strong>Wrong register address:</strong> Confirm whether your device uses 0-based or 1-based addressing. A register listed as 40001 in documentation is address 0 in ModBus Pro.</li>
+        <li><strong>Missing scale factor:</strong> Some devices store values as scaled integers. Check if a scale factor or divisor needs to be applied.</li>
+    </ul>
+
+    <h3>Performance Tips</h3>
+    <ul>
+        <li>When polling many registers, group consecutive addresses into a single read request with a larger quantity rather than making many individual requests. This reduces bus overhead significantly.</li>
+        <li>Do not set polling intervals below 100 ms unless you have a specific need and know your bus can handle it. Aggressive polling can overwhelm slow devices.</li>
+        <li>For RTU networks with many slaves, increase the timeout to account for the sequential nature of RS485 communication. Only one device can talk at a time.</li>
+        <li>Close the Communication Monitor when not needed during high-frequency polling to reduce UI rendering overhead.</li>
+    </ul>
+
+
+    <!-- ============================================================ -->
+    <!-- 14. KEYBOARD SHORTCUTS -->
+    <!-- ============================================================ -->
+    <h2 id="keyboard-shortcuts">14. Keyboard Shortcuts</h2>
+
+    <table class="shortcut-table">
+        <tr>
+            <td><span class="kbd">Ctrl</span> + <span class="kbd">Enter</span></td>
+            <td>Run the current script in the Scripting Engine</td>
+        </tr>
+        <tr>
+            <td><span class="kbd">Ctrl</span> + <span class="kbd">S</span></td>
+            <td>Save the current script</td>
+        </tr>
+        <tr>
+            <td><span class="kbd">Escape</span></td>
+            <td>Stop a running script</td>
+        </tr>
+        <tr>
+            <td><span class="kbd">Ctrl</span> + <span class="kbd">D</span></td>
+            <td>Disconnect from the current Modbus connection</td>
+        </tr>
+    </table>
+
+
+    <!-- ============================================================ -->
+    <!-- CTA -->
+    <!-- ============================================================ -->
+    <div class="app-promo" style="margin-top:3rem;">
+        <div class="app-promo-badge">Get Started</div>
+        <h4>Download ModBus Pro and start diagnosing</h4>
+        <p>7-day free trial with full access to every feature. No sign-up required. Works on Windows 10 and 11.</p>
+        <a href="index.html#download" class="app-promo-cta">Download Free Trial</a>
+    </div>
+
+</main>
+</div>
+
+<!-- FOOTER -->
+<footer style="border-top: 1px solid rgba(255,255,255,0.06); padding: 4rem 0 2rem; margin-top: 6rem;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #00e5a0, #00c488); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <svg width="18" height="18" fill="none" stroke="#0a0e17" stroke-width="2.5" stroke-linecap="round"><path d="M3 9h12M9 3v12"/></svg>
+                    </div>
+                    <span style="font-weight: 700; font-size: 1.1rem;">ModBus Pro</span>
+                </div>
+                <p style="color: var(--text-muted, #8a94a6); font-size: 0.9rem; line-height: 1.6; max-width: 280px;">The modern Modbus diagnostic tool. Built for engineers who need reliability.</p>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Product</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="index.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Features</a></li>
+                    <li><a href="pricing.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Pricing</a></li>
+                    <li><a href="number-converter.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Number Converter</a></li>
+                    <li><a href="modbus-frame-parser.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Frame Parser</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Resources</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="guides.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Troubleshooting</a></li>
+                    <li><a href="read-modbus-data.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Guides</a></li>
+                    <li><a href="user-manual.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">User Manual</a></li>
+                    <li><a href="mailto:support@modbus.app" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Support</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Legal</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="#" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Privacy</a></li>
+                    <li><a href="terms.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <p style="color: var(--text-muted, #8a94a6); font-size: 0.8rem;">&copy; 2026 modbus.app &mdash; Built by engineers who debug Modbus for a living.</p>
+            <p style="color: #5a6478; font-size: 0.65rem; margin-top: 0.5rem;">Modbus&reg; is a registered trademark of Schneider Electric. ModBus Pro is not affiliated with or endorsed by Schneider Electric or the Modbus Organization.</p>
+            <div style="display: flex; gap: 1.5rem;">
+                <a href="mailto:support@modbus.app" style="color: var(--text-muted, #8a94a6); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;">support@modbus.app</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- TOC SCROLL HIGHLIGHT -->
+<script>
+(function() {
+    const tocLinks = document.querySelectorAll('.toc-sidebar a');
+    const sections = [];
+    tocLinks.forEach(function(link) {
+        const id = link.getAttribute('href').replace('#', '');
+        const el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el, link: link });
+    });
+
+    function updateActive() {
+        let current = sections[0];
+        for (let i = 0; i < sections.length; i++) {
+            if (sections[i].el.getBoundingClientRect().top <= 120) {
+                current = sections[i];
+            }
+        }
+        tocLinks.forEach(function(l) { l.classList.remove('toc-active'); });
+        if (current) current.link.classList.add('toc-active');
+    }
+
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+})();
+</script>
+
+</body>
+</html>

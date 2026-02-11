@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modbus Number Converter — Decimal, Hex, Binary, Float32 | modbus.app</title>
+    <meta name="description" content="Free online Modbus number converter. Convert decimal to hex, hex to decimal, decode Float32 IEEE 754 in all 4 byte orders (ABCD, CDAB, BADC, DCBA), UINT32/INT32, and calculate Modbus CRC-16.">
+    <meta name="keywords" content="modbus number converter, modbus hex to decimal, modbus float32 converter, modbus byte order converter, modbus CRC calculator, IEEE 754 converter, modbus register decoder">
+    <link rel="canonical" href="https://modbus.app/number-converter.html" />
+    <meta property="og:title" content="Modbus Number Converter — Decimal, Hex, Binary, Float32">
+    <meta property="og:description" content="Free online Modbus number converter. Decode Float32 in all 4 byte orders, convert hex/decimal/binary, calculate CRC-16.">
+    <meta property="og:url" content="https://modbus.app/number-converter.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="modbus.app">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.08);
+    --purple-border: rgba(167,139,250,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: center;
+}
+.nav-inner {
+    max-width: 1100px; width: 100%; display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-links a.active { color: var(--green); }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+.nav-dropdown { position:relative; }
+.nav-dropdown > a { cursor:pointer; }
+.nav-dropdown > a::after { content:" \25BE"; font-size:0.7em; }
+.nav-dropdown-menu { display:none; position:absolute; top:100%; left:50%; transform:translateX(-50%); background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:0.5rem 0; min-width:200px; box-shadow:0 8px 30px rgba(0,0,0,0.3); margin-top:0.5rem; z-index:200; }
+.nav-dropdown:hover .nav-dropdown-menu { display:block; }
+.nav-dropdown-menu a { display:block; padding:0.5rem 1rem; color:var(--text-dim); text-decoration:none; font-size:0.85rem; font-weight:500; transition:all 0.2s; white-space:nowrap; }
+.nav-dropdown-menu a:hover { color:var(--green); background:rgba(0,229,160,0.05); }
+
+/* HERO */
+.guide-hero {
+    padding: 8rem 2rem 3rem;
+    max-width: 960px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.guide-hero .breadcrumb {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.guide-hero .breadcrumb a { color: var(--green); text-decoration: none; }
+.guide-hero .breadcrumb a:hover { text-decoration: underline; }
+.guide-hero h1 {
+    font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.guide-hero .subtitle {
+    font-size: 1.1rem; color: var(--text-dim); max-width: 640px;
+    line-height: 1.6;
+}
+
+/* MAIN CONVERTER LAYOUT */
+.converter-main {
+    max-width: 960px; margin: 0 auto;
+    padding: 2rem 2rem 4rem;
+}
+
+/* INPUT SECTION */
+.input-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.input-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.input-col {
+    flex: 1;
+}
+
+.input-col.type-select {
+    flex: 0 0 220px;
+}
+
+.field-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.type-dropdown {
+    width: 100%;
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%2364748b' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    padding-right: 2.2rem;
+}
+
+.type-dropdown:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(0,229,160,0.1);
+}
+
+.type-dropdown option {
+    background: var(--bg-card);
+    color: var(--text);
+    padding: 8px;
+}
+
+.value-input {
+    width: 100%;
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.value-input:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(0,229,160,0.1);
+}
+
+.value-input::placeholder {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Two-register input row */
+.dual-input-row {
+    display: none;
+    gap: 1rem;
+}
+
+.dual-input-row.visible {
+    display: flex;
+}
+
+.dual-input-col {
+    flex: 1;
+}
+
+.input-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.4rem;
+    font-family: var(--font-mono);
+}
+
+/* RESULTS GRID */
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.result-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: border-color 0.2s;
+}
+
+.result-card:hover {
+    border-color: rgba(255,255,255,0.1);
+}
+
+.result-card.full-width {
+    grid-column: 1 / -1;
+}
+
+.result-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+}
+
+.card-icon.dec { background: var(--blue-dim); color: var(--blue); border: 1px solid var(--blue-border); }
+.card-icon.hex { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
+.card-icon.bin { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--purple-border); }
+.card-icon.f32 { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber-border); }
+.card-icon.i32 { background: var(--blue-dim); color: var(--blue); border: 1px solid var(--blue-border); }
+.card-icon.reg { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
+.card-icon.crc { background: var(--red-dim); color: var(--red); border: 1px solid var(--red-border); }
+
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+}
+
+.result-table td {
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.result-table td:first-child {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    width: 45%;
+}
+
+.result-table td:last-child {
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    word-break: break-all;
+}
+
+.result-table tr:last-child td {
+    border-bottom: none;
+}
+
+.result-value { color: var(--green) !important; }
+.result-na { color: var(--text-muted) !important; font-style: italic; }
+
+/* CRC Section */
+.crc-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+
+.crc-section h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text);
+}
+
+.crc-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+}
+
+.crc-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.crc-input-group {
+    margin-bottom: 1rem;
+}
+
+.crc-input {
+    width: 100%;
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.crc-input:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(0,229,160,0.1);
+}
+
+.crc-input::placeholder {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.crc-result {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    color: var(--green);
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.crc-result .crc-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.crc-appended {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    text-align: center;
+    word-break: break-all;
+}
+
+.crc-appended span { color: var(--green); }
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h4 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; }
+.app-promo .app-promo-badge {
+    display: inline-block; background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.8rem; border-radius: 4px; font-size: 0.8rem;
+    font-weight: 600; margin-bottom: 0.75rem; border: 1px solid var(--green-border);
+}
+.app-promo .app-promo-cta {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .app-promo-cta:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+
+/* RELATED GUIDES */
+.related-guides {
+    margin-top: 3rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+.related-guides h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: var(--text); }
+.guides-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem; margin-top: 1rem;
+}
+.guide-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    text-decoration: none; transition: all 0.2s; display: block;
+}
+.guide-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.guide-card .card-title {
+    color: var(--text); font-weight: 600; font-size: 0.92rem;
+    margin-bottom: 0.4rem;
+}
+.guide-card .card-desc {
+    color: var(--text-muted); font-size: 0.82rem; line-height: 1.5;
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.site-footer a { color: var(--green); text-decoration: none; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .guide-hero { padding: 6rem 1rem 2rem; }
+    .converter-main { padding: 1.5rem 1rem 3rem; }
+    .input-row { flex-direction: column; }
+    .input-col.type-select { flex: 1; }
+    .results-grid { grid-template-columns: 1fr; }
+    .dual-input-row { flex-direction: column; }
+}
+
+</style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Modbus Number Converter",
+        "url": "https://modbus.app/number-converter.html",
+        "description": "Free online Modbus number converter. Decimal, Hex, Binary, Float32 IEEE 754 decoder with all 4 byte orders, UINT32/INT32 decoder, and Modbus CRC-16 calculator.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Organization",
+            "name": "modbus.app",
+            "url": "https://modbus.app"
+        }
+    }
+    </script>
+</head>
+<body>
+<nav class="site-nav"><div class="nav-inner">
+    <a href="index.html" class="nav-logo">modbus<span class="dot">.</span>app</a>
+    <ul class="nav-links"><li><a href="index.html">Product</a></li><li class="nav-dropdown"><a href="#" class="active">Tools</a><div class="nav-dropdown-menu"><a href="number-converter.html">Number Converter</a><a href="modbus-frame-parser.html">Frame Parser</a><a href="modbus-address-calculator.html">Address Calculator</a><a href="modbus-baud-rate-calculator.html">Baud Rate Calculator</a></div></li><li><a href="read-modbus-data.html">Guides</a></li><li><a href="guides.html">Troubleshooting</a></li><li><a href="pricing.html">Pricing</a></li></ul>
+    <a href="index.html#download" class="nav-cta">Download Free</a>
+</div></nav>
+
+<div class="guide-hero">
+    <div class="breadcrumb"><a href="index.html">Home</a> / Number Converter</div>
+    <h1>Modbus Number Converter</h1>
+    <p class="subtitle">Select your input data type, enter a value, and instantly see every conversion. Float32, UINT32, INT32 decoded in all 4 Modbus byte orders. Everything runs locally in your browser.</p>
+</div>
+
+<div class="converter-main">
+
+    <!-- ===== INPUT SECTION ===== -->
+    <div class="input-section">
+        <div class="input-row" id="singleInputRow">
+            <div class="input-col type-select">
+                <label class="field-label">Convert From</label>
+                <select class="type-dropdown" id="inputType">
+                    <option value="decimal">Decimal (Integer)</option>
+                    <option value="hex">Hexadecimal</option>
+                    <option value="binary">Binary</option>
+                    <option value="float32">Float32 (IEEE 754)</option>
+                    <option value="registers">Two Modbus Registers (Hex)</option>
+                </select>
+            </div>
+            <div class="input-col" id="singleInputCol">
+                <label class="field-label" id="inputLabel">Decimal Value</label>
+                <input type="text" class="value-input" id="mainInput" placeholder="e.g. 1000" autocomplete="off" spellcheck="false">
+                <div class="input-hint" id="inputHint"></div>
+            </div>
+        </div>
+        <div class="dual-input-row" id="dualInputRow">
+            <div class="dual-input-col">
+                <label class="field-label">Register 1 (High Word, Hex)</label>
+                <input type="text" class="value-input" id="regHiInput" placeholder="e.g. 436C" maxlength="4" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="dual-input-col">
+                <label class="field-label">Register 2 (Low Word, Hex)</label>
+                <input type="text" class="value-input" id="regLoInput" placeholder="e.g. C28F" maxlength="4" autocomplete="off" spellcheck="false">
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RESULTS ===== -->
+    <div class="results-grid" id="resultsGrid">
+
+        <!-- 16-bit Results -->
+        <div class="result-card" id="card16bit">
+            <h3><span class="card-icon dec">16</span> 16-Bit Representations</h3>
+            <table class="result-table">
+                <tr><td>Decimal (Unsigned)</td><td id="r_u16" class="result-na">&mdash;</td></tr>
+                <tr><td>Decimal (Signed)</td><td id="r_s16" class="result-na">&mdash;</td></tr>
+                <tr><td>Hexadecimal</td><td id="r_hex16" class="result-na">&mdash;</td></tr>
+                <tr><td>Binary</td><td id="r_bin16" class="result-na">&mdash;</td></tr>
+                <tr><td>Octal</td><td id="r_oct16" class="result-na">&mdash;</td></tr>
+            </table>
+        </div>
+
+        <!-- Register Hex -->
+        <div class="result-card" id="cardRegHex">
+            <h3><span class="card-icon reg">Rx</span> Modbus Register</h3>
+            <table class="result-table">
+                <tr><td>Register Hex</td><td id="r_regHex" class="result-na">&mdash;</td></tr>
+                <tr><td>High Byte</td><td id="r_hiByte" class="result-na">&mdash;</td></tr>
+                <tr><td>Low Byte</td><td id="r_loByte" class="result-na">&mdash;</td></tr>
+                <tr><td>Byte Swap</td><td id="r_byteSwap" class="result-na">&mdash;</td></tr>
+                <tr><td>Word Swap (16-bit)</td><td id="r_wordSwap16" class="result-na">&mdash;</td></tr>
+            </table>
+        </div>
+
+        <!-- Float32 -->
+        <div class="result-card" id="cardFloat32">
+            <h3><span class="card-icon f32">F32</span> Float32 (IEEE 754)</h3>
+            <table class="result-table">
+                <tr><td>Big Endian (ABCD)</td><td id="r_f32_abcd" class="result-na">&mdash;</td></tr>
+                <tr><td>Little Endian (DCBA)</td><td id="r_f32_dcba" class="result-na">&mdash;</td></tr>
+                <tr><td>Byte Swap BE (BADC)</td><td id="r_f32_badc" class="result-na">&mdash;</td></tr>
+                <tr><td>Byte Swap LE (CDAB)</td><td id="r_f32_cdab" class="result-na">&mdash;</td></tr>
+            </table>
+        </div>
+
+        <!-- UINT32 / INT32 -->
+        <div class="result-card" id="cardInt32">
+            <h3><span class="card-icon i32">32</span> UINT32 / INT32</h3>
+            <table class="result-table">
+                <tr><td>ABCD &mdash; UINT32</td><td id="r_u32_abcd" class="result-na">&mdash;</td></tr>
+                <tr><td>ABCD &mdash; INT32</td><td id="r_i32_abcd" class="result-na">&mdash;</td></tr>
+                <tr><td>DCBA &mdash; UINT32</td><td id="r_u32_dcba" class="result-na">&mdash;</td></tr>
+                <tr><td>DCBA &mdash; INT32</td><td id="r_i32_dcba" class="result-na">&mdash;</td></tr>
+                <tr><td>BADC &mdash; UINT32</td><td id="r_u32_badc" class="result-na">&mdash;</td></tr>
+                <tr><td>BADC &mdash; INT32</td><td id="r_i32_badc" class="result-na">&mdash;</td></tr>
+                <tr><td>CDAB &mdash; UINT32</td><td id="r_u32_cdab" class="result-na">&mdash;</td></tr>
+                <tr><td>CDAB &mdash; INT32</td><td id="r_i32_cdab" class="result-na">&mdash;</td></tr>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- ===== CRC-16 SECTION ===== -->
+    <div class="crc-section">
+        <h2 id="crc16">Modbus CRC-16 Calculator</h2>
+        <p style="color: var(--text-dim); margin-bottom: 1rem; font-size: 0.95rem;">Paste a Modbus RTU frame (hex bytes separated by spaces) and get the CRC-16 checksum using the standard Modbus polynomial (0xA001).</p>
+        <div class="crc-card">
+            <h3><span class="card-icon crc">CRC</span> CRC-16 / Modbus RTU</h3>
+            <div class="crc-input-group">
+                <label class="field-label">Hex Bytes (space-separated)</label>
+                <input type="text" class="crc-input" id="crcInput" placeholder="e.g. 01 03 00 00 00 0A" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="crc-result">
+                <span class="crc-label">CRC-16 Result</span>
+                <span id="crcResult">&mdash;</span>
+            </div>
+            <div class="crc-appended" id="crcAppended"></div>
+        </div>
+    </div>
+
+    <!-- ===== APP PROMO ===== -->
+    <div class="app-promo">
+        <div class="app-promo-badge">Built-in Converter</div>
+        <h4>ModBus Pro includes this converter plus live byte-order comparison for every register</h4>
+        <p>See all 4 interpretations (ABCD, CDAB, BADC, DCBA) side by side while reading live data from your device. No more copying hex values into a web tool.</p>
+        <a href="index.html#download" class="app-promo-cta">Download Free Trial</a>
+    </div>
+
+    <!-- ===== RELATED GUIDES ===== -->
+    <div class="related-guides">
+        <h2>Related Guides</h2>
+        <div class="guides-grid">
+            <a href="modbus-wrong-values-byte-order.html" class="guide-card">
+                <div class="card-title">Wrong Values &amp; Byte Order</div>
+                <div class="card-desc">ABCD, CDAB, BADC, DCBA &mdash; why the same 4 bytes produce 4 different floats.</div>
+            </a>
+            <a href="modbus-crc-error.html" class="guide-card">
+                <div class="card-title">CRC Errors on RS485</div>
+                <div class="card-desc">Diagnose and fix CRC checksum failures caused by wiring and electrical noise.</div>
+            </a>
+            <a href="modbus-register-offset.html" class="guide-card">
+                <div class="card-title">Register Address Offset</div>
+                <div class="card-desc">Why register 40001 is address 0 on the wire. The 0-based vs 1-based trap.</div>
+            </a>
+            <a href="rtu-vs-tcp.html" class="guide-card">
+                <div class="card-title">Modbus RTU vs TCP</div>
+                <div class="card-desc">Key differences between serial RTU and TCP/IP Modbus framing.</div>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<footer style="border-top: 1px solid rgba(255,255,255,0.06); padding: 4rem 0 2rem; margin-top: 6rem;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #00e5a0, #00c488); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <svg width="18" height="18" fill="none" stroke="#0a0e17" stroke-width="2.5" stroke-linecap="round"><path d="M3 9h12M9 3v12"/></svg>
+                    </div>
+                    <span style="font-weight: 700; font-size: 1.1rem;">ModBus Pro</span>
+                </div>
+                <p style="color: var(--text-muted, #8a94a6); font-size: 0.9rem; line-height: 1.6; max-width: 280px;">The modern Modbus diagnostic tool. Built for engineers who need reliability.</p>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Product</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="index.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Features</a></li>
+                    <li><a href="pricing.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Pricing</a></li>
+                    <li><a href="number-converter.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Number Converter</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Resources</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="guides.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Guides</a></li>
+                    <li><a href="mailto:support@modbus.app" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Support</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Legal</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="#" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Privacy</a></li>
+                    <li><a href="terms.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <p style="color: var(--text-muted, #8a94a6); font-size: 0.8rem;">&copy; 2026 modbus.app &mdash; Built by engineers who debug Modbus for a living.</p>
+            <p style="color: #5a6478; font-size: 0.65rem; margin-top: 0.5rem;">Modbus&reg; is a registered trademark of Schneider Electric. ModBus Pro is not affiliated with or endorsed by Schneider Electric or the Modbus Organization.</p>
+            <div style="display: flex; gap: 1.5rem;">
+                <a href="mailto:support@modbus.app" style="color: var(--text-muted, #8a94a6); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;">support@modbus.app</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+(function() {
+    'use strict';
+
+    // ============================================
+    // ELEMENTS
+    // ============================================
+    var inputType = document.getElementById('inputType');
+    var mainInput = document.getElementById('mainInput');
+    var inputLabel = document.getElementById('inputLabel');
+    var inputHint = document.getElementById('inputHint');
+    var singleInputCol = document.getElementById('singleInputCol');
+    var dualInputRow = document.getElementById('dualInputRow');
+    var regHiInput = document.getElementById('regHiInput');
+    var regLoInput = document.getElementById('regLoInput');
+
+    // ============================================
+    // INPUT TYPE CONFIG
+    // ============================================
+    var typeConfig = {
+        decimal: {
+            label: 'Decimal Value',
+            placeholder: 'e.g. 1000 or -32768 or 100000',
+            hint: 'Supports 16-bit and 32-bit ranges. Values > 65535 show 32-bit results.',
+            dual: false
+        },
+        hex: {
+            label: 'Hexadecimal Value',
+            placeholder: 'e.g. 03E8 or ABCD1234',
+            hint: 'Up to 8 hex digits. Prefix 0x is optional.',
+            dual: false
+        },
+        binary: {
+            label: 'Binary Value',
+            placeholder: 'e.g. 0000001111101000',
+            hint: 'Up to 32 bits. Spaces between nibbles are allowed.',
+            dual: false
+        },
+        float32: {
+            label: 'Float32 Value',
+            placeholder: 'e.g. 236.07 or -3.14 or 1.5e6',
+            hint: 'IEEE 754 single-precision. Shows the hex registers that encode this float.',
+            dual: false
+        },
+        registers: {
+            label: '',
+            placeholder: '',
+            hint: '',
+            dual: true
+        }
+    };
+
+    // ============================================
+    // UTILITY FUNCTIONS
+    // ============================================
+
+    function toSigned16(val) {
+        val = val & 0xFFFF;
+        return val > 0x7FFF ? val - 0x10000 : val;
+    }
+
+    function toHex2(val) {
+        val = val & 0xFF;
+        var s = val.toString(16).toUpperCase();
+        return s.length < 2 ? '0' + s : s;
+    }
+
+    function toHex4(val) {
+        val = val & 0xFFFF;
+        var s = val.toString(16).toUpperCase();
+        while (s.length < 4) s = '0' + s;
+        return s;
+    }
+
+    function toHex8(val) {
+        // val is a 32-bit unsigned number
+        var s = (val >>> 0).toString(16).toUpperCase();
+        while (s.length < 8) s = '0' + s;
+        return s;
+    }
+
+    function toBin16(val) {
+        val = val & 0xFFFF;
+        var s = val.toString(2);
+        while (s.length < 16) s = '0' + s;
+        return s.slice(0,4) + ' ' + s.slice(4,8) + ' ' + s.slice(8,12) + ' ' + s.slice(12,16);
+    }
+
+    function setResult(id, text, isValue) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = text;
+        el.className = isValue ? 'result-value' : 'result-na';
+    }
+
+    function clearAll() {
+        var ids = [
+            'r_u16','r_s16','r_hex16','r_bin16','r_oct16',
+            'r_regHex','r_hiByte','r_loByte','r_byteSwap','r_wordSwap16',
+            'r_f32_abcd','r_f32_dcba','r_f32_badc','r_f32_cdab',
+            'r_u32_abcd','r_i32_abcd','r_u32_dcba','r_i32_dcba',
+            'r_u32_badc','r_i32_badc','r_u32_cdab','r_i32_cdab'
+        ];
+        for (var i = 0; i < ids.length; i++) setResult(ids[i], '\u2014', false);
+    }
+
+    function bytesToFloat32(b0, b1, b2, b3) {
+        var buf = new ArrayBuffer(4);
+        var dv = new DataView(buf);
+        dv.setUint8(0, b0); dv.setUint8(1, b1); dv.setUint8(2, b2); dv.setUint8(3, b3);
+        return dv.getFloat32(0, false);
+    }
+
+    function float32ToBytes(f) {
+        var buf = new ArrayBuffer(4);
+        var dv = new DataView(buf);
+        dv.setFloat32(0, f, false); // big-endian
+        return [dv.getUint8(0), dv.getUint8(1), dv.getUint8(2), dv.getUint8(3)];
+    }
+
+    function bytesToUint32(b0, b1, b2, b3) {
+        var buf = new ArrayBuffer(4);
+        var dv = new DataView(buf);
+        dv.setUint8(0, b0); dv.setUint8(1, b1); dv.setUint8(2, b2); dv.setUint8(3, b3);
+        return dv.getUint32(0, false);
+    }
+
+    function bytesToInt32(b0, b1, b2, b3) {
+        var buf = new ArrayBuffer(4);
+        var dv = new DataView(buf);
+        dv.setUint8(0, b0); dv.setUint8(1, b1); dv.setUint8(2, b2); dv.setUint8(3, b3);
+        return dv.getInt32(0, false);
+    }
+
+    function formatFloat(f) {
+        if (isNaN(f)) return 'NaN';
+        if (!isFinite(f)) return f > 0 ? '+Infinity' : '-Infinity';
+        var abs = Math.abs(f);
+        if (abs === 0) return '0';
+        if (abs >= 1e8 || abs < 1e-4) return f.toExponential(6);
+        return parseFloat(f.toPrecision(8)).toString();
+    }
+
+    // ============================================
+    // POPULATE RESULTS FROM 4 BYTES (A, B, C, D)
+    // ============================================
+
+    function populate16bit(u16) {
+        setResult('r_u16', u16.toString(), true);
+        setResult('r_s16', toSigned16(u16).toString(), true);
+        setResult('r_hex16', '0x' + toHex4(u16), true);
+        setResult('r_bin16', toBin16(u16), true);
+        setResult('r_oct16', (u16).toString(8), true);
+
+        var hi = (u16 >>> 8) & 0xFF;
+        var lo = u16 & 0xFF;
+        setResult('r_regHex', '0x' + toHex4(u16), true);
+        setResult('r_hiByte', '0x' + toHex2(hi) + ' (' + hi + ')', true);
+        setResult('r_loByte', '0x' + toHex2(lo) + ' (' + lo + ')', true);
+        setResult('r_byteSwap', '0x' + toHex2(lo) + toHex2(hi) + ' (' + ((lo << 8) | hi) + ')', true);
+        setResult('r_wordSwap16', 'N/A (single register)', false);
+    }
+
+    function populate32bit(A, B, C, D) {
+        // Float32 all byte orders
+        setResult('r_f32_abcd', formatFloat(bytesToFloat32(A, B, C, D)), true);
+        setResult('r_f32_dcba', formatFloat(bytesToFloat32(D, C, B, A)), true);
+        setResult('r_f32_badc', formatFloat(bytesToFloat32(B, A, D, C)), true);
+        setResult('r_f32_cdab', formatFloat(bytesToFloat32(C, D, A, B)), true);
+
+        // UINT32 / INT32 all byte orders
+        setResult('r_u32_abcd', bytesToUint32(A, B, C, D).toString(), true);
+        setResult('r_i32_abcd', bytesToInt32(A, B, C, D).toString(), true);
+        setResult('r_u32_dcba', bytesToUint32(D, C, B, A).toString(), true);
+        setResult('r_i32_dcba', bytesToInt32(D, C, B, A).toString(), true);
+        setResult('r_u32_badc', bytesToUint32(B, A, D, C).toString(), true);
+        setResult('r_i32_badc', bytesToInt32(B, A, D, C).toString(), true);
+        setResult('r_u32_cdab', bytesToUint32(C, D, A, B).toString(), true);
+        setResult('r_i32_cdab', bytesToInt32(C, D, A, B).toString(), true);
+    }
+
+    function clear32bit() {
+        var ids32 = ['r_f32_abcd','r_f32_dcba','r_f32_badc','r_f32_cdab',
+                     'r_u32_abcd','r_i32_abcd','r_u32_dcba','r_i32_dcba',
+                     'r_u32_badc','r_i32_badc','r_u32_cdab','r_i32_cdab'];
+        for (var i = 0; i < ids32.length; i++) setResult(ids32[i], '\u2014', false);
+    }
+
+    // ============================================
+    // CONVERSION FROM EACH INPUT TYPE
+    // ============================================
+
+    function convertDecimal(raw) {
+        raw = raw.trim();
+        if (raw === '') { clearAll(); return; }
+        if (!/^-?\d+$/.test(raw)) { clearAll(); return; }
+        var val = parseInt(raw, 10);
+
+        // 16-bit display
+        var u16 = (val & 0xFFFF) >>> 0;
+        populate16bit(u16);
+
+        // 32-bit: if value fits in 32 bits
+        if (val >= -2147483648 && val <= 4294967295) {
+            var u32 = (val >>> 0);
+            if (val < 0) {
+                // convert signed to unsigned 32-bit
+                var buf = new ArrayBuffer(4);
+                var dv = new DataView(buf);
+                dv.setInt32(0, val, false);
+                u32 = dv.getUint32(0, false);
+            }
+            var A = (u32 >>> 24) & 0xFF;
+            var B = (u32 >>> 16) & 0xFF;
+            var C = (u32 >>> 8) & 0xFF;
+            var D = u32 & 0xFF;
+            populate32bit(A, B, C, D);
+
+            // Word swap for register view
+            var regHi = (A << 8) | B;
+            var regLo = (C << 8) | D;
+            setResult('r_wordSwap16', '0x' + toHex4(regLo) + toHex4(regHi) + ' (swapped)', true);
+        } else {
+            clear32bit();
+        }
+    }
+
+    function convertHex(raw) {
+        raw = raw.trim().replace(/^0x/i, '').replace(/\s/g, '');
+        if (raw === '') { clearAll(); return; }
+        if (!/^[0-9a-fA-F]+$/.test(raw)) { clearAll(); return; }
+
+        // Pad to even length
+        if (raw.length % 2 !== 0) raw = '0' + raw;
+
+        if (raw.length <= 4) {
+            // 16-bit
+            var u16 = parseInt(raw, 16) & 0xFFFF;
+            populate16bit(u16);
+            clear32bit();
+            // If exactly 4 digits, also populate 32-bit with zero-extended
+            if (raw.length > 2) {
+                var padded = raw;
+                while (padded.length < 8) padded = '0' + padded;
+                var A = parseInt(padded.substr(0,2), 16);
+                var B = parseInt(padded.substr(2,2), 16);
+                var C = parseInt(padded.substr(4,2), 16);
+                var D = parseInt(padded.substr(6,2), 16);
+                populate32bit(A, B, C, D);
+            }
+        } else if (raw.length <= 8) {
+            // 32-bit
+            while (raw.length < 8) raw = '0' + raw;
+            var A = parseInt(raw.substr(0,2), 16);
+            var B = parseInt(raw.substr(2,2), 16);
+            var C = parseInt(raw.substr(4,2), 16);
+            var D = parseInt(raw.substr(6,2), 16);
+
+            var u16 = ((C << 8) | D) & 0xFFFF;
+            populate16bit(u16);
+            populate32bit(A, B, C, D);
+
+            var regHi = (A << 8) | B;
+            var regLo = (C << 8) | D;
+            setResult('r_wordSwap16', '0x' + toHex4(regLo) + toHex4(regHi) + ' (swapped)', true);
+        } else {
+            clearAll();
+        }
+    }
+
+    function convertBinary(raw) {
+        raw = raw.trim().replace(/\s/g, '');
+        if (raw === '') { clearAll(); return; }
+        if (!/^[01]+$/.test(raw)) { clearAll(); return; }
+        if (raw.length > 32) { clearAll(); return; }
+
+        var val = parseInt(raw, 2);
+        var u16 = val & 0xFFFF;
+        populate16bit(u16);
+
+        if (raw.length > 16) {
+            var u32 = val >>> 0;
+            var A = (u32 >>> 24) & 0xFF;
+            var B = (u32 >>> 16) & 0xFF;
+            var C = (u32 >>> 8) & 0xFF;
+            var D = u32 & 0xFF;
+            populate32bit(A, B, C, D);
+        } else {
+            clear32bit();
+        }
+    }
+
+    function convertFloat32(raw) {
+        raw = raw.trim();
+        if (raw === '') { clearAll(); return; }
+
+        var f = parseFloat(raw);
+        if (isNaN(f)) { clearAll(); return; }
+
+        // Encode float to 4 bytes (big-endian ABCD)
+        var bytes = float32ToBytes(f);
+        var A = bytes[0], B = bytes[1], C = bytes[2], D = bytes[3];
+
+        // 16-bit: show the high register
+        var u16 = ((A << 8) | B) & 0xFFFF;
+        populate16bit(u16);
+
+        // 32-bit
+        populate32bit(A, B, C, D);
+
+        // Override register display to show both registers
+        setResult('r_regHex', '0x' + toHex2(A) + toHex2(B) + ' 0x' + toHex2(C) + toHex2(D), true);
+        setResult('r_wordSwap16', '0x' + toHex4((C << 8) | D) + toHex4((A << 8) | B), true);
+
+        // The ABCD float should match the input
+        setResult('r_f32_abcd', formatFloat(f) + '  \u2190 input', true);
+    }
+
+    function convertRegisters() {
+        var hiRaw = regHiInput.value.trim().replace(/^0x/i, '');
+        var loRaw = regLoInput.value.trim().replace(/^0x/i, '');
+
+        if (hiRaw === '' && loRaw === '') { clearAll(); return; }
+        if (!/^[0-9a-fA-F]{1,4}$/.test(hiRaw) || !/^[0-9a-fA-F]{1,4}$/.test(loRaw)) {
+            clearAll();
+            return;
+        }
+
+        var hi = parseInt(hiRaw, 16);
+        var lo = parseInt(loRaw, 16);
+
+        var A = (hi >>> 8) & 0xFF;
+        var B = hi & 0xFF;
+        var C = (lo >>> 8) & 0xFF;
+        var D = lo & 0xFF;
+
+        // 16-bit: show high register
+        populate16bit(hi);
+
+        // 32-bit
+        populate32bit(A, B, C, D);
+
+        // Register display
+        setResult('r_regHex', '0x' + toHex4(hi) + ' 0x' + toHex4(lo), true);
+        setResult('r_wordSwap16', '0x' + toHex4(lo) + toHex4(hi) + ' (swapped)', true);
+    }
+
+    // ============================================
+    // INPUT TYPE SWITCHING
+    // ============================================
+
+    function updateInputUI() {
+        var type = inputType.value;
+        var cfg = typeConfig[type];
+
+        if (cfg.dual) {
+            singleInputCol.style.display = 'none';
+            dualInputRow.classList.add('visible');
+        } else {
+            singleInputCol.style.display = '';
+            dualInputRow.classList.remove('visible');
+            inputLabel.textContent = cfg.label;
+            mainInput.placeholder = cfg.placeholder;
+            inputHint.textContent = cfg.hint;
+        }
+
+        clearAll();
+    }
+
+    inputType.addEventListener('change', function() {
+        updateInputUI();
+        mainInput.value = '';
+        regHiInput.value = '';
+        regLoInput.value = '';
+        mainInput.focus();
+    });
+
+    // ============================================
+    // LIVE CONVERSION ON INPUT
+    // ============================================
+
+    function doConvert() {
+        var type = inputType.value;
+        switch (type) {
+            case 'decimal': convertDecimal(mainInput.value); break;
+            case 'hex': convertHex(mainInput.value); break;
+            case 'binary': convertBinary(mainInput.value); break;
+            case 'float32': convertFloat32(mainInput.value); break;
+            case 'registers': convertRegisters(); break;
+        }
+    }
+
+    mainInput.addEventListener('input', doConvert);
+    regHiInput.addEventListener('input', doConvert);
+    regLoInput.addEventListener('input', doConvert);
+
+    // ============================================
+    // CRC-16 CALCULATOR
+    // ============================================
+
+    function modbusCRC16(data) {
+        var crc = 0xFFFF;
+        for (var i = 0; i < data.length; i++) {
+            crc ^= data[i];
+            for (var j = 0; j < 8; j++) {
+                if (crc & 1) {
+                    crc = (crc >>> 1) ^ 0xA001;
+                } else {
+                    crc = crc >>> 1;
+                }
+            }
+        }
+        return crc & 0xFFFF;
+    }
+
+    var crcInput = document.getElementById('crcInput');
+
+    function updateCRC() {
+        var raw = crcInput.value.trim();
+        var resultEl = document.getElementById('crcResult');
+        var appendedEl = document.getElementById('crcAppended');
+
+        if (raw === '') {
+            resultEl.textContent = '\u2014';
+            resultEl.style.color = '';
+            appendedEl.textContent = '';
+            return;
+        }
+
+        var cleaned = raw.replace(/[,\-]/g, ' ').replace(/\s+/g, ' ').trim();
+        if (cleaned.indexOf(' ') === -1 && cleaned.length > 2 && cleaned.length % 2 === 0) {
+            var pairs = [];
+            for (var i = 0; i < cleaned.length; i += 2) {
+                pairs.push(cleaned.substr(i, 2));
+            }
+            cleaned = pairs.join(' ');
+        }
+
+        var parts = cleaned.split(' ');
+        var bytes = [];
+        var valid = true;
+
+        for (var i = 0; i < parts.length; i++) {
+            var p = parts[i];
+            if (!/^[0-9a-fA-F]{1,2}$/.test(p)) { valid = false; break; }
+            bytes.push(parseInt(p, 16));
+        }
+
+        if (!valid || bytes.length === 0) {
+            resultEl.textContent = 'Invalid hex bytes';
+            resultEl.style.color = 'var(--red)';
+            appendedEl.textContent = '';
+            return;
+        }
+
+        var crc = modbusCRC16(bytes);
+        var crcLo = crc & 0xFF;
+        var crcHi = (crc >>> 8) & 0xFF;
+
+        resultEl.textContent = '0x' + toHex2(crcLo) + toHex2(crcHi) + '  (Lo: 0x' + toHex2(crcLo) + ', Hi: 0x' + toHex2(crcHi) + ')';
+        resultEl.style.color = '';
+
+        var frameHex = '';
+        for (var i = 0; i < bytes.length; i++) {
+            frameHex += toHex2(bytes[i]) + ' ';
+        }
+        appendedEl.innerHTML = 'Full frame: ' + frameHex + '<span>' + toHex2(crcLo) + ' ' + toHex2(crcHi) + '</span>';
+    }
+
+    crcInput.addEventListener('input', updateCRC);
+
+    // ============================================
+    // INIT
+    // ============================================
+    updateInputUI();
+
+})();
+</script>
+
+</body>
+</html>

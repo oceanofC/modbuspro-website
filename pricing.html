@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModBus Pro Pricing — One-Time Purchase, No Subscription | modbus.app</title>
+    <meta name="description" content="ModBus Pro pricing. Master polling, slave simulation and scripting engine in one tool for $199. One-time purchase, no subscription.">
+    <meta name="keywords" content="modbus pro price, modbus tool cost, modbus poll alternative price, modbus software pricing, modbus diagnostic tool">
+    <link rel="canonical" href="https://modbus.app/pricing.html">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://modbus.app/pricing.html">
+    <meta property="og:title" content="ModBus Pro Pricing — One-Time Purchase, No Subscription">
+    <meta property="og:description" content="Master polling, slave simulation and scripting in one tool for $199. One-time purchase, no subscription.">
+    <meta property="og:site_name" content="modbus.app">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ModBus Pro Pricing — One-Time Purchase, No Subscription">
+    <meta name="twitter:description" content="Master + Slave + Scripting in one tool for $199. One-time purchase, no subscription.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --amber: #f5a623;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--font-sans); background:var(--bg); color:var(--text); line-height:1.7; -webkit-font-smoothing:antialiased; }
+
+/* NAV */
+.site-nav { position:fixed; top:0; left:0; right:0; z-index:100; background:rgba(10,14,23,0.85); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:0 2rem; height:60px; display:flex; align-items:center; justify-content:center; }
+.nav-inner { max-width:1100px; width:100%; display:flex; align-items:center; justify-content:space-between; }
+.nav-logo { display:flex; align-items:center; gap:0.5rem; text-decoration:none; color:var(--text); font-family:var(--font-mono); font-weight:700; font-size:1.1rem; }
+.nav-logo .dot { color:var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a { color:var(--text-dim); text-decoration:none; font-size:0.9rem; font-weight:500; transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--green); }
+.nav-cta { background:var(--green); color:#0a0e17; padding:0.5rem 1.2rem; border-radius:6px; text-decoration:none; font-weight:600; font-size:0.85rem; transition:all 0.2s; }
+.nav-cta:hover { transform:translateY(-1px); box-shadow:0 4px 20px rgba(0,229,160,0.3); }
+.nav-dropdown { position:relative; }
+.nav-dropdown > a { cursor:pointer; }
+.nav-dropdown > a::after { content:" \25BE"; font-size:0.7em; }
+.nav-dropdown-menu { display:none; position:absolute; top:100%; left:50%; transform:translateX(-50%); background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:0.5rem 0; min-width:200px; box-shadow:0 8px 30px rgba(0,0,0,0.3); margin-top:0.5rem; z-index:200; }
+.nav-dropdown:hover .nav-dropdown-menu { display:block; }
+.nav-dropdown-menu a { display:block; padding:0.5rem 1rem; color:var(--text-dim); text-decoration:none; font-size:0.85rem; font-weight:500; transition:all 0.2s; white-space:nowrap; }
+.nav-dropdown-menu a:hover { color:var(--green); background:rgba(0,229,160,0.05); }
+
+.container { max-width:1100px; margin:0 auto; padding:0 2rem; }
+
+/* HERO */
+.price-hero { padding:7rem 0 3rem; text-align:center; }
+.price-hero h1 { font-size:clamp(2rem,5vw,3rem); font-weight:800; margin-bottom:0.75rem; }
+.price-hero .sub { font-size:1.15rem; color:var(--text-dim); max-width:600px; margin:0 auto; }
+
+/* PRICING CARDS */
+.pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin:3rem 0 4rem; align-items:start; }
+.price-card { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:2rem; position:relative; }
+.price-card.featured { border-color:var(--green-border); box-shadow:0 0 40px rgba(0,229,160,0.08); }
+.price-badge { position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--green); color:#0a0e17; padding:0.25rem 1rem; border-radius:20px; font-size:0.75rem; font-weight:700; white-space:nowrap; }
+.price-card h3 { font-size:1.1rem; font-weight:700; margin-bottom:0.25rem; }
+.price-card .tier-desc { font-size:0.85rem; color:var(--text-muted); margin-bottom:1.25rem; }
+.price-amount { display:flex; align-items:baseline; gap:0.5rem; margin-bottom:0.25rem; }
+.price-amount .dollar { font-size:2.5rem; font-weight:800; color:var(--text); font-family:var(--font-mono); }
+.price-amount .period { font-size:0.85rem; color:var(--text-muted); }
+.price-amount .was { font-size:0.9rem; color:var(--text-muted); text-decoration:line-through; }
+.price-note { font-size:0.8rem; color:var(--text-muted); margin-bottom:1.5rem; }
+.feature-list { list-style:none; margin-bottom:1.5rem; }
+.feature-list li { padding:0.4rem 0; font-size:0.9rem; color:var(--text-dim); display:flex; align-items:center; gap:0.5rem; }
+.feature-list .check { color:var(--green); font-weight:700; flex-shrink:0; }
+.price-cta { display:block; width:100%; text-align:center; padding:0.75rem; border-radius:8px; font-weight:700; font-size:0.9rem; text-decoration:none; transition:all 0.2s; }
+.price-cta.primary { background:var(--green); color:#0a0e17; }
+.price-cta.primary:hover { transform:translateY(-1px); box-shadow:0 4px 20px rgba(0,229,160,0.3); }
+.price-cta.outline { background:transparent; color:var(--green); border:1px solid var(--green-border); }
+.price-cta.outline:hover { background:var(--green-dim); }
+.price-small { text-align:center; font-size:0.8rem; color:var(--text-muted); margin-top:0.75rem; }
+
+/* COMPARISON */
+.compare-section { margin:4rem 0; }
+.compare-section h2 { font-size:1.6rem; font-weight:700; text-align:center; margin-bottom:2rem; }
+.compare-table { width:100%; border-collapse:collapse; font-size:0.9rem; }
+.compare-table th { background:var(--bg-card); padding:0.75rem 1rem; text-align:left; font-family:var(--font-mono); font-size:0.8rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; border-bottom:2px solid var(--border); color:var(--text-muted); }
+.compare-table th:first-child { color:var(--text-muted); }
+.compare-table th.ours { color:var(--green); background:rgba(0,229,160,0.05); }
+.compare-table td { padding:0.7rem 1rem; border-bottom:1px solid var(--border); color:var(--text-dim); }
+.compare-table td.ours { background:rgba(0,229,160,0.03); }
+.compare-table tr:hover td { background:rgba(255,255,255,0.02); }
+.compare-table tr:hover td.ours { background:rgba(0,229,160,0.06); }
+.yes { color:var(--green); font-weight:600; }
+.no { color:var(--red); }
+
+/* FAQ */
+.faq-section { margin:4rem 0; }
+.faq-section h2 { font-size:1.6rem; font-weight:700; text-align:center; margin-bottom:2rem; }
+.faq-grid { max-width:800px; margin:0 auto; }
+.faq-item { border-bottom:1px solid var(--border); padding:1.5rem 0; }
+.faq-item h3 { font-size:1rem; font-weight:600; color:var(--text); margin-bottom:0.5rem; }
+.faq-item p { font-size:0.9rem; color:var(--text-dim); margin:0; }
+
+/* FINAL CTA */
+.final-cta { text-align:center; padding:4rem 0 5rem; }
+.final-cta h2 { font-size:1.8rem; font-weight:800; margin-bottom:0.5rem; }
+.final-cta p { color:var(--text-dim); margin-bottom:1.5rem; }
+.cta-row { display:flex; gap:1rem; justify-content:center; }
+.cta-row a { padding:0.75rem 2rem; border-radius:8px; font-weight:700; font-size:0.9rem; text-decoration:none; transition:all 0.2s; }
+.cta-row .btn-primary { background:var(--green); color:#0a0e17; }
+.cta-row .btn-primary:hover { transform:translateY(-1px); box-shadow:0 4px 20px rgba(0,229,160,0.3); }
+.cta-row .btn-outline { border:1px solid var(--green-border); color:var(--green); }
+.cta-row .btn-outline:hover { background:var(--green-dim); }
+
+footer { border-top:1px solid var(--border); padding:2rem; text-align:center; font-size:0.8rem; color:var(--text-muted); font-family:var(--font-mono); }
+footer a { color:var(--green); text-decoration:none; }
+
+@media (max-width: 768px) {
+    .nav-links { display:none; }
+    .pricing-grid { grid-template-columns:1fr; max-width:400px; margin-left:auto; margin-right:auto; }
+    .compare-table { font-size:0.8rem; }
+    .compare-table th, .compare-table td { padding:0.5rem; }
+    .cta-row { flex-direction:column; align-items:center; }
+}
+</style>
+</head>
+<body>
+<nav class="site-nav"><div class="nav-inner">
+    <a href="index.html" class="nav-logo">modbus<span class="dot">.</span>app</a>
+    <ul class="nav-links"><li><a href="index.html">Product</a></li><li class="nav-dropdown"><a href="#">Tools</a><div class="nav-dropdown-menu"><a href="number-converter.html">Number Converter</a><a href="modbus-frame-parser.html">Frame Parser</a><a href="modbus-address-calculator.html">Address Calculator</a><a href="modbus-baud-rate-calculator.html">Baud Rate Calculator</a></div></li><li><a href="read-modbus-data.html">Guides</a></li><li><a href="guides.html">Troubleshooting</a></li><li><a href="pricing.html" class="active">Pricing</a></li></ul>
+    <a href="index.html#download" class="nav-cta">Download Free</a>
+</div></nav>
+
+<div class="container">
+    <!-- HERO -->
+    <div class="price-hero">
+        <h1>Simple, honest pricing</h1>
+        <p class="sub">One tool, one price. No subscriptions, no annual renewals, no per-seat surprises.</p>
+    </div>
+
+    <!-- PRICING CARDS -->
+    <div class="pricing-grid">
+        <!-- PERSONAL -->
+        <div class="price-card">
+            <h3>Personal</h3>
+            <p class="tier-desc">For individual engineers</p>
+            <div class="price-amount">
+                <span class="dollar">$199</span>
+            </div>
+            <p class="price-note">One-time payment, yours forever</p>
+            <ul class="feature-list">
+                <li><span class="check">&#10003;</span> Master polling (FC01-FC23)</li>
+                <li><span class="check">&#10003;</span> Slave simulator</li>
+                <li><span class="check">&#10003;</span> All data formats (float32, int32...)</li>
+                <li><span class="check">&#10003;</span> Auto-discovery</li>
+                <li><span class="check">&#10003;</span> Data logging &amp; CSV export</li>
+                <li><span class="check">&#10003;</span> Scripting engine</li>
+                <li><span class="check">&#10003;</span> 1 machine activation</li>
+                <li><span class="check">&#10003;</span> Free updates for life</li>
+                <li><span class="check">&#10003;</span> Windows 10/11 (macOS &amp; Linux coming soon)</li>
+            </ul>
+            <a href="https://buy.stripe.com/PERSONAL_LINK_HERE" class="price-cta primary">Buy Now &mdash; $199</a>
+            <p class="price-small">7-day free trial included with download</p>
+        </div>
+
+        <!-- TEAM -->
+        <div class="price-card featured">
+            <div class="price-badge">Most Popular</div>
+            <h3>Team</h3>
+            <p class="tier-desc">For teams up to 5 engineers</p>
+            <div class="price-amount">
+                <span class="dollar">$749</span>
+            </div>
+            <p class="price-note">One-time &mdash; works out to $150/engineer</p>
+            <ul class="feature-list">
+                <li><span class="check">&#10003;</span> Everything in Personal</li>
+                <li><span class="check">&#10003;</span> 5 machine activations</li>
+                <li><span class="check">&#10003;</span> Priority email support</li>
+                <li><span class="check">&#10003;</span> Shared device libraries</li>
+                <li><span class="check">&#10003;</span> Team license management</li>
+            </ul>
+            <a href="https://buy.stripe.com/TEAM_LINK_HERE" class="price-cta primary">Buy Team License</a>
+            <p class="price-small">Instant delivery &mdash; license key via email</p>
+        </div>
+
+        <!-- SITE -->
+        <div class="price-card">
+            <h3>Site License</h3>
+            <p class="tier-desc">Up to 10 engineers, one company</p>
+            <div class="price-amount">
+                <span class="dollar">$1,699</span>
+            </div>
+            <p class="price-note">One-time &mdash; deploy across your entire team</p>
+            <ul class="feature-list">
+                <li><span class="check">&#10003;</span> Everything in Team</li>
+                <li><span class="check">&#10003;</span> 10 machine activations</li>
+                <li><span class="check">&#10003;</span> Dedicated support channel</li>
+                <li><span class="check">&#10003;</span> Custom device library setup</li>
+                <li><span class="check">&#10003;</span> Volume discounts available</li>
+            </ul>
+            <a href="https://buy.stripe.com/SITE_LINK_HERE" class="price-cta outline">Buy Site License</a>
+            <p class="price-small">Instant delivery &mdash; license key via email</p>
+        </div>
+    </div>
+
+    <!-- COMPARISON -->
+    <div class="compare-section">
+        <h2>How ModBus Pro compares</h2>
+        <table class="compare-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th class="ours">ModBus Pro</th>
+                    <th>Modbus Poll + Slave</th>
+                    <th>Simply Modbus</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>What you get</td>
+                    <td class="ours"><span class="yes">Master + Slave</span></td>
+                    <td>Two separate apps</td>
+                    <td>Three separate apps</td>
+                </tr>
+                <tr>
+                    <td>Price for both</td>
+                    <td class="ours"><span class="yes">$199</span></td>
+                    <td>$258</td>
+                    <td>$162</td>
+                </tr>
+                <tr>
+                    <td>Includes scripting engine</td>
+                    <td class="ours"><span class="yes">&#10003;</span></td>
+                    <td>&mdash;</td>
+                    <td>&mdash;</td>
+                </tr>
+                <tr>
+                    <td>Modern dark UI</td>
+                    <td class="ours"><span class="yes">&#10003;</span></td>
+                    <td><span class="no">&#10007;</span> Win32 legacy</td>
+                    <td><span class="no">&#10007;</span> Legacy</td>
+                </tr>
+                <tr>
+                    <td>Cross-platform</td>
+                    <td class="ours"><span class="yes">&#10003;</span> Win / Mac / Linux</td>
+                    <td><span class="no">&#10007;</span> Windows only</td>
+                    <td><span class="no">&#10007;</span> Windows only</td>
+                </tr>
+                <tr>
+                    <td>Slave simulator built-in</td>
+                    <td class="ours"><span class="yes">&#10003;</span></td>
+                    <td><span class="no">&#10007;</span> Separate $129</td>
+                    <td><span class="no">&#10007;</span> Separate app</td>
+                </tr>
+                <tr>
+                    <td>Auto-discovery</td>
+                    <td class="ours"><span class="yes">&#10003;</span></td>
+                    <td><span class="no">&#10007;</span></td>
+                    <td><span class="no">&#10007;</span></td>
+                </tr>
+                <tr>
+                    <td>Free trial</td>
+                    <td class="ours"><span class="yes">7 days (full features)</span></td>
+                    <td>30 days (10-min limit)</td>
+                    <td>Demo mode only</td>
+                </tr>
+                <tr>
+                    <td>Pricing model</td>
+                    <td class="ours">One-time</td>
+                    <td>One-time</td>
+                    <td>One-time</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-section">
+        <h2>Frequently asked questions</h2>
+        <div class="faq-grid">
+            <div class="faq-item">
+                <h3>Is this a one-time purchase or subscription?</h3>
+                <p>One-time purchase. Pay once, use forever. Free updates are included for life. No recurring charges, no annual renewals.</p>
+            </div>
+            <div class="faq-item">
+                <h3>What happens after the free trial?</h3>
+                <p>The app locks and asks for a license key. Enter your key to unlock it instantly. No data is lost &mdash; your connections, registers, and settings are all preserved.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Can I use it offline?</h3>
+                <p>Yes. Activation requires a one-time internet connection. After that, ModBus Pro works completely offline &mdash; perfect for field work on remote sites and air-gapped networks.</p>
+            </div>
+            <div class="faq-item">
+                <h3>What if I need to move to a new computer?</h3>
+                <p>Deactivate on your old machine from Settings, then activate on the new one. If you no longer have access to the old machine, contact support and we will reset your activation.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Do you offer refunds?</h3>
+                <p>Yes. 30-day money-back guarantee, no questions asked. If ModBus Pro does not work for your use case, we will refund you in full.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Is there a free version?</h3>
+                <p>The 7-day trial is full-featured with no restrictions. After that, a license is required. We believe in giving you the complete experience so you can make an informed decision.</p>
+            </div>
+            <div class="faq-item">
+                <h3>What Modbus protocols are supported?</h3>
+                <p>Modbus RTU (serial RS232/RS485) and Modbus TCP/IP. Function codes FC01 through FC06, FC15, FC16, FC22 (Mask Write), and FC23 (Read/Write Multiple).</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FINAL CTA -->
+    <div class="final-cta">
+        <h2>Ready to ditch the legacy tools?</h2>
+        <p>Join engineers who have already made the switch.</p>
+        <div class="cta-row">
+            <a href="https://buy.stripe.com/PERSONAL_LINK_HERE" class="btn-primary">Buy Now &mdash; $199</a>
+            <a href="index.html#download" class="btn-outline">Download Free Trial</a>
+        </div>
+    </div>
+</div>
+
+<footer style="border-top: 1px solid rgba(255,255,255,0.06); padding: 4rem 0 2rem; margin-top: 6rem;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #00e5a0, #00c488); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <svg width="18" height="18" fill="none" stroke="#0a0e17" stroke-width="2.5" stroke-linecap="round"><path d="M3 9h12M9 3v12"/></svg>
+                    </div>
+                    <span style="font-weight: 700; font-size: 1.1rem;">ModBus Pro</span>
+                </div>
+                <p style="color: var(--text-muted, #8a94a6); font-size: 0.9rem; line-height: 1.6; max-width: 280px;">The modern Modbus diagnostic tool. Built for engineers who need reliability.</p>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Product</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="index.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Features</a></li>
+                    <li><a href="pricing.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Pricing</a></li>
+                    <li><a href="number-converter.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Number Converter</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Resources</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="guides.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Guides</a></li>
+                    <li><a href="mailto:support@modbus.app" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Support</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Legal</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="#" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Privacy</a></li>
+                    <li><a href="terms.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <p style="color: var(--text-muted, #8a94a6); font-size: 0.8rem;">&copy; 2026 modbus.app &mdash; Built by engineers who debug Modbus for a living.</p>
+            <p style="color: #5a6478; font-size: 0.65rem; margin-top: 0.5rem;">Modbus&reg; is a registered trademark of Schneider Electric. ModBus Pro is not affiliated with or endorsed by Schneider Electric or the Modbus Organization.</p>
+            <div style="display: flex; gap: 1.5rem;">
+                <a href="mailto:support@modbus.app" style="color: var(--text-muted, #8a94a6); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;">support@modbus.app</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

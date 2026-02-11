@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Use — ModBus Pro | modbus.app</title>
+    <meta name="description" content="Terms of Use for ModBus Pro, the professional Modbus diagnostic tool. Perpetual license, one-time payment, refund policy, and usage terms.">
+    <link rel="canonical" href="https://modbus.app/terms.html">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://modbus.app/terms.html">
+    <meta property="og:title" content="Terms of Use — ModBus Pro">
+    <meta property="og:description" content="Terms of Use for ModBus Pro. Perpetual license, one-time payment, refund policy, and usage terms.">
+    <meta property="og:site_name" content="modbus.app">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Terms of Use — ModBus Pro">
+    <meta name="twitter:description" content="Terms of Use for ModBus Pro. Perpetual license, one-time payment, refund policy, and usage terms.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --surface: #0f1520;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: var(--font-sans); background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+.site-nav { position:fixed; top:0; left:0; right:0; z-index:100; background:rgba(10,14,23,0.85); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:0 2rem; height:60px; display:flex; align-items:center; justify-content:center; }
+.nav-inner { max-width:1100px; width:100%; display:flex; align-items:center; justify-content:space-between; }
+.nav-logo { display:flex; align-items:center; gap:0.5rem; text-decoration:none; color:var(--text); font-family:var(--font-mono); font-weight:700; font-size:1.1rem; }
+.nav-logo .dot { color:var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a { color:var(--text-dim); text-decoration:none; font-size:0.9rem; font-weight:500; transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--green); }
+.nav-cta { background:var(--green); color:#0a0e17; padding:0.5rem 1.2rem; border-radius:6px; text-decoration:none; font-weight:600; font-size:0.85rem; transition:all 0.2s; }
+.nav-cta:hover { transform:translateY(-1px); box-shadow:0 4px 20px rgba(0,229,160,0.3); }
+.nav-dropdown { position:relative; }
+.nav-dropdown > a { cursor:pointer; }
+.nav-dropdown > a::after { content:" \25BE"; font-size:0.7em; }
+.nav-dropdown-menu { display:none; position:absolute; top:100%; left:50%; transform:translateX(-50%); background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:0.5rem 0; min-width:200px; box-shadow:0 8px 30px rgba(0,0,0,0.3); margin-top:0.5rem; z-index:200; }
+.nav-dropdown:hover .nav-dropdown-menu { display:block; }
+.nav-dropdown-menu a { display:block; padding:0.5rem 1rem; color:var(--text-dim); text-decoration:none; font-size:0.85rem; font-weight:500; transition:all 0.2s; white-space:nowrap; }
+.nav-dropdown-menu a:hover { color:var(--green); background:rgba(0,229,160,0.05); }
+.container { max-width:1100px; margin:0 auto; padding:0 2rem; }
+
+.terms-content { max-width: 780px; }
+.terms-content h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+.terms-content h2:first-of-type { margin-top: 0; }
+.terms-content p {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin-bottom: 0.75rem;
+}
+.terms-content ul {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+}
+.terms-content ul li { margin-bottom: 0.35rem; }
+.terms-content a { color: var(--green); text-decoration: none; transition: opacity 0.2s; }
+.terms-content a:hover { opacity: 0.8; }
+.terms-updated {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .nav-links { display:none; }
+    .container { padding:0 1rem; }
+    .terms-content h2 { font-size: 1.15rem; }
+}
+</style>
+</head>
+<body>
+<nav class="site-nav"><div class="nav-inner">
+    <a href="index.html" class="nav-logo">modbus<span class="dot">.</span>app</a>
+    <ul class="nav-links"><li><a href="index.html">Product</a></li><li class="nav-dropdown"><a href="#">Tools</a><div class="nav-dropdown-menu"><a href="number-converter.html">Number Converter</a><a href="modbus-frame-parser.html">Frame Parser</a><a href="modbus-address-calculator.html">Address Calculator</a><a href="modbus-baud-rate-calculator.html">Baud Rate Calculator</a></div></li><li><a href="read-modbus-data.html">Guides</a></li><li><a href="guides.html">Troubleshooting</a></li><li><a href="pricing.html">Pricing</a></li></ul>
+    <a href="index.html#download" class="nav-cta">Download Free</a>
+</div></nav>
+
+<div class="container" style="padding-top:6rem;padding-bottom:4rem;">
+    <h1 style="font-size:2.5rem;font-weight:800;margin-bottom:.5rem;">Terms of Use</h1>
+    <p style="color:var(--text-dim);font-size:1.1rem;margin-bottom:1.5rem;max-width:700px;">Please read these terms carefully before using ModBus Pro.</p>
+    <div class="terms-updated">Last updated: February 2026</div>
+
+    <div class="terms-content">
+
+        <h2>1. Acceptance of Terms</h2>
+        <p>By downloading, installing, or using ModBus Pro (&ldquo;the Software&rdquo;), you agree to be bound by these Terms of Use. If you do not agree to these terms, do not use the Software.</p>
+        <p>These terms constitute a legally binding agreement between you (&ldquo;the User&rdquo;) and the developer of ModBus Pro (&ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;).</p>
+
+        <h2>2. License Grant</h2>
+        <p>Upon purchase, we grant you a single-user, perpetual, non-exclusive, non-transferable license to use the Software, subject to the following conditions:</p>
+        <ul>
+            <li>The license permits activation on <strong style="color:var(--text);">one (1) machine at a time</strong>.</li>
+            <li>You may deactivate your license on one machine and reactivate it on a different machine.</li>
+            <li>The license is non-transferable and may not be resold, sublicensed, or otherwise distributed to any third party.</li>
+            <li>The license is granted to you personally and may not be shared with other individuals or organisations.</li>
+        </ul>
+
+        <h2>3. Payment &amp; Refunds</h2>
+        <p>The Software is available for a one-time payment of <strong style="color:var(--text);">$199</strong>. All payments are processed securely by <strong style="color:var(--text);">Stripe</strong> (Stripe, Inc.), our payment processor. We do not store or handle your payment details directly.</p>
+        <p>We offer a <strong style="color:var(--text);">14-day refund policy</strong> from the date of purchase, provided that:</p>
+        <ul>
+            <li>No license activations have been used.</li>
+            <li>You contact us at <a href="mailto:support@modbus.app">support@modbus.app</a> to request the refund within the 14-day window.</li>
+        </ul>
+        <p>Once a license has been activated, refunds are provided at our sole discretion.</p>
+
+        <h2>4. Intellectual Property</h2>
+        <p>The Software, including all source code, binaries, design, documentation, and website content, is the intellectual property of the developer and is protected by applicable copyright laws.</p>
+        <p>Modbus&reg; is a registered trademark of Schneider Electric. ModBus Pro is <strong style="color:var(--text);">not affiliated with, endorsed by, or sponsored by</strong> Schneider Electric or the Modbus Organization. Any use of the Modbus name is purely descriptive and refers to the communication protocol.</p>
+
+        <h2>5. Limitation of Liability</h2>
+        <p>The Software is provided <strong style="color:var(--text);">&ldquo;as is&rdquo;</strong>, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
+        <p>In no event shall the developer be liable for any direct, indirect, incidental, special, consequential, or exemplary damages arising out of or in connection with the use of the Software, including but not limited to:</p>
+        <ul>
+            <li>Damage to industrial equipment, machinery, or control systems.</li>
+            <li>Loss of data, revenue, or business opportunities.</li>
+            <li>Incorrect Modbus communication results or misinterpretation of data.</li>
+        </ul>
+        <p>The User is solely responsible for independently verifying all Modbus communications and ensuring the Software is suitable for their intended use. The Software is a diagnostic tool and should not be used as the sole basis for critical decisions affecting safety or equipment operation.</p>
+
+        <h2>6. Usage Restrictions</h2>
+        <p>You agree not to:</p>
+        <ul>
+            <li>Reverse engineer, decompile, disassemble, or otherwise attempt to derive the source code of the Software.</li>
+            <li>Redistribute, share, or make the Software available to any third party, whether for commercial or non-commercial purposes.</li>
+            <li>Use a single license key across multiple machines simultaneously.</li>
+            <li>Remove, alter, or obscure any proprietary notices, labels, or marks on the Software.</li>
+            <li>Use the Software for any unlawful purpose or in any manner that violates these terms.</li>
+        </ul>
+
+        <h2>7. Termination</h2>
+        <p>We reserve the right to terminate your license if you violate any of these terms. Upon termination:</p>
+        <ul>
+            <li>Your right to use the Software ceases immediately.</li>
+            <li>No refund will be issued for licenses terminated due to a breach of these terms.</li>
+            <li>You must uninstall and destroy all copies of the Software in your possession.</li>
+        </ul>
+
+        <h2>8. Updates</h2>
+        <p>Your license includes <strong style="color:var(--text);">free updates for the current major version</strong> of the Software at the time of purchase.</p>
+        <p>We are under no obligation to provide updates, new features, or bug fixes. Any updates that are provided will be subject to these Terms of Use.</p>
+        <p>We may update these Terms of Use from time to time. Changes will be posted on this page with an updated revision date. Continued use of the Software after changes are posted constitutes your acceptance of the revised terms.</p>
+
+        <h2>9. Governing Law</h2>
+        <p>These Terms of Use shall be governed by and construed in accordance with the laws of the <strong style="color:var(--text);">United Kingdom</strong>, without regard to its conflict of law principles.</p>
+        <p>Any disputes arising from or relating to these terms or the use of the Software shall be subject to the exclusive jurisdiction of the courts of the United Kingdom.</p>
+
+        <h2>10. Contact</h2>
+        <p>If you have any questions about these Terms of Use, please contact us at:</p>
+        <p><a href="mailto:support@modbus.app" style="font-family:var(--font-mono);font-size:0.95rem;">support@modbus.app</a></p>
+
+    </div>
+</div>
+
+<footer style="border-top: 1px solid rgba(255,255,255,0.06); padding: 4rem 0 2rem; margin-top: 6rem;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #00e5a0, #00c488); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <svg width="18" height="18" fill="none" stroke="#0a0e17" stroke-width="2.5" stroke-linecap="round"><path d="M3 9h12M9 3v12"/></svg>
+                    </div>
+                    <span style="font-weight: 700; font-size: 1.1rem;">ModBus Pro</span>
+                </div>
+                <p style="color: var(--text-muted, #8a94a6); font-size: 0.9rem; line-height: 1.6; max-width: 280px;">The modern Modbus diagnostic tool. Built for engineers who need reliability.</p>
+                <p style="color: #5a6478; font-size: 0.65rem; margin-top: 0.5rem;">Modbus&reg; is a registered trademark of Schneider Electric. ModBus Pro is not affiliated with or endorsed by Schneider Electric or the Modbus Organization.</p>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Product</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="index.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Features</a></li>
+                    <li><a href="pricing.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Pricing</a></li>
+                    <li><a href="number-converter.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Number Converter</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Resources</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="guides.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Guides</a></li>
+                    <li><a href="mailto:support@modbus.app" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Support</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Legal</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="#" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Privacy</a></li>
+                    <li><a href="terms.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <p style="color: var(--text-muted, #8a94a6); font-size: 0.8rem;">&copy; 2026 modbus.app &mdash; Built by engineers who debug Modbus for a living.</p>
+            <div style="display: flex; gap: 1.5rem;">
+                <a href="mailto:support@modbus.app" style="color: var(--text-muted, #8a94a6); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;">support@modbus.app</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

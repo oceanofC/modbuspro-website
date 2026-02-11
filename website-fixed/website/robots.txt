@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Sitemap: https://modbus.app/sitemap.xml
+
+# Block duplicate pages being redirected
+Disallow: /crc-errors.html
+Disallow: /timeout-errors.html
+Disallow: /no-response.html
+Disallow: /tcp-connection-refused.html
+Disallow: /rs485-wiring.html
+Disallow: /float32-byte-order.html
+Disallow: /register-address-offset.html
+Disallow: /illegal-data-address.html

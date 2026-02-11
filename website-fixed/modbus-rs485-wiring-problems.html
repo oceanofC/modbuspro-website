@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modbus RS485 Wiring Problems — Complete Fix Guide | modbus.app</title>
+    <meta name="description" content="Fix RS485 wiring issues for Modbus RTU. Polarity, termination, daisy chain topology, and common field wiring mistakes.">
+    <meta name="keywords" content="modbus RS485 wiring, RS485 termination, RS485 polarity, modbus wiring diagram, RS485 daisy chain">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+/* modbus.app shared guide styles */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+
+/* HERO */
+.guide-hero {
+    padding: 8rem 2rem 4rem;
+    max-width: 860px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.guide-hero .breadcrumb {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.guide-hero .breadcrumb a { color: var(--green); text-decoration: none; }
+.guide-hero .breadcrumb a:hover { text-decoration: underline; }
+.guide-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.guide-hero .subtitle {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 640px;
+    line-height: 1.6;
+}
+.guide-hero .meta {
+    display: flex; gap: 1.5rem; margin-top: 1.5rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.guide-hero .meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border);
+}
+
+/* CONTENT */
+.guide-content {
+    max-width: 860px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+}
+.guide-content h2 {
+    font-size: 1.6rem; font-weight: 700; margin: 3rem 0 1rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.guide-content h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.guide-content h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+.guide-content p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-content ul, .guide-content ol {
+    margin: 0 0 1.5rem 1.5rem; color: var(--text-dim);
+}
+.guide-content li { margin-bottom: 0.5rem; }
+.guide-content strong { color: var(--text); font-weight: 600; }
+.guide-content a { color: var(--green); text-decoration: none; }
+.guide-content a:hover { text-decoration: underline; }
+
+/* CODE BLOCKS */
+pre {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    line-height: 1.65; color: var(--text-dim);
+}
+code {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--bg-code); padding: 0.15rem 0.4rem;
+    border-radius: 4px; color: var(--green);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+/* INFO BOXES */
+.info-box {
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; border-left: 3px solid;
+}
+.info-box.tip { background: var(--green-dim); border-color: var(--green); }
+.info-box.warning { background: var(--amber-dim); border-color: var(--amber); }
+.info-box.danger { background: var(--red-dim); border-color: var(--red); }
+.info-box.info { background: var(--blue-dim); border-color: var(--blue); }
+.info-box .box-title {
+    font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.info-box.tip .box-title { color: var(--green); }
+.info-box.warning .box-title { color: var(--amber); }
+.info-box.danger .box-title { color: var(--red); }
+.info-box.info .box-title { color: var(--blue); }
+.info-box p { margin-bottom: 0.5rem; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h3 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; }
+.app-promo .cta-btn {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+
+/* TABLE */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0 1.5rem; font-size: 0.9rem;
+}
+.data-table th {
+    background: var(--bg-card); color: var(--green);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.75rem 1rem;
+    text-align: left; border-bottom: 2px solid var(--green-border);
+}
+.data-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table code { font-size: 0.8rem; }
+
+/* RELATED GUIDES */
+.related-guides {
+    margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+.related-guides h2 { border-top: none; padding-top: 0; }
+.guides-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem; margin-top: 1.5rem;
+}
+.guide-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    text-decoration: none; transition: all 0.2s;
+}
+.guide-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.guide-card .card-title {
+    color: var(--text); font-weight: 600; font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+.guide-card .card-desc {
+    color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.site-footer a { color: var(--green); text-decoration: none; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .guide-hero { padding: 6rem 1rem 3rem; }
+    .guide-content { padding: 2rem 1rem 4rem; }
+    .guide-hero .meta { flex-wrap: wrap; }
+}
+
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+    <a href="../index.html" class="logo"><div class="logo-mark">M</div><div class="logo-text">modbus<span>.app</span></div></a>
+    <ul class="nav-links"><li><a href="../index.html">Product</a></li><li><a href="../number-converter.html">Converter</a></li><li><a href="../read-modbus-data.html">Guides</a></li><li><a href="./">Troubleshooting</a></li></ul>
+    <a href="../index.html#download" class="nav-cta">Download Free →</a>
+</div></nav>
+<div class="container"><div class="guide-layout">
+<article>
+    <div class="breadcrumbs"><a href="../index.html">Home</a> / <a href="../read-modbus-data.html">Guides</a> / <a href="./">Troubleshooting</a></div>
+    <h1>Modbus RS485 Wiring Problems</h1>
+    <div class="article-meta"><span class="tag tag-red">TROUBLESHOOTING</span><span>Updated Feb 2026</span><span>10 min read</span></div>
+
+    <p>RS485 wiring problems are the root cause of most Modbus RTU failures in the field. The protocol itself is simple and robust — but it's unforgiving of wiring mistakes. Here's everything you need to get it right first time.</p>
+
+    <h2 id="topology">Correct Bus Topology</h2>
+    <p>RS485 Modbus <strong>must</strong> be wired as a daisy chain (bus topology). Not a star. Not a tree. The cable goes from device 1 to device 2 to device 3, in series. Each "stub" (the short cable from the bus to a device) should be as short as possible — ideally under 30cm.</p>
+
+    <div class="info-box danger">
+        <div class="info-title">🔥 Star Wiring Kills RS485</div>
+        <p>If you run separate cables from a central point to each device (star topology), the signal reflections at each unterminated cable end will corrupt every frame. This works for Ethernet but is fatal for RS485. If your site was wired as a star, you need to re-cable as a daisy chain or add RS485 repeaters.</p>
+    </div>
+
+    <h2 id="polarity">The A/B Polarity Problem</h2>
+    <p>There is no universal standard for RS485 pin labelling. Some manufacturers call the non-inverting line "A" and others call it "B". The TIA/EIA-485 standard says A is inverting (-) and B is non-inverting (+), but many devices label them backwards.</p>
+    <p>If communication fails completely, <strong>just swap A and B</strong>. It won't damage anything and solves the problem roughly 30% of the time. If swapping makes it work, label your cables immediately so the next engineer doesn't "fix" it.</p>
+
+    <h2 id="termination">Termination Resistors</h2>
+    <p>Install a 120Ω resistor between the two data lines at <strong>both physical ends</strong> of the bus. Not at every device — just the two devices at opposite ends of the cable. Many modern devices have a built-in termination resistor with a DIP switch or jumper to enable it.</p>
+    <p>Without termination, the bus might work fine on the bench with 1m of cable, then fail in the field with 50m of cable. Reflections from unterminated ends corrupt frames and cause CRC errors.</p>
+
+    <h2 id="grounding">Signal Grounding</h2>
+    <p>RS485 needs a common ground reference between all devices. Use a third wire (in addition to A and B) connected to the signal ground terminal on each device. Without this, the common-mode voltage between devices can exceed the RS485 receiver's tolerance (typically ±7V), causing communication failure.</p>
+
+    <h2 id="common-mistakes">Common Field Wiring Mistakes</h2>
+    <ul>
+        <li><strong>Using Cat5/6 for long runs without shielding</strong> — Works for Ethernet but RS485 in industrial environments needs shielded cable</li>
+        <li><strong>Running RS485 in the same conduit as power cables</strong> — EMI from VFDs and motor cables destroys signal integrity</li>
+        <li><strong>Termination at every device</strong> — Only terminate at the two ends. Internal devices should have termination disabled</li>
+        <li><strong>Shield grounded at both ends</strong> — This creates a ground loop. Ground the shield at one end only</li>
+        <li><strong>Stub cables over 1m</strong> — Keep taps from the main bus to each device as short as possible</li>
+    </ul>
+
+    <div class="app-promo">
+        <div class="app-promo-badge">📊 Diagnostics</div>
+        <h4>Diagnose wiring issues with ModBus Pro</h4>
+        <p>ModBus Pro's communication log tracks response times and error counts for every request. Use the scheduled test feature to poll continuously and identify which devices on the bus have the slowest responses or highest failure rates — usually the one with the longest stub or the missing ground wire.</p>
+        <a href="../index.html#download" class="app-promo-cta">Download Free →</a>
+    </div>
+
+    <div class="related">
+        <h3>More Troubleshooting Guides</h3>
+        <div class="related-grid">
+        <a href="modbus-timeout-no-response.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Timeout &amp; No Response from Slave</h4>
+            <p>Fix Modbus timeout errors and no response from slave devices. Complete diagnosti...</p>
+        </a>
+        <a href="modbus-exception-code-01.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Exception Code 01: Illegal Function</h4>
+            <p>Fix Modbus exception code 01 (Illegal Function). Why your device rejects your fu...</p>
+        </a>
+        <a href="modbus-exception-code-02.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Exception Code 02: Illegal Data Address</h4>
+            <p>Fix Modbus exception code 02 (Illegal Data Address). Register numbering, 0-based...</p>
+        </a>
+        </div>
+    </div>
+</article>
+<aside class="sidebar">
+    <div class="toc"><div class="toc-title">On this page</div>
+        <a href="#topology">Correct Topology</a>
+        <a href="#polarity">Polarity Confusion</a>
+        <a href="#termination">Termination Resistors</a>
+        <a href="#grounding">Signal Grounding</a>
+        <a href="#common-mistakes">Common Field Mistakes</a>
+    </div>
+    <div class="sidebar-promo"><div class="icon">🔌</div><h4>Fix it faster with ModBus Pro</h4>
+        <p>Auto-scan, built-in device maps, and diagnostic tools that turn hours of troubleshooting into minutes.</p>
+        <a href="../index.html#download" class="app-promo-cta" style="font-size:.82rem;padding:.5rem 1.2rem;">Download Free →</a>
+    </div>
+</aside>
+</div></div>
+<footer><div class="container"><p>© 2026 modbus.app — Built by engineers who debug Modbus for a living.</p></div></footer>
+</body></html>

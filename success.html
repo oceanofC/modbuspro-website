@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Successful — ModBus Pro</title>
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--font-sans); background:var(--bg); color:var(--text); line-height:1.7; -webkit-font-smoothing:antialiased; min-height:100vh; display:flex; flex-direction:column; }
+
+/* NAV */
+.site-nav { position:fixed; top:0; left:0; right:0; z-index:100; background:rgba(10,14,23,0.85); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); }
+.nav-inner { max-width:1200px; margin:0 auto; padding:0.9rem 2rem; display:flex; align-items:center; justify-content:space-between; }
+.nav-logo { font-family:var(--font-mono); font-weight:700; font-size:1.1rem; color:var(--text); text-decoration:none; letter-spacing:-0.02em; }
+.nav-logo .dot { color:var(--green); }
+.nav-cta { background:var(--green); color:#0a0e17; padding:0.5rem 1.2rem; border-radius:8px; text-decoration:none; font-weight:600; font-size:0.85rem; }
+
+/* MAIN */
+.success-wrapper { flex:1; display:flex; align-items:center; justify-content:center; padding:8rem 2rem 4rem; }
+.success-card { max-width:520px; text-align:center; }
+.success-icon { width:80px; height:80px; margin:0 auto 2rem; background:var(--green-dim); border:2px solid var(--green-border); border-radius:50%; display:flex; align-items:center; justify-content:center; }
+.success-icon svg { width:40px; height:40px; stroke:var(--green); fill:none; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+h1 { font-size:2rem; font-weight:800; margin-bottom:0.75rem; }
+h1 span { color:var(--green); }
+.sub { color:var(--text-dim); font-size:1.1rem; margin-bottom:2rem; }
+.steps { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:2rem; text-align:left; margin-bottom:2rem; }
+.steps h3 { font-size:0.95rem; font-weight:700; margin-bottom:1rem; color:var(--green); font-family:var(--font-mono); }
+.steps ol { padding-left:1.5rem; color:var(--text-dim); }
+.steps li { margin-bottom:0.6rem; }
+.steps li strong { color:var(--text); }
+.links { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+.btn-primary { background:var(--green); color:#0a0e17; padding:0.75rem 2rem; border-radius:10px; text-decoration:none; font-weight:700; font-size:0.95rem; transition:all 0.2s; }
+.btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
+.btn-outline { background:transparent; color:var(--text); padding:0.75rem 2rem; border-radius:10px; text-decoration:none; font-weight:600; font-size:0.95rem; border:1px solid var(--border); transition:all 0.2s; }
+.btn-outline:hover { border-color:var(--green-border); color:var(--green); }
+.help { color:var(--text-muted); font-size:0.85rem; margin-top:2rem; }
+.help a { color:var(--green); text-decoration:none; }
+    </style>
+</head>
+<body>
+
+<nav class="site-nav"><div class="nav-inner">
+    <a href="index.html" class="nav-logo">modbus<span class="dot">.</span>app</a>
+    <a href="index.html#download" class="nav-cta">Download</a>
+</div></nav>
+
+<div class="success-wrapper">
+    <div class="success-card">
+        <div class="success-icon">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+
+        <h1>Thank you for your <span>purchase!</span></h1>
+        <p class="sub">Your license key has been sent to your email address.</p>
+
+        <div class="steps">
+            <h3>What's next?</h3>
+            <ol>
+                <li>Check your <strong>inbox</strong> for an email from <strong>license@modbus.app</strong></li>
+                <li>Open <strong>ModBus Pro</strong> and go to <strong>Settings</strong></li>
+                <li>Paste your license key and click <strong>Activate</strong></li>
+            </ol>
+        </div>
+
+        <div class="links">
+            <a href="index.html#download" class="btn-primary">Download ModBus Pro</a>
+            <a href="index.html" class="btn-outline">Back to Home</a>
+        </div>
+
+        <p class="help">Didn't get the email? Check your spam folder, or contact <a href="mailto:support@modbus.app">support@modbus.app</a></p>
+    </div>
+</div>
+
+</body>
+</html>

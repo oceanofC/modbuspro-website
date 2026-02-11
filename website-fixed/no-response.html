@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modbus No Response from Slave — Fix Guide | modbus.app</title>
+    <meta name="description" content="Fix 'no response from slave' Modbus errors. Step-by-step troubleshooting for RS-485 wiring, TCP connections, slave address mismatches, and timeout settings.">
+    <meta name="keywords" content="modbus no response, modbus slave not responding, modbus timeout no reply, modbus communication failure, modbus troubleshooting">
+    <style>
+/* modbus.app shared guide styles */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+
+/* HERO */
+.guide-hero {
+    padding: 8rem 2rem 4rem;
+    max-width: 860px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.guide-hero .breadcrumb {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.guide-hero .breadcrumb a { color: var(--green); text-decoration: none; }
+.guide-hero .breadcrumb a:hover { text-decoration: underline; }
+.guide-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.guide-hero .subtitle {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 640px;
+    line-height: 1.6;
+}
+.guide-hero .meta {
+    display: flex; gap: 1.5rem; margin-top: 1.5rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.guide-hero .meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border);
+}
+
+/* CONTENT */
+.guide-content {
+    max-width: 860px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+}
+.guide-content h2 {
+    font-size: 1.6rem; font-weight: 700; margin: 3rem 0 1rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.guide-content h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.guide-content h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+.guide-content p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-content ul, .guide-content ol {
+    margin: 0 0 1.5rem 1.5rem; color: var(--text-dim);
+}
+.guide-content li { margin-bottom: 0.5rem; }
+.guide-content strong { color: var(--text); font-weight: 600; }
+.guide-content a { color: var(--green); text-decoration: none; }
+.guide-content a:hover { text-decoration: underline; }
+
+/* CODE BLOCKS */
+pre {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    line-height: 1.65; color: var(--text-dim);
+}
+code {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--bg-code); padding: 0.15rem 0.4rem;
+    border-radius: 4px; color: var(--green);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+/* INFO BOXES */
+.info-box {
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; border-left: 3px solid;
+}
+.info-box.tip { background: var(--green-dim); border-color: var(--green); }
+.info-box.warning { background: var(--amber-dim); border-color: var(--amber); }
+.info-box.danger { background: var(--red-dim); border-color: var(--red); }
+.info-box.info { background: var(--blue-dim); border-color: var(--blue); }
+.info-box .box-title {
+    font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.info-box.tip .box-title { color: var(--green); }
+.info-box.warning .box-title { color: var(--amber); }
+.info-box.danger .box-title { color: var(--red); }
+.info-box.info .box-title { color: var(--blue); }
+.info-box p { margin-bottom: 0.5rem; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h3 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; }
+.app-promo .cta-btn {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+
+/* TABLE */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0 1.5rem; font-size: 0.9rem;
+}
+.data-table th {
+    background: var(--bg-card); color: var(--green);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.75rem 1rem;
+    text-align: left; border-bottom: 2px solid var(--green-border);
+}
+.data-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table code { font-size: 0.8rem; }
+
+/* RELATED GUIDES */
+.related-guides {
+    margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+.related-guides h2 { border-top: none; padding-top: 0; }
+.guides-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem; margin-top: 1.5rem;
+}
+.guide-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    text-decoration: none; transition: all 0.2s;
+}
+.guide-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.guide-card .card-title {
+    color: var(--text); font-weight: 600; font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+.guide-card .card-desc {
+    color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.site-footer a { color: var(--green); text-decoration: none; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .guide-hero { padding: 6rem 1rem 3rem; }
+    .guide-content { padding: 2rem 1rem 4rem; }
+    .guide-hero .meta { flex-wrap: wrap; }
+}
+
+</style>
+</head>
+<body>
+    <nav class="site-nav">
+        <a href="../index.html" class="nav-logo">modbus<span class="dot">.</span>app</a>
+        <ul class="nav-links">
+            <li><a href="../index.html#features">Features</a></li>
+            <li><a href="../number-converter.html">Converter</a></li>
+            <li><a href="../read-modbus-data.html">Guides</a></li>
+        </ul>
+        <a href="../index.html#download" class="nav-cta">Download Free</a>
+    </nav>
+
+    <header class="guide-hero">
+        <div class="breadcrumb"><a href="../index.html">modbus.app</a> / <a href="../read-modbus-data.html">Guides</a> / No Response</div>
+        <h1>Modbus "No Response from Slave" — Complete Fix Guide</h1>
+        <p class="subtitle">The most common Modbus failure. Your master sends a request, but nothing comes back. Here's a systematic approach to diagnose and fix it in minutes, not hours.</p>
+        <div class="meta">
+            <span class="tag">Troubleshooting</span>
+            <span>Updated Feb 2026</span>
+            <span>8 min read</span>
+        </div>
+    </header>
+
+    <article class="guide-content">
+
+        <h2>Why This Happens</h2>
+        <p>A "no response" means your Modbus master sent a valid request frame, but received absolutely nothing back within the timeout period. This is distinct from an exception response (where the slave replies with an error code) — here, the slave is either not receiving your request, or not able to reply.</p>
+
+        <h2>Quick Checklist (Fix 80% of Cases)</h2>
+        <p>Before going deep, run through these in order. Most "no response" issues are caught in the first five checks:</p>
+        <ol>
+            <li><strong>Is the slave powered on?</strong> — Yes, this happens. Especially during commissioning when circuits are being energised in phases.</li>
+            <li><strong>Is Modbus enabled on the slave?</strong> — Many devices ship with Modbus communication disabled by default. Check the device settings/menu.</li>
+            <li><strong>Does the slave address match?</strong> — Verify the Unit ID / slave address configured on the device matches what your master is polling. Default is often 1, but not always.</li>
+            <li><strong>Are comm parameters identical?</strong> — For RTU: baud rate, parity, data bits, and stop bits must be exactly the same on both sides.</li>
+            <li><strong>Is the cable connected and correct?</strong> — For RS-485: check A/B polarity. For TCP: can you ping the IP address?</li>
+        </ol>
+
+        <div class="info-box tip">
+            <div class="box-title">💡 ModBus Pro Shortcut</div>
+            <p>ModBus Pro's <strong>Auto-Scan</strong> probes configurable ranges of slave addresses and register addresses to discover which ones respond. Combined with 30+ built-in device profiles, it dramatically reduces setup time. <a href="../index.html#download">Try it free →</a></p>
+        </div>
+
+        <h2>Modbus RTU (Serial) Diagnostics</h2>
+
+        <h3>1. Verify Wiring</h3>
+        <p>RS-485 is a differential signal using two wires. The naming convention is a mess across manufacturers:</p>
+        <table class="data-table">
+            <thead>
+                <tr><th>Manufacturer</th><th>Positive Line</th><th>Negative Line</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Modbus Standard</td><td>D1 / A</td><td>D0 / B</td></tr>
+                <tr><td>ABB Relays</td><td>A (−)</td><td>B (+)</td></tr>
+                <tr><td>Schneider</td><td>D1 (+)</td><td>D0 (−)</td></tr>
+                <tr><td>Siemens</td><td>A / P+</td><td>B / N−</td></tr>
+            </tbody>
+        </table>
+        <p>The safest approach: if you get no response, <strong>swap A and B</strong>. It won't damage anything and it's the most common wiring mistake.</p>
+
+        <h3>2. Check Termination Resistors</h3>
+        <p>RS-485 networks need 120Ω termination resistors at <strong>both ends</strong> of the bus (not at every device). Missing termination causes signal reflections that corrupt frames — the slave receives garbage and doesn't respond.</p>
+
+        <h3>3. Ground Reference</h3>
+        <p>Despite being called "2-wire," RS-485 needs a common ground reference between master and slave. Without it, the common-mode voltage can exceed the receiver's range, especially over long cable runs or between different power sources.</p>
+
+        <h3>4. Baud Rate & Framing</h3>
+        <p>Every parameter must match exactly:</p>
+        <pre>Master:  9600 baud, 8 data bits, Even parity, 1 stop bit
+Slave:   9600 baud, 8 data bits, Even parity, 1 stop bit
+         ↑ ALL must be identical</pre>
+
+        <div class="info-box warning">
+            <div class="box-title">⚠ The Parity/Stop Bit Trap</div>
+            <p>The Modbus spec says: if parity is None, use 2 stop bits. But many devices don't support 2 stop bits and just use 1. If you've set "None" parity with 1 stop bit on one side and 2 on the other, you'll get intermittent failures or complete silence. Switch to <strong>Even parity, 1 stop bit</strong> to avoid this entirely.</p>
+        </div>
+
+        <h2>Modbus TCP Diagnostics</h2>
+
+        <h3>1. Network Layer First</h3>
+        <pre># Can you reach the device?
+ping 192.168.1.100
+
+# Is port 502 open?
+telnet 192.168.1.100 502
+
+# Or use netcat
+nc -zv 192.168.1.100 502</pre>
+        <p>If ping fails, the problem is IP/subnet/VLAN configuration — not Modbus. If ping works but port 502 is refused, the device's Modbus service may be disabled or a firewall is blocking it.</p>
+
+        <h3>2. Unit ID for TCP</h3>
+        <p>Modbus TCP still uses a Unit Identifier (like slave address). For direct device connections, try Unit ID <code>1</code> or <code>0</code> (some devices accept either). For gateways that bridge TCP to RTU, the Unit ID maps to the downstream RS-485 slave address.</p>
+
+        <h3>3. Connection Limits</h3>
+        <p>Many industrial devices only allow 2-5 simultaneous TCP connections. If your SCADA is connected, an HMI is connected, and then you try a diagnostic tool — the device may reject the new connection silently. Close other connections or check the device's max connection setting.</p>
+
+        <h2>Still No Response? Advanced Diagnostics</h2>
+
+        <h3>Use a Protocol Analyser</h3>
+        <p>For RTU: use a second USB-RS485 adapter in listen-only mode to see what's actually on the bus. You should see your master's request frames. If you don't, the problem is between your master and the bus. If you see requests but no replies, the slave is the issue.</p>
+        <p>For TCP: use Wireshark with a Modbus TCP dissector. Filter on <code>tcp.port == 502</code> and check whether responses are being sent.</p>
+
+        <div class="app-promo">
+            <h3>🔍 Built-In Traffic Analyser</h3>
+            <p>ModBus Pro includes a <strong>communication log</strong> that records every request and response with function codes, register addresses, values, and response times. Filter by type, search entries, and export for analysis.</p>
+            <a href="../index.html#download" class="cta-btn">Download ModBus Pro →</a>
+        </div>
+
+        <h3>Check the Slave's Diagnostic Counters</h3>
+        <p>Many devices maintain internal communication counters accessible through their local HMI or web interface. Check for:</p>
+        <ul>
+            <li><strong>Messages received</strong> — if this is incrementing, the slave IS receiving your requests (problem is in the reply path)</li>
+            <li><strong>CRC errors</strong> — the slave is receiving corrupted data (wiring/EMI issue)</li>
+            <li><strong>Exception responses sent</strong> — the slave is replying, but something is eating the response on the way back</li>
+        </ul>
+
+        <div class="related-guides">
+            <h2>Related Guides</h2>
+            <div class="guides-grid">
+                <a href="rs485-wiring.html" class="guide-card">
+                    <div class="card-title">RS-485 Wiring Problems</div>
+                    <div class="card-desc">Polarity, termination, grounding — the physical layer done right.</div>
+                </a>
+                <a href="timeout-errors.html" class="guide-card">
+                    <div class="card-title">Modbus Timeout Errors</div>
+                    <div class="card-desc">When the slave responds too slowly or not at all.</div>
+                </a>
+                <a href="exception-codes.html" class="guide-card">
+                    <div class="card-title">Exception Codes Explained</div>
+                    <div class="card-desc">If you ARE getting a reply — decode what it means.</div>
+                </a>
+                <a href="tcp-connection-refused.html" class="guide-card">
+                    <div class="card-title">TCP Connection Refused</div>
+                    <div class="card-desc">IP, port, firewall, and connection limit troubleshooting.</div>
+                </a>
+            </div>
+        </div>
+    </article>
+
+    <footer class="site-footer">
+        <p>© 2026 <a href="../index.html">modbus.app</a> — Built by engineers who've debugged enough registers for a lifetime.</p>
+    </footer>
+</body>
+</html>

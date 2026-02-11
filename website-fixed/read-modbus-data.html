@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Read Data from Any Modbus Device — Complete Guide | modbus.app</title>
+    <meta name="description" content="Step-by-step guide to reading Modbus registers from ABB REF615, REX615, energy meters, and more. Includes register maps, function codes, and common pitfalls.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+/* modbus.app shared guide styles */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+
+/* HERO */
+.guide-hero {
+    padding: 8rem 2rem 4rem;
+    max-width: 860px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.guide-hero .breadcrumb {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.guide-hero .breadcrumb a { color: var(--green); text-decoration: none; }
+.guide-hero .breadcrumb a:hover { text-decoration: underline; }
+.guide-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.guide-hero .subtitle {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 640px;
+    line-height: 1.6;
+}
+.guide-hero .meta {
+    display: flex; gap: 1.5rem; margin-top: 1.5rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.guide-hero .meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border);
+}
+
+/* CONTENT */
+.guide-content {
+    max-width: 860px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+}
+.guide-content h2 {
+    font-size: 1.6rem; font-weight: 700; margin: 3rem 0 1rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.guide-content h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.guide-content h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+.guide-content p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-content ul, .guide-content ol {
+    margin: 0 0 1.5rem 1.5rem; color: var(--text-dim);
+}
+.guide-content li { margin-bottom: 0.5rem; }
+.guide-content strong { color: var(--text); font-weight: 600; }
+.guide-content a { color: var(--green); text-decoration: none; }
+.guide-content a:hover { text-decoration: underline; }
+
+/* CODE BLOCKS */
+pre {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    line-height: 1.65; color: var(--text-dim);
+}
+code {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--bg-code); padding: 0.15rem 0.4rem;
+    border-radius: 4px; color: var(--green);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+/* INFO BOXES */
+.info-box {
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; border-left: 3px solid;
+}
+.info-box.tip { background: var(--green-dim); border-color: var(--green); }
+.info-box.warning { background: var(--amber-dim); border-color: var(--amber); }
+.info-box.danger { background: var(--red-dim); border-color: var(--red); }
+.info-box.info { background: var(--blue-dim); border-color: var(--blue); }
+.info-box .box-title {
+    font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.info-box.tip .box-title { color: var(--green); }
+.info-box.warning .box-title { color: var(--amber); }
+.info-box.danger .box-title { color: var(--red); }
+.info-box.info .box-title { color: var(--blue); }
+.info-box p { margin-bottom: 0.5rem; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h3 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; }
+.app-promo .cta-btn {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+
+/* TABLE */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0 1.5rem; font-size: 0.9rem;
+}
+.data-table th {
+    background: var(--bg-card); color: var(--green);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.75rem 1rem;
+    text-align: left; border-bottom: 2px solid var(--green-border);
+}
+.data-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table code { font-size: 0.8rem; }
+
+/* RELATED GUIDES */
+.related-guides {
+    margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+.related-guides h2 { border-top: none; padding-top: 0; }
+.guides-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem; margin-top: 1.5rem;
+}
+.guide-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    text-decoration: none; transition: all 0.2s;
+}
+.guide-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.guide-card .card-title {
+    color: var(--text); font-weight: 600; font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+.guide-card .card-desc {
+    color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.site-footer a { color: var(--green); text-decoration: none; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .guide-hero { padding: 6rem 1rem 3rem; }
+    .guide-content { padding: 2rem 1rem 4rem; }
+    .guide-hero .meta { flex-wrap: wrap; }
+}
+
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+    <a href="index.html" class="logo"><div class="logo-mark">M</div><div class="logo-text">modbus<span>.app</span></div></a>
+    <ul class="nav-links"><li><a href="index.html">Product</a></li><li><a href="number-converter.html">Converter</a></li><li><a href="read-modbus-data.html">Guides</a></li><li><a href="guides/">Troubleshooting</a></li></ul>
+    <a href="index.html#download" class="nav-cta">Download Free →</a>
+</div></nav>
+<div class="container"><div class="guide-layout">
+<article>
+    <div class="breadcrumbs"><a href="index.html">Home</a> / <a href="read-modbus-data.html">Guides</a> / Reading Modbus Data</div>
+    <h1>How to Read Data from Any Modbus Slave Device</h1>
+    <div class="article-meta"><span class="tag">GUIDE</span><span>Updated Feb 2026</span><span>15 min read</span></div>
+
+    <p>Whether you're connecting to an ABB protection relay, a Schneider energy meter, or a generic Modbus slave — the process follows the same fundamental steps. This guide walks through everything from finding the right register map to handling float32 byte ordering, using real-world examples from ABB REF615/REX615 relays, ABB M4M meters, and Phoenix Contact PLCnext controllers.</p>
+
+    <div class="app-promo">
+        <div class="app-promo-badge">⚡ Skip the manual work</div>
+        <h4>ModBus Pro has built-in register maps for 30+ industrial devices</h4>
+        <p>Stop hunting through PDFs for register addresses. ModBus Pro ships with pre-loaded Modbus maps for ABB, Schneider, Siemens, Phoenix Contact, and more — with new devices added regularly. Auto-scan any device on your network and instantly see every register, correctly decoded.</p>
+        <div class="app-promo-features">
+            <div class="app-promo-feature"><span class="check">✓</span> Auto-scan &amp; discover devices</div>
+            <div class="app-promo-feature"><span class="check">✓</span> 30+ built-in register maps</div>
+            <div class="app-promo-feature"><span class="check">✓</span> Compare all byte orders side-by-side</div>
+            <div class="app-promo-feature"><span class="check">✓</span> Live register monitoring</div>
+        </div>
+        <a href="index.html#download" class="app-promo-cta">Try Free — No signup required →</a>
+    </div>
+
+    <h2 id="before-you-start">Before You Start — What You Need</h2>
+    <p>To read Modbus data from any device, you need three things: the device's Modbus register map (or a tool that has it built-in), a connection method (RS485 serial or TCP/IP Ethernet), and a Modbus master/client to send requests.</p>
+    <p>The register map is the critical piece. It tells you which register addresses hold which values, what data type each register uses (UINT16, INT32, FLOAT32, etc.), and which Modbus function code to use. Without the correct register map, you're flying blind — and this is where most engineers lose hours.</p>
+
+    <div class="info-box tip">
+        <div class="info-title">💡 Pro Tip: Auto-Scan Instead of Searching</div>
+        <p>Rather than spending 30 minutes tracking down a PDF register map from a manufacturer's website, ModBus Pro's <strong>Auto-Scan</strong> feature probes register address ranges to discover which registers respond on your device. Combined with the built-in library of 30+ device profiles that you can load with one click, it replaces all the manual steps below.</p>
+    </div>
+
+    <h2 id="step-1">Step 1 — Find the Register Map</h2>
+    <p>Every Modbus slave device has a register map — a document that defines what data lives at which address. For example, an ABB REX615 protection relay publishes its map in the "Modbus Protocol" technical document (2NGA001860), while ABB M4M energy meters use a completely different map starting at register 0x5B00 (23296 decimal).</p>
+    <h3>Where manufacturers hide the register map</h3>
+    <p>The map is typically found in the device's "Communication Protocol" or "Modbus Protocol" manual — not the main user guide. For ABB devices, check <em>library.e.abb.com</em>. For Schneider, check the "Modbus" section of the device's ION setup guide.</p>
+
+    <div class="info-box warning">
+        <div class="info-title">⚠ Common Trap: Wrong Register Map</div>
+        <p>Many ABB meters share similar housings but have completely different register maps. An M4M 20, M4M 30, and MVM all look the same but use different starting addresses. We've seen sites where voltage and current read correctly but power values were garbage — the registers overlapped by coincidence for V and I but diverged for P and Q.</p>
+    </div>
+
+    <div class="app-promo">
+        <div class="app-promo-badge">🗂 Built-in Maps</div>
+        <h4>Skip the PDF hunt entirely</h4>
+        <p>ModBus Pro ships with verified register maps for these device families and more — with new devices added regularly:</p>
+        <div class="app-promo-features">
+            <div class="app-promo-feature"><span class="check">✓</span> ABB REF/REX 6xx relays</div>
+            <div class="app-promo-feature"><span class="check">✓</span> ABB M4M / MVM meters</div>
+            <div class="app-promo-feature"><span class="check">✓</span> Schneider PM5xxx</div>
+            <div class="app-promo-feature"><span class="check">✓</span> Siemens PAC series</div>
+            <div class="app-promo-feature"><span class="check">✓</span> Eastron SDM meters</div>
+            <div class="app-promo-feature"><span class="check">✓</span> Carlo Gavazzi analyzers</div>
+        </div>
+        <p>Each map is tested against real hardware and includes the correct byte order, data types, and scaling factors.</p>
+        <a href="index.html#download" class="app-promo-cta">Browse Device Library →</a>
+    </div>
+
+    <h2 id="step-2">Step 2 — Understand Function Codes</h2>
+    <p>Modbus defines different function codes for different types of data:</p>
+    <table class="register-table"><thead><tr><th>FC</th><th>Name</th><th>Usage</th><th>Range</th></tr></thead><tbody>
+        <tr><td class="addr">01</td><td>Read Coils</td><td>Digital outputs (R/W)</td><td class="type">0xxxx</td></tr>
+        <tr><td class="addr">02</td><td>Read Discrete Inputs</td><td>Digital inputs (RO)</td><td class="type">1xxxx</td></tr>
+        <tr><td class="addr">03</td><td>Read Holding Registers</td><td>Analog values (R/W)</td><td class="type">4xxxx</td></tr>
+        <tr><td class="addr">04</td><td>Read Input Registers</td><td>Analog inputs (RO)</td><td class="type">3xxxx</td></tr>
+    </tbody></table>
+    <p>For power monitoring — meters, relays, EMS systems — you'll almost always use FC03 or FC04. The ABB REX615 uses FC03 for measurement data starting around register 2999.</p>
+
+    <h2 id="step-3">Step 3 — Read Your First Registers</h2>
+    <p>Practical example reading voltage from an ABB energy meter at register 23296 (0x5B00):</p>
+    <div class="code-block"><div class="code-header"><span class="lang">Modbus Request</span><span>FC03 Read Holding Registers</span></div>
+    <div class="code-content"><span class="comment">// Request frame breakdown</span>
+Slave Address:  <span class="number">0x01</span>          <span class="comment">// Device ID 1</span>
+Function Code:  <span class="number">0x03</span>          <span class="comment">// Read Holding Registers</span>
+Start Register: <span class="register">0x5B00</span>        <span class="comment">// 23296 decimal</span>
+Quantity:       <span class="number">0x0024</span>        <span class="comment">// 36 registers (18x FLOAT32)</span>
+CRC:            <span class="number">0xXXXX</span>        <span class="comment">// Auto-calculated</span>
+
+<span class="comment">// Response register map:</span>
+<span class="register">23296-23297</span>:  <span class="string">Voltage 3-Phase Avg</span>  (FLOAT32)
+<span class="register">23298-23299</span>:  <span class="string">Voltage L1-N</span>         (FLOAT32)
+<span class="register">23300-23301</span>:  <span class="string">Voltage L2-N</span>         (FLOAT32)
+<span class="register">23302-23303</span>:  <span class="string">Voltage L3-N</span>         (FLOAT32)
+<span class="register">23316-23317</span>:  <span class="string">Active Power Total</span>   (FLOAT32)
+<span class="register">23318-23319</span>:  <span class="string">Reactive Power Total</span> (FLOAT32)</div></div>
+
+    <h2 id="step-4">Step 4 — Handle Data Types Correctly</h2>
+    <p>A Modbus register is 16 bits. Real-world values don't fit in 16 bits, so manufacturers pack them across multiple registers:</p>
+    <table class="register-table"><thead><tr><th>Type</th><th>Regs</th><th>Range</th><th>Example Use</th></tr></thead><tbody>
+        <tr><td>UINT16</td><td class="addr">1</td><td>0 – 65,535</td><td class="type">Status codes, counters</td></tr>
+        <tr><td>INT16</td><td class="addr">1</td><td>-32,768 – 32,767</td><td class="type">Temperature</td></tr>
+        <tr><td>UINT32/INT32</td><td class="addr">2</td><td>0 – 4.29B</td><td class="type">Energy totals</td></tr>
+        <tr><td>FLOAT32</td><td class="addr">2</td><td>±3.4×10³⁸</td><td class="type">Voltage, current, power</td></tr>
+    </tbody></table>
+
+    <div class="info-box danger">
+        <div class="info-title">🔥 The #1 Modbus Headache: Byte Order</div>
+        <p>The same 4 bytes can be interpreted 4 ways: <strong>ABCD</strong> (big-endian), <strong>CDAB</strong> (word swap), <strong>BADC</strong> (byte swap), or <strong>DCBA</strong> (little-endian). If your voltage reads as <code>2.84e-29</code> instead of <code>236.4</code>, your byte order is wrong.</p>
+        <p>Use our <a href="number-converter.html">Modbus Number Converter</a> to test all 4 byte orders — or let ModBus Pro show all four interpretations side-by-side.</p>
+    </div>
+
+    <h2 id="step-5">Step 5 — Verify with a Known Value</h2>
+    <p>Always start by reading a register whose value you can physically verify. Voltage is ideal — measure with a multimeter, compare to your Modbus read. If they match, your connection, address, function code, and byte order are all correct.</p>
+
+    <h2 id="device-examples">Real-World Device Examples</h2>
+    <h3>ABB REX615 / REF615 Protection Relay</h3>
+    <p>FC03, FLOAT32 values, big-endian (ABCD). Measurements start around register 2999. Available registers depend on configured protection functions.</p>
+    <h3>ABB M4M / EV3 Energy Meters</h3>
+    <p>Start at 23296 (0x5B00). FLOAT32 ABCD. Critical gotcha: active/reactive power registers aren't contiguous with voltage/current — there are gaps in the map.</p>
+    <h3>Envision EMS (BESS)</h3>
+    <p>FC03 with mixed UINT16 status words and signed INT16/INT32 for power (signed because charge/discharge).</p>
+
+    <div class="app-promo">
+        <div class="app-promo-badge">🔍 Auto-Scan</div>
+        <h4>Don't create your own register maps</h4>
+        <p>ModBus Pro's Auto-Scan probes register address ranges across configurable slave IDs to discover which addresses respond. Select from the built-in device library to load verified register maps with correct data types and byte ordering — or use Auto-Scan results to build a custom map for unknown devices.</p>
+        <a href="index.html#download" class="app-promo-cta">Download ModBus Pro →</a>
+    </div>
+
+    <h2 id="common-pitfalls">Common Pitfalls</h2>
+    <h3>Reading garbage values?</h3>
+    <p>Check byte order first (ABCD vs CDAB), then confirm register count for data type (2 for FLOAT32). Finally verify the function code — some devices respond to FC03 but not FC04 for the same addresses.</p>
+    <h3>Exception Code 02 — Illegal Data Address?</h3>
+    <p>Register maps are often 1-based in docs but 0-based on the wire. Manual says 40001? Send address 0. See our <a href="guides/modbus-register-offset.html">Register Offset Guide</a>.</p>
+    <h3>Timeout / No response?</h3>
+    <p>Check slave ID, baud rate (RTU), or IP/port (TCP). For RS485, reversed A/B lines cause silence, not errors. See our <a href="guides/modbus-timeout-no-response.html">Timeout Guide</a>.</p>
+
+    <div class="related">
+        <h3>Troubleshooting Guides</h3>
+        <div class="related-grid">
+            <a href="guides/modbus-timeout-no-response.html" class="related-card"><div class="card-tag">TROUBLESHOOTING</div><h4>Timeout / No Response</h4><p>Complete diagnostic flowchart for silent slaves.</p></a>
+            <a href="guides/modbus-wrong-values-byte-order.html" class="related-card"><div class="card-tag">DATA TYPES</div><h4>Wrong Values &amp; Byte Order</h4><p>ABCD, CDAB, BADC, DCBA — decode Float32 correctly.</p></a>
+            <a href="guides/modbus-exception-code-02.html" class="related-card"><div class="card-tag">EXCEPTION CODES</div><h4>Exception Code 02</h4><p>Illegal Data Address — why and how to fix it.</p></a>
+        </div>
+    </div>
+</article>
+<aside class="sidebar">
+    <div class="toc"><div class="toc-title">On this page</div>
+        <a href="#before-you-start">Before You Start</a>
+        <a href="#step-1">1. Find the Register Map</a>
+        <a href="#step-2">2. Function Codes</a>
+        <a href="#step-3">3. Read First Registers</a>
+        <a href="#step-4">4. Handle Data Types</a>
+        <a href="#step-5">5. Verify Known Value</a>
+        <a href="#device-examples">Device Examples</a>
+        <a href="#common-pitfalls">Common Pitfalls</a>
+    </div>
+    <div class="sidebar-promo"><div class="icon">🔌</div><h4>Stop guessing registers</h4><p>Auto-scan devices and load verified register maps for 30+ industrial devices.</p>
+        <a href="index.html#download" class="app-promo-cta" style="font-size:.82rem;padding:.5rem 1.2rem;">Download Free →</a>
+    </div>
+</aside>
+</div></div>
+<footer><div class="container"><p>© 2026 modbus.app — Built by engineers who've spent too long debugging byte order issues.</p></div></footer>
+</body></html>

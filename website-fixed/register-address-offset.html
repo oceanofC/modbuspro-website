@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modbus Register Address Offset (0 vs 1 Based) Explained | modbus.app</title>
+    <meta name="description" content="Understand the Modbus register address offset. Why documentation says 40001 but the wire address is 0. Fix off-by-one errors and the 30001/40001 convention.">
+    <style>
+/* modbus.app shared guide styles */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+
+/* HERO */
+.guide-hero {
+    padding: 8rem 2rem 4rem;
+    max-width: 860px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.guide-hero .breadcrumb {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.guide-hero .breadcrumb a { color: var(--green); text-decoration: none; }
+.guide-hero .breadcrumb a:hover { text-decoration: underline; }
+.guide-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.guide-hero .subtitle {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 640px;
+    line-height: 1.6;
+}
+.guide-hero .meta {
+    display: flex; gap: 1.5rem; margin-top: 1.5rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.guide-hero .meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border);
+}
+
+/* CONTENT */
+.guide-content {
+    max-width: 860px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+}
+.guide-content h2 {
+    font-size: 1.6rem; font-weight: 700; margin: 3rem 0 1rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.guide-content h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.guide-content h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+.guide-content p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-content ul, .guide-content ol {
+    margin: 0 0 1.5rem 1.5rem; color: var(--text-dim);
+}
+.guide-content li { margin-bottom: 0.5rem; }
+.guide-content strong { color: var(--text); font-weight: 600; }
+.guide-content a { color: var(--green); text-decoration: none; }
+.guide-content a:hover { text-decoration: underline; }
+
+/* CODE BLOCKS */
+pre {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    line-height: 1.65; color: var(--text-dim);
+}
+code {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--bg-code); padding: 0.15rem 0.4rem;
+    border-radius: 4px; color: var(--green);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+/* INFO BOXES */
+.info-box {
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; border-left: 3px solid;
+}
+.info-box.tip { background: var(--green-dim); border-color: var(--green); }
+.info-box.warning { background: var(--amber-dim); border-color: var(--amber); }
+.info-box.danger { background: var(--red-dim); border-color: var(--red); }
+.info-box.info { background: var(--blue-dim); border-color: var(--blue); }
+.info-box .box-title {
+    font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.info-box.tip .box-title { color: var(--green); }
+.info-box.warning .box-title { color: var(--amber); }
+.info-box.danger .box-title { color: var(--red); }
+.info-box.info .box-title { color: var(--blue); }
+.info-box p { margin-bottom: 0.5rem; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h3 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; }
+.app-promo .cta-btn {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+
+/* TABLE */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0 1.5rem; font-size: 0.9rem;
+}
+.data-table th {
+    background: var(--bg-card); color: var(--green);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.75rem 1rem;
+    text-align: left; border-bottom: 2px solid var(--green-border);
+}
+.data-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table code { font-size: 0.8rem; }
+
+/* RELATED GUIDES */
+.related-guides {
+    margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+.related-guides h2 { border-top: none; padding-top: 0; }
+.guides-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem; margin-top: 1.5rem;
+}
+.guide-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    text-decoration: none; transition: all 0.2s;
+}
+.guide-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.guide-card .card-title {
+    color: var(--text); font-weight: 600; font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+.guide-card .card-desc {
+    color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.site-footer a { color: var(--green); text-decoration: none; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .guide-hero { padding: 6rem 1rem 3rem; }
+    .guide-content { padding: 2rem 1rem 4rem; }
+    .guide-hero .meta { flex-wrap: wrap; }
+}
+
+</style>
+</head>
+<body>
+    <nav class="site-nav">
+        <a href="../index.html" class="nav-logo">modbus<span class="dot">.</span>app</a>
+        <ul class="nav-links"><li><a href="../index.html#features">Features</a></li><li><a href="../number-converter.html">Converter</a></li><li><a href="../read-modbus-data.html">Guides</a></li></ul>
+        <a href="../index.html#download" class="nav-cta">Download Free</a>
+    </nav>
+
+    <header class="guide-hero">
+        <div class="breadcrumb"><a href="../index.html">modbus.app</a> / <a href="../read-modbus-data.html">Guides</a> / Register Offset</div>
+        <h1>Modbus Register Address Offset — The 0 vs 1 Trap</h1>
+        <p class="subtitle">The documentation says register 40001. You type 40001 into your tool. You get Exception 02. The actual wire address is 0. Welcome to the most confusing convention in industrial automation.</p>
+        <div class="meta">
+            <span class="tag">Fundamentals</span>
+            <span>Updated Feb 2026</span>
+            <span>6 min read</span>
+        </div>
+    </header>
+
+    <article class="guide-content">
+
+        <h2>The Problem</h2>
+        <p>Modbus has a legacy numbering system from the original Modicon PLCs that adds a prefix to indicate the register type, and uses <strong>1-based numbering</strong>. But the actual protocol on the wire uses <strong>0-based addressing</strong> with no prefix. The result: the same register can be described as "40001" in documentation and as address "0" in the Modbus frame.</p>
+
+        <h2>The Modicon Numbering Convention</h2>
+        <table class="data-table">
+            <thead>
+                <tr><th>Modicon Range</th><th>Type</th><th>Function Code</th><th>Wire Address</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>00001–09999</code></td><td>Coils (R/W bits)</td><td>FC01 / FC05 / FC15</td><td><code>0–9998</code></td></tr>
+                <tr><td><code>10001–19999</code></td><td>Discrete Inputs (RO bits)</td><td>FC02</td><td><code>0–9998</code></td></tr>
+                <tr><td><code>30001–39999</code></td><td>Input Registers (RO)</td><td>FC04</td><td><code>0–9998</code></td></tr>
+                <tr><td><code>40001–49999</code></td><td>Holding Registers (R/W)</td><td>FC03 / FC06 / FC16</td><td><code>0–9998</code></td></tr>
+            </tbody>
+        </table>
+        <p>So "register 40001" means: <strong>Holding Register</strong> (the 4xxxx prefix), at <strong>address 0</strong> (40001 - 40001 = 0), using <strong>function code 03</strong>.</p>
+        <p>And "register 30005" means: <strong>Input Register</strong> (the 3xxxx prefix), at <strong>address 4</strong> (30005 - 30001 = 4), using <strong>function code 04</strong>.</p>
+
+        <div class="info-box danger">
+            <div class="box-title">🔥 The Off-by-One Error</div>
+            <p>Some documentation uses 0-based numbering without the prefix. Some uses 1-based WITH the prefix. Some uses 1-based WITHOUT the prefix. You need to determine which convention your specific documentation uses, or you'll be permanently off by one on every register.</p>
+        </div>
+
+        <h2>How to Tell Which Convention a Document Uses</h2>
+        <ol>
+            <li><strong>Look for numbers starting with 3xxxx or 4xxxx</strong> — if you see "40001", it's the Modicon convention. Subtract the prefix (40001) to get wire address 0.</li>
+            <li><strong>Look for "register 1" as the first register</strong> — if the first register is listed as "1" (not "0"), it's 1-based. Subtract 1 for the wire address.</li>
+            <li><strong>Look for "register 0" or "address 0"</strong> — this is the actual wire address format. No conversion needed.</li>
+            <li><strong>Check hex addresses</strong> — if the doc shows <code>0x0000</code> as the first address, it's 0-based wire addressing.</li>
+        </ol>
+
+        <h3>Real-World Example</h3>
+        <p>ABB REX615 documentation lists "Voltage L1" at Modbus address <code>2999</code> (0-based, hex <code>0x0BB7</code>). This is the actual wire address — type 2999 directly into your Modbus tool. No offset needed.</p>
+        <p>Some Schneider meters list "Voltage L1" at register <code>30001</code>. This means Input Register at wire address <code>0</code>, read with FC04.</p>
+
+        <div class="app-promo">
+            <h3>🎯 No More Offset Guessing</h3>
+            <p>ModBus Pro's <strong>built-in device maps</strong> use the correct wire addresses for each device. When you select "ABB REX615" from the library, every register address is ready to use — no Modicon-to-wire conversion needed.</p>
+            <a href="../index.html#download" class="cta-btn">Try it Free →</a>
+        </div>
+
+        <h2>Quick Conversion Rules</h2>
+        <pre>Modicon → Wire Address:
+  40001 → FC03, Address 0
+  40100 → FC03, Address 99
+  30001 → FC04, Address 0
+  30100 → FC04, Address 99
+
+1-based → Wire Address:
+  Register 1 → Address 0
+  Register 100 → Address 99
+
+0-based (already wire address):
+  Address 0 → Address 0
+  Address 2999 → Address 2999</pre>
+
+        <div class="info-box tip">
+            <div class="box-title">💡 Quick Test</div>
+            <p>If you get Exception 02 (Illegal Data Address) and you're confident the register should exist, try address-1 and address+1. If one of those works, you had an offset error.</p>
+        </div>
+
+        <div class="related-guides">
+            <h2>Related Guides</h2>
+            <div class="guides-grid">
+                <a href="exception-codes.html" class="guide-card"><div class="card-title">Exception Codes Explained</div><div class="card-desc">Understanding Exception 02 and other error responses.</div></a>
+                <a href="illegal-data-address.html" class="guide-card"><div class="card-title">Illegal Data Address Deep Dive</div><div class="card-desc">Advanced troubleshooting when register addresses don't work.</div></a>
+                <a href="float32-byte-order.html" class="guide-card"><div class="card-title">Float32 Byte Order</div><div class="card-desc">The next trap after addressing — data type interpretation.</div></a>
+                <a href="../read-modbus-data.html" class="guide-card"><div class="card-title">How to Read Modbus Data</div><div class="card-desc">The complete guide from connection to live data.</div></a>
+            </div>
+        </div>
+    </article>
+
+    <footer class="site-footer"><p>© 2026 <a href="../index.html">modbus.app</a> — Built by engineers who've debugged enough registers for a lifetime.</p></footer>
+</body>
+</html>

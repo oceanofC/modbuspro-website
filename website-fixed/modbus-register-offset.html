@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modbus Register Offset Explained — 0-Based vs 1-Based Addressing | modbus.app</title>
+    <meta name="description" content="Understand Modbus register addressing. 0-based vs 1-based, the 40001 prefix convention, and how different tools handle offsets.">
+    <meta name="keywords" content="modbus register offset, modbus 0-based vs 1-based, modbus 40001 address, modbus register numbering, modbus addressing explained">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+/* modbus.app shared guide styles */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+
+/* HERO */
+.guide-hero {
+    padding: 8rem 2rem 4rem;
+    max-width: 860px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.guide-hero .breadcrumb {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.guide-hero .breadcrumb a { color: var(--green); text-decoration: none; }
+.guide-hero .breadcrumb a:hover { text-decoration: underline; }
+.guide-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.guide-hero .subtitle {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 640px;
+    line-height: 1.6;
+}
+.guide-hero .meta {
+    display: flex; gap: 1.5rem; margin-top: 1.5rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.guide-hero .meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border);
+}
+
+/* CONTENT */
+.guide-content {
+    max-width: 860px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+}
+.guide-content h2 {
+    font-size: 1.6rem; font-weight: 700; margin: 3rem 0 1rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.guide-content h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.guide-content h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+.guide-content p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-content ul, .guide-content ol {
+    margin: 0 0 1.5rem 1.5rem; color: var(--text-dim);
+}
+.guide-content li { margin-bottom: 0.5rem; }
+.guide-content strong { color: var(--text); font-weight: 600; }
+.guide-content a { color: var(--green); text-decoration: none; }
+.guide-content a:hover { text-decoration: underline; }
+
+/* CODE BLOCKS */
+pre {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    line-height: 1.65; color: var(--text-dim);
+}
+code {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--bg-code); padding: 0.15rem 0.4rem;
+    border-radius: 4px; color: var(--green);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+/* INFO BOXES */
+.info-box {
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; border-left: 3px solid;
+}
+.info-box.tip { background: var(--green-dim); border-color: var(--green); }
+.info-box.warning { background: var(--amber-dim); border-color: var(--amber); }
+.info-box.danger { background: var(--red-dim); border-color: var(--red); }
+.info-box.info { background: var(--blue-dim); border-color: var(--blue); }
+.info-box .box-title {
+    font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.info-box.tip .box-title { color: var(--green); }
+.info-box.warning .box-title { color: var(--amber); }
+.info-box.danger .box-title { color: var(--red); }
+.info-box.info .box-title { color: var(--blue); }
+.info-box p { margin-bottom: 0.5rem; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h3 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; }
+.app-promo .cta-btn {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+
+/* TABLE */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0 1.5rem; font-size: 0.9rem;
+}
+.data-table th {
+    background: var(--bg-card); color: var(--green);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.75rem 1rem;
+    text-align: left; border-bottom: 2px solid var(--green-border);
+}
+.data-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table code { font-size: 0.8rem; }
+
+/* RELATED GUIDES */
+.related-guides {
+    margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+.related-guides h2 { border-top: none; padding-top: 0; }
+.guides-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem; margin-top: 1.5rem;
+}
+.guide-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    text-decoration: none; transition: all 0.2s;
+}
+.guide-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.guide-card .card-title {
+    color: var(--text); font-weight: 600; font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+.guide-card .card-desc {
+    color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.site-footer a { color: var(--green); text-decoration: none; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .guide-hero { padding: 6rem 1rem 3rem; }
+    .guide-content { padding: 2rem 1rem 4rem; }
+    .guide-hero .meta { flex-wrap: wrap; }
+}
+
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+    <a href="../index.html" class="logo"><div class="logo-mark">M</div><div class="logo-text">modbus<span>.app</span></div></a>
+    <ul class="nav-links"><li><a href="../index.html">Product</a></li><li><a href="../number-converter.html">Converter</a></li><li><a href="../read-modbus-data.html">Guides</a></li><li><a href="./">Troubleshooting</a></li></ul>
+    <a href="../index.html#download" class="nav-cta">Download Free →</a>
+</div></nav>
+<div class="container"><div class="guide-layout">
+<article>
+    <div class="breadcrumbs"><a href="../index.html">Home</a> / <a href="../read-modbus-data.html">Guides</a> / <a href="./">Troubleshooting</a></div>
+    <h1>Modbus Register Offset: The 0-Based vs 1-Based Problem</h1>
+    <div class="article-meta"><span class="tag tag-red">TROUBLESHOOTING</span><span>Updated Feb 2026</span><span>8 min read</span></div>
+
+    <p>Modbus register addressing is one of the most confusing aspects of the protocol — not because it's complicated, but because there are <em>three different conventions</em> used by documentation, tools, and the actual wire protocol, and they all disagree by 1.</p>
+
+    <h2 id="the-confusion">Why It's Confusing</h2>
+    <p>Imagine a device with holding registers starting at "address 1" according to its manual. Depending on which Modbus tool you use and how it's configured, you might need to enter 0, 1, 40001, or 40000 to read that same register. All four refer to the same physical data location. This isn't a bug — it's three overlapping conventions from the 1970s that refuse to die.</p>
+
+    <h2 id="wire-vs-docs">The Wire Protocol vs Documentation</h2>
+    <p>On the wire, Modbus always uses <strong>0-based addressing</strong>. When your master sends a request for "address 0", it gets the first register. Address 1 gets the second register. This is the absolute truth — it's what the bytes in the frame contain.</p>
+    <p>But many manufacturer manuals use <strong>1-based numbering</strong>. They call the first register "register 1". So when you see "Register 1" in a datasheet, you need to send address 0 in your Modbus frame.</p>
+
+    <div class="info-box danger">
+        <div class="info-title">🔥 The Single Most Common Modbus Mistake</div>
+        <p>Engineer reads "voltage at register 100" in the datasheet. Types 100 into their Modbus tool. Gets voltage from register 101 (the <em>second</em> voltage register) or gets an exception error. The correct wire address is 99. This off-by-one error is the #1 cause of "wrong values" and exception code 02.</p>
+    </div>
+
+    <h2 id="prefix-convention">The 4xxxx / 3xxxx Prefix Convention</h2>
+    <p>The original Modicon convention adds a prefix digit to indicate the register type:</p>
+    <ul>
+        <li><code>0xxxx</code> — Coils (FC01/05)</li>
+        <li><code>1xxxx</code> — Discrete Inputs (FC02)</li>
+        <li><code>3xxxx</code> — Input Registers (FC04)</li>
+        <li><code>4xxxx</code> — Holding Registers (FC03)</li>
+    </ul>
+    <p>So "40001" means "the first holding register". To get the wire address: strip the prefix digit, subtract 1. 40001 → 0001 → 0000. "40100" → 0100 → 0099.</p>
+
+    <h2 id="tools-differ">How Different Tools Handle It</h2>
+    <p>This is where it gets really fun. Different Modbus tools handle the offset differently:</p>
+    <ul>
+        <li><strong>Modbus Poll</strong> — 0-based by default (matches wire protocol)</li>
+        <li><strong>Ignition Modbus driver</strong> — Configurable, but default behaviour depends on the address format used</li>
+        <li><strong>ModRSsim2</strong> — 0-based (matches wire)</li>
+        <li><strong>PLCnext Modbus function blocks</strong> — 0-based (matches wire)</li>
+        <li><strong>Many SCADA systems</strong> — 1-based with "PLC address" option</li>
+    </ul>
+    <p>Always check your tool's documentation for whether it expects 0-based or 1-based addresses.</p>
+
+    <h2 id="cheat-sheet">Address Translation Cheat Sheet</h2>
+
+    <div class="code-block"><div class="code-header"><span class="lang">Address Translation</span><span>Copy this and keep it handy</span></div>
+    <div class="code-content">Datasheet says    Tool expects     Wire address
+──────────────    ─────────────    ────────────
+Register 1        0-based tool  →  0
+Register 1        1-based tool  →  1
+40001             0-based tool  →  0
+40001             1-based tool  →  1
+Register 100      0-based tool  →  99
+Register 100      1-based tool  →  100
+40100             0-based tool  →  99
+40100             1-based tool  →  100
+
+RULE: If in doubt, try (address - 1) first.</div></div>
+
+    <div class="app-promo">
+        <div class="app-promo-badge">✨ Zero Confusion</div>
+        <h4>ModBus Pro eliminates offset mistakes</h4>
+        <p>Built-in device maps use the correct wire addresses — tested against real hardware. The register browser shows both the documentation address and wire address side by side, so you always know exactly what's being sent.</p>
+        <a href="../index.html#download" class="app-promo-cta">Download Free →</a>
+    </div>
+
+    <div class="related">
+        <h3>More Troubleshooting Guides</h3>
+        <div class="related-grid">
+        <a href="modbus-timeout-no-response.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Timeout &amp; No Response from Slave</h4>
+            <p>Fix Modbus timeout errors and no response from slave devices. Complete diagnosti...</p>
+        </a>
+        <a href="modbus-exception-code-01.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Exception Code 01: Illegal Function</h4>
+            <p>Fix Modbus exception code 01 (Illegal Function). Why your device rejects your fu...</p>
+        </a>
+        <a href="modbus-exception-code-02.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Exception Code 02: Illegal Data Address</h4>
+            <p>Fix Modbus exception code 02 (Illegal Data Address). Register numbering, 0-based...</p>
+        </a>
+        </div>
+    </div>
+</article>
+<aside class="sidebar">
+    <div class="toc"><div class="toc-title">On this page</div>
+        <a href="#the-confusion">The Confusion</a>
+        <a href="#wire-vs-docs">Wire vs Documentation</a>
+        <a href="#prefix-convention">The 4xxxx Prefix</a>
+        <a href="#tools-differ">How Tools Handle It</a>
+        <a href="#cheat-sheet">Address Cheat Sheet</a>
+    </div>
+    <div class="sidebar-promo"><div class="icon">🔌</div><h4>Fix it faster with ModBus Pro</h4>
+        <p>Auto-scan, built-in device maps, and diagnostic tools that turn hours of troubleshooting into minutes.</p>
+        <a href="../index.html#download" class="app-promo-cta" style="font-size:.82rem;padding:.5rem 1.2rem;">Download Free →</a>
+    </div>
+</aside>
+</div></div>
+<footer><div class="container"><p>© 2026 modbus.app — Built by engineers who debug Modbus for a living.</p></div></footer>
+</body></html>

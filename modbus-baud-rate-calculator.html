@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modbus RTU Baud Rate & Timing Calculator | modbus.app</title>
+<meta name="description" content="Free Modbus RTU baud rate and timing calculator. Compute character time, 1.5T and 3.5T silence intervals, frame timing, throughput, timeouts, and poll rates for any serial configuration.">
+<link rel="canonical" href="https://modbus.app/modbus-baud-rate-calculator.html" />
+<meta property="og:title" content="Modbus RTU Baud Rate & Timing Calculator">
+<meta property="og:description" content="Free Modbus RTU baud rate and timing calculator. Compute character time, 1.5T and 3.5T silence intervals, frame timing, throughput, timeouts, and poll rates.">
+<meta property="og:url" content="https://modbus.app/modbus-baud-rate-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="modbus.app">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+:root{--bg:#0a0e17;--bg-card:#111827;--bg-card-hover:#1a2235;--bg-code:#0d1117;--green:#00e5a0;--green-dim:rgba(0,229,160,0.1);--green-border:rgba(0,229,160,0.2);--red:#ff4d6a;--red-dim:rgba(255,77,106,0.08);--red-border:rgba(255,77,106,0.15);--amber:#f5a623;--amber-dim:rgba(245,166,35,0.08);--amber-border:rgba(245,166,35,0.15);--blue:#4da6ff;--blue-dim:rgba(77,166,255,0.08);--blue-border:rgba(77,166,255,0.15);--purple:#a78bfa;--purple-dim:rgba(167,139,250,0.08);--purple-border:rgba(167,139,250,0.15);--cyan:#22d3ee;--cyan-dim:rgba(34,211,238,0.08);--cyan-border:rgba(34,211,238,0.15);--text:#e2e8f0;--text-dim:#94a3b8;--text-muted:#64748b;--border:rgba(255,255,255,0.06);--font-mono:'JetBrains Mono',monospace;--font-sans:'Outfit',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:var(--font-sans);background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}.site-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,14,23,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:center}.nav-inner{max-width:1100px;width:100%;display:flex;align-items:center;justify-content:space-between}.nav-logo{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:var(--text);font-family:var(--font-mono);font-weight:700;font-size:1.1rem}.nav-logo .dot{color:var(--green)}.nav-links{display:flex;gap:1.5rem;list-style:none}.nav-links a{color:var(--text-dim);text-decoration:none;font-size:0.9rem;font-weight:500;transition:color 0.2s}.nav-links a:hover,.nav-links a.active{color:var(--green)}.nav-cta{background:var(--green);color:#0a0e17;padding:0.5rem 1.2rem;border-radius:6px;text-decoration:none;font-weight:600;font-size:0.85rem;transition:all 0.2s}.nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,229,160,0.3)}.nav-dropdown{position:relative}.nav-dropdown>a{cursor:pointer}.nav-dropdown>a::after{content:" \25BE";font-size:0.7em}.nav-dropdown-menu{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:0.5rem 0;min-width:200px;box-shadow:0 8px 30px rgba(0,0,0,0.3);margin-top:0.5rem;z-index:200}.nav-dropdown:hover .nav-dropdown-menu{display:block}.nav-dropdown-menu a{display:block;padding:0.5rem 1rem;color:var(--text-dim);text-decoration:none;font-size:0.85rem;font-weight:500;transition:all 0.2s;white-space:nowrap}.nav-dropdown-menu a:hover{color:var(--green);background:rgba(0,229,160,0.05)}.guide-hero{padding:8rem 2rem 3rem;max-width:960px;margin:0 auto;border-bottom:1px solid var(--border)}.guide-hero .breadcrumb{font-family:var(--font-mono);font-size:0.8rem;color:var(--text-muted);margin-bottom:1.5rem}.guide-hero .breadcrumb a{color:var(--green);text-decoration:none}.guide-hero h1{font-size:clamp(2rem,5vw,2.8rem);font-weight:800;line-height:1.15;margin-bottom:1rem;background:linear-gradient(135deg,var(--text) 0%,var(--text-dim) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.guide-hero .subtitle{font-size:1.1rem;color:var(--text-dim);max-width:640px;line-height:1.6}.tool-main{max-width:960px;margin:0 auto;padding:2rem 2rem 4rem}.input-section{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}.field-label{display:block;font-size:0.75rem;font-weight:600;color:var(--text-muted);margin-bottom:0.4rem;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.05em}.input-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem}.input-grid label{display:flex;flex-direction:column;gap:0.4rem}.input-grid select,.input-grid input[type="number"]{width:100%;background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:0.6rem 0.8rem;font-family:var(--font-mono);font-size:0.95rem;color:var(--text);outline:none;transition:border-color 0.2s;-moz-appearance:none;-webkit-appearance:none;appearance:none}.input-grid select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.7rem center;padding-right:2rem}.input-grid select:focus,.input-grid input[type="number"]:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,229,160,0.1)}.input-grid select option{background:var(--bg-card);color:var(--text)}.examples-row{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:1rem}.example-btn{background:var(--bg-code);border:1px solid var(--border);border-radius:6px;padding:0.3rem 0.7rem;font-family:var(--font-mono);font-size:0.72rem;color:var(--text-dim);cursor:pointer;transition:all 0.2s}.example-btn:hover{border-color:var(--green-border);color:var(--green);background:var(--green-dim)}.example-btn.active{border-color:var(--green-border);color:var(--green);background:var(--green-dim)}.example-label{font-size:0.72rem;color:var(--text-muted);font-family:var(--font-mono);font-weight:600;text-transform:uppercase;letter-spacing:0.04em;align-self:center}.result-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1rem;transition:border-color 0.2s}.result-card:hover{border-color:rgba(255,255,255,0.1)}.result-card h3{display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:0.75rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border)}.card-icon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:5px;font-size:0.6rem;font-weight:700;font-family:var(--font-mono);flex-shrink:0}.card-icon.timing{background:var(--green-dim);color:var(--green);border:1px solid var(--green-border)}.card-icon.frame{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue-border)}.card-icon.throughput{background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple-border)}.card-icon.timeout{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-border)}.card-icon.poll{background:var(--cyan-dim);color:var(--cyan);border:1px solid var(--cyan-border)}.result-table{width:100%;border-collapse:collapse;font-size:0.82rem}.result-table td,.result-table th{padding:0.4rem 0.5rem;border-bottom:1px solid var(--border);vertical-align:middle;text-align:left}.result-table th{color:var(--text-muted);font-size:0.7rem;font-weight:600;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.03em;white-space:nowrap}.result-table td:first-child{color:var(--text-muted);font-size:0.75rem;font-weight:600;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.03em;white-space:nowrap;width:35%}.result-table td:nth-child(2){font-family:var(--font-mono);font-size:0.85rem;color:var(--green);width:30%}.result-table td:last-child{color:var(--text);font-size:0.82rem}.result-table tr:last-child td,.result-table tr:last-child th{border-bottom:none}.result-highlight{font-family:var(--font-mono);font-size:1.3rem;font-weight:700;color:var(--green);display:block;margin:0.25rem 0}.result-unit{font-size:0.7rem;color:var(--text-muted);font-family:var(--font-mono);margin-left:0.25rem}.status-badge{display:inline-block;padding:0.15rem 0.6rem;border-radius:4px;font-size:0.72rem;font-weight:600;font-family:var(--font-mono)}.badge-info{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue-border)}.badge-warn{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-border)}.badge-ok{background:var(--green-dim);color:var(--green);border:1px solid var(--green-border)}.timeout-input-row{display:flex;gap:1rem;align-items:flex-end;margin-bottom:1rem;flex-wrap:wrap}.timeout-input-row label{display:flex;flex-direction:column;gap:0.3rem}.timeout-input-row input[type="number"],.timeout-input-row select{background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:0.5rem 0.7rem;font-family:var(--font-mono);font-size:0.9rem;color:var(--text);outline:none;width:120px;transition:border-color 0.2s}.timeout-input-row input[type="number"]:focus,.timeout-input-row select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,229,160,0.1)}.note-box{background:var(--amber-dim);border:1px solid var(--amber-border);border-radius:8px;padding:0.6rem 0.9rem;font-size:0.8rem;color:var(--amber);font-family:var(--font-mono);margin-top:0.5rem;line-height:1.5}.app-promo{background:linear-gradient(135deg,rgba(0,229,160,0.08) 0%,rgba(0,229,160,0.02) 100%);border:1px solid var(--green-border);border-radius:12px;padding:2rem;margin:2.5rem 0;text-align:center}.app-promo h4{color:var(--green);margin-bottom:0.5rem}.app-promo p{color:var(--text-dim);max-width:540px;margin:0 auto 1.25rem}.app-promo .app-promo-badge{display:inline-block;background:var(--green-dim);color:var(--green);padding:0.2rem 0.8rem;border-radius:4px;font-size:0.8rem;font-weight:600;margin-bottom:0.75rem;border:1px solid var(--green-border)}.app-promo .app-promo-cta{display:inline-block;background:var(--green);color:#0a0e17;padding:0.65rem 1.8rem;border-radius:6px;font-weight:700;text-decoration:none;transition:all 0.2s}.app-promo .app-promo-cta:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,229,160,0.3)}.seo-content{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)}.seo-content h2{font-size:1.3rem;font-weight:700;margin-bottom:1rem;color:var(--text)}.seo-content h3{font-size:1.05rem;font-weight:600;margin:1.5rem 0 0.5rem;color:var(--text)}.seo-content p{color:var(--text-dim);font-size:0.95rem;margin-bottom:1rem;line-height:1.7}.seo-content ul{color:var(--text-dim);font-size:0.95rem;margin-bottom:1rem;line-height:1.7;padding-left:1.5rem}.seo-content ul li{margin-bottom:0.3rem}.seo-content code{font-family:var(--font-mono);background:var(--bg-code);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.85rem;color:var(--green)}
+@media(max-width:768px){.site-nav{padding:0 1rem}.nav-links{display:none}.guide-hero{padding:6rem 1rem 2rem}.tool-main{padding:1.5rem 1rem 3rem}.input-grid{grid-template-columns:1fr 1fr}.timeout-input-row{flex-direction:column;align-items:stretch}.timeout-input-row input[type="number"],.timeout-input-row select{width:100%}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Modbus RTU Baud Rate & Timing Calculator","url":"https://modbus.app/modbus-baud-rate-calculator.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+</head>
+<body>
+<nav class="site-nav"><div class="nav-inner"><a href="index.html" class="nav-logo">modbus<span class="dot">.</span>app</a><ul class="nav-links"><li><a href="index.html">Product</a></li><li class="nav-dropdown"><a href="#" class="active">Tools</a><div class="nav-dropdown-menu"><a href="number-converter.html">Number Converter</a><a href="modbus-frame-parser.html">Frame Parser</a><a href="modbus-address-calculator.html">Address Calculator</a><a href="modbus-baud-rate-calculator.html">Baud Rate Calculator</a></div></li><li><a href="read-modbus-data.html">Guides</a></li><li><a href="guides.html">Troubleshooting</a></li><li><a href="pricing.html">Pricing</a></li></ul><a href="index.html#download" class="nav-cta">Download Free</a></div></nav>
+<div class="guide-hero"><div class="breadcrumb"><a href="index.html">Home</a> / <a href="guides.html">Tools</a> / Baud Rate Calculator</div><h1>Modbus RTU Baud Rate &amp; Timing Calculator</h1><p class="subtitle">Calculate character timing, inter-frame silence intervals, throughput, recommended timeouts, and maximum poll rates for any Modbus RTU serial configuration.</p></div>
+<div class="tool-main">
+
+<!-- Serial Configuration -->
+<div class="input-section">
+<span class="field-label">Serial Configuration</span>
+<div class="input-grid" style="margin-top:0.5rem">
+<label>
+<span class="field-label">Baud Rate</span>
+<select id="baudRate">
+<option value="1200">1200</option>
+<option value="2400">2400</option>
+<option value="4800">4800</option>
+<option value="9600" selected>9600</option>
+<option value="14400">14400</option>
+<option value="19200">19200</option>
+<option value="28800">28800</option>
+<option value="38400">38400</option>
+<option value="57600">57600</option>
+<option value="76800">76800</option>
+<option value="115200">115200</option>
+<option value="custom">Custom...</option>
+</select>
+</label>
+<label>
+<span class="field-label">Data Bits</span>
+<select id="dataBits">
+<option value="7">7</option>
+<option value="8" selected>8</option>
+</select>
+</label>
+<label>
+<span class="field-label">Parity</span>
+<select id="parity">
+<option value="none" selected>None</option>
+<option value="even">Even</option>
+<option value="odd">Odd</option>
+</select>
+</label>
+<label>
+<span class="field-label">Stop Bits</span>
+<select id="stopBits">
+<option value="1">1</option>
+<option value="2" selected>2</option>
+</select>
+</label>
+</div>
+<div id="customBaudRow" style="display:none;margin-top:0.75rem">
+<label>
+<span class="field-label">Custom Baud Rate</span>
+<input type="number" id="customBaud" min="100" max="10000000" value="256000" style="width:180px;background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:0.6rem 0.8rem;font-family:var(--font-mono);font-size:0.95rem;color:var(--text);outline:none">
+</label>
+</div>
+<div class="examples-row">
+<span class="example-label">Presets:</span>
+<button class="example-btn" onclick="applyPreset(9600,8,'none',2)">9600/8-N-2</button>
+<button class="example-btn" onclick="applyPreset(9600,8,'even',1)">9600/8-E-1</button>
+<button class="example-btn" onclick="applyPreset(19200,8,'even',1)">19200/8-E-1</button>
+<button class="example-btn" onclick="applyPreset(19200,8,'none',2)">19200/8-N-2</button>
+<button class="example-btn" onclick="applyPreset(38400,8,'even',1)">38400/8-E-1</button>
+<button class="example-btn" onclick="applyPreset(57600,8,'none',2)">57600/8-N-2</button>
+<button class="example-btn" onclick="applyPreset(115200,8,'none',1)">115200/8-N-1</button>
+<button class="example-btn" onclick="applyPreset(115200,8,'even',1)">115200/8-E-1</button>
+</div>
+</div>
+
+<!-- Character Timing -->
+<div id="results"></div>
+
+<!-- Timeout Calculator -->
+<div class="result-card">
+<h3><span class="card-icon timeout">TO</span> Timeout Calculator</h3>
+<div class="timeout-input-row">
+<label>
+<span class="field-label">Registers to Read</span>
+<input type="number" id="toRegs" min="1" max="125" value="10">
+</label>
+<label>
+<span class="field-label">Function Code</span>
+<select id="toFC" style="width:180px;background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:0.5rem 0.7rem;font-family:var(--font-mono);font-size:0.9rem;color:var(--text);outline:none;-moz-appearance:none;-webkit-appearance:none;appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 0.7rem center;padding-right:2rem">
+<option value="3">FC03 Read Holding Regs</option>
+<option value="4">FC04 Read Input Regs</option>
+<option value="1">FC01 Read Coils</option>
+<option value="2">FC02 Read Discrete Inputs</option>
+<option value="16">FC16 Write Multiple Regs</option>
+</select>
+</label>
+<label>
+<span class="field-label">Safety Multiplier</span>
+<select id="toMult" style="width:100px;background:var(--bg-code);border:1px solid var(--border);border-radius:8px;padding:0.5rem 0.7rem;font-family:var(--font-mono);font-size:0.9rem;color:var(--text);outline:none;-moz-appearance:none;-webkit-appearance:none;appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 0.7rem center;padding-right:2rem">
+<option value="1.5">1.5x</option>
+<option value="2" selected>2x</option>
+<option value="3">3x</option>
+<option value="5">5x</option>
+</select>
+</label>
+</div>
+<div id="timeoutResults"></div>
+</div>
+
+<!-- Poll Rate Calculator -->
+<div class="result-card">
+<h3><span class="card-icon poll">PR</span> Poll Rate Calculator</h3>
+<div class="timeout-input-row">
+<label>
+<span class="field-label">Registers per Device</span>
+<input type="number" id="prRegs" min="1" max="125" value="10">
+</label>
+<label>
+<span class="field-label">Number of Devices</span>
+<input type="number" id="prDevices" min="1" max="247" value="5">
+</label>
+<label>
+<span class="field-label">Slave Processing (ms)</span>
+<input type="number" id="prDelay" min="0" max="5000" value="10">
+</label>
+</div>
+<div id="pollResults"></div>
+</div>
+
+<!-- CTA -->
+<div class="app-promo"><div class="app-promo-badge">Automatic Timing</div><h4>Need to configure real devices? Download ModBus Pro &mdash; free 7-day trial</h4><p>Auto-detects baud rate, calculates optimal timeouts, and lets you poll multiple slaves from an intuitive dashboard. Built for industrial engineers.</p><a href="index.html#download" class="app-promo-cta">Download Free Trial</a></div>
+
+<!-- SEO Content -->
+<div class="seo-content">
+<h2>Understanding Modbus RTU Timing and Baud Rate Configuration</h2>
+<p>Modbus RTU is a binary serial communication protocol that relies heavily on precise timing to delimit message frames. Unlike Modbus ASCII, which uses explicit start and end characters (colon and CR/LF), RTU mode uses silent intervals on the bus to mark the beginning and end of each frame. Getting these timing parameters right is fundamental to reliable communication. A misconfigured baud rate, incorrect silence interval, or too-aggressive poll rate can cause chronic timeout errors, frame corruption, and intermittent drops that are notoriously difficult to diagnose in the field.</p>
+
+<h3>Character Time and Bits Per Character</h3>
+<p>Every character transmitted on a Modbus RTU serial line consists of several bit periods: a start bit, the data bits (7 or 8), an optional parity bit, and one or two stop bits. The total number of bits per character determines the character time, which is the duration required to send a single byte at a given baud rate. For the most common configuration of 8 data bits, no parity, and 2 stop bits (8-N-2), each character is 11 bits long. At 9600 baud, each bit takes approximately 104.17 microseconds, making the full character time about 1.146 milliseconds. This character time is the building block for all other Modbus RTU timing calculations.</p>
+
+<h3>The 1.5T and 3.5T Silence Intervals</h3>
+<p>The Modbus RTU specification defines two critical silence intervals measured in character times. The 1.5 character time (1.5T) silence is the maximum allowable gap between characters within a single frame. If a gap exceeding 1.5T occurs in the middle of a frame, the receiver must discard the incomplete frame and treat the next byte as the start of a new message. The 3.5 character time (3.5T) silence marks the boundary between frames. After a complete frame is transmitted, the bus must remain silent for at least 3.5T before the next frame can begin. This silent interval tells all devices on the bus that the previous frame is complete and the next frame is starting.</p>
+
+<h3>Fixed Timing Above 19200 Baud</h3>
+<p>An important nuance in the Modbus specification is that for baud rates greater than 19200, the 1.5T and 3.5T intervals are fixed at 750 microseconds and 1750 microseconds (1.75 ms) respectively, rather than being calculated from the actual character time. This was specified because at higher baud rates, the calculated silence intervals become so short that typical UART hardware and operating system schedulers cannot reliably measure or enforce them. The fixed values provide a practical minimum that most hardware can handle. This calculator automatically applies these fixed values when you select a baud rate above 19200.</p>
+
+<h3>Frame Size and Transmission Time</h3>
+<p>A Modbus RTU frame consists of the slave address (1 byte), function code (1 byte), data field (variable length), and CRC-16 checksum (2 bytes). The minimum frame is 4 bytes (an exception response), while a maximum frame carrying 125 registers in an FC03 response is 255 bytes. The total time to transmit a frame is the number of bytes multiplied by the character time, plus the 3.5T silence interval at each end. For a typical read of 10 holding registers, the request is 8 bytes and the response is 25 bytes, totaling 33 bytes per transaction. At 9600 baud with 8-N-2, this takes about 37.8 ms for the bytes alone, plus the silence intervals.</p>
+
+<h3>Throughput and Effective Data Rate</h3>
+<p>The effective throughput of a Modbus RTU link is always lower than the raw baud rate because of protocol overhead. Each 16-bit register value requires 2 bytes of payload, but the full transaction includes the request frame, response frame, inter-frame gaps, and slave processing time. At 9600 baud, you can typically achieve around 40 to 60 register reads per second depending on how many registers you read per transaction. Batching registers into larger read requests (up to 125 per FC03 request) dramatically improves throughput because the fixed overhead of address, function code, CRC, and silence intervals is amortized over more data bytes.</p>
+
+<h3>Timeout Configuration</h3>
+<p>Setting the correct response timeout is one of the most common challenges in Modbus RTU deployments. Too short, and you get false timeout errors; too long, and your polling loop stalls waiting for unresponsive devices. The minimum timeout should account for the request transmission time, slave processing time (which varies by device, typically 2 to 50 ms), and the full response transmission time. A safety multiplier of 2x to 3x is standard practice to allow for OS scheduling jitter, USB-to-serial adapter latency, and occasional retransmissions. This calculator provides a recommended timeout that factors in all of these components.</p>
+
+<h3>Poll Rate Optimization</h3>
+<p>When polling multiple Modbus slave devices on the same serial bus, the maximum achievable poll rate depends on the baud rate, the number of registers read from each device, the number of devices, and the processing time each slave needs to prepare its response. The bus is half-duplex, meaning only one transaction can occur at a time. For a network of 10 devices each providing 20 registers at 9600 baud, a complete scan of all devices might take 1 to 2 seconds, limiting your effective refresh rate. Upgrading to 19200 or 38400 baud can cut this in half, while optimizing register maps to minimize the number of separate read requests provides even larger gains.</p>
+
+<h3>Common Serial Configurations</h3>
+<p>The Modbus specification recommends the default configuration of 19200 baud, 8 data bits, even parity, and 1 stop bit (19200/8-E-1). However, many legacy devices and common practice in the field use 9600/8-N-2, which maintains the same 11-bit character frame (the extra stop bit compensates for the missing parity bit). When connecting to an existing bus, always match the exact configuration of the master and all slaves: baud rate, data bits, parity, and stop bits must be identical across every device on the RS-485 segment. A single device with mismatched settings will corrupt traffic for the entire bus.</p>
+</div>
+</div>
+
+<footer style="border-top:1px solid rgba(255,255,255,0.06);padding:4rem 0 2rem;margin-top:6rem"><div style="max-width:1200px;margin:0 auto;padding:0 2rem"><div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem"><div><div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem"><div style="width:32px;height:32px;background:linear-gradient(135deg,#00e5a0,#00c488);border-radius:8px;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" fill="none" stroke="#0a0e17" stroke-width="2.5" stroke-linecap="round"><path d="M3 9h12M9 3v12"/></svg></div><span style="font-weight:700;font-size:1.1rem">ModBus Pro</span></div><p style="color:var(--text-muted);font-size:0.9rem;line-height:1.6;max-width:280px">The modern Modbus diagnostic tool. Built for engineers who need reliability.</p></div><div><h4 style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:1rem">Product</h4><ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:0.6rem"><li><a href="index.html" style="color:var(--text-dim);text-decoration:none;font-size:0.9rem">Features</a></li><li><a href="pricing.html" style="color:var(--text-dim);text-decoration:none;font-size:0.9rem">Pricing</a></li><li><a href="number-converter.html" style="color:var(--text-dim);text-decoration:none;font-size:0.9rem">Number Converter</a></li><li><a href="modbus-frame-parser.html" style="color:var(--text-dim);text-decoration:none;font-size:0.9rem">Frame Parser</a></li></ul></div><div><h4 style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:1rem">Resources</h4><ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:0.6rem"><li><a href="guides.html" style="color:var(--text-dim);text-decoration:none;font-size:0.9rem">Guides</a></li><li><a href="modbus-address-calculator.html" style="color:var(--text-dim);text-decoration:none;font-size:0.9rem">Address Calculator</a></li><li><a href="modbus-baud-rate-calculator.html" style="color:var(--text-dim);text-decoration:none;font-size:0.9rem">Baud Rate Calculator</a></li><li><a href="mailto:support@modbus.app" style="color:var(--text-dim);text-decoration:none;font-size:0.9rem">Support</a></li></ul></div><div><h4 style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:1rem">Legal</h4><ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:0.6rem"><li><a href="#" style="color:var(--text-dim);text-decoration:none;font-size:0.9rem">Privacy</a></li><li><a href="terms.html" style="color:var(--text-dim);text-decoration:none;font-size:0.9rem">Terms</a></li></ul></div></div><div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem"><p style="color:var(--text-muted);font-size:0.8rem">&copy; 2026 modbus.app</p><p style="color:#5a6478;font-size:0.65rem">Modbus&reg; is a registered trademark of Schneider Electric. ModBus Pro is not affiliated with or endorsed by Schneider Electric or the Modbus Organization.</p><a href="mailto:support@modbus.app" style="color:var(--text-muted);text-decoration:none;font-size:0.8rem">support@modbus.app</a></div></div></footer>
+
+<script>
+(function(){'use strict';
+
+var baudSel=document.getElementById('baudRate'),
+    dataBitsSel=document.getElementById('dataBits'),
+    paritySel=document.getElementById('parity'),
+    stopBitsSel=document.getElementById('stopBits'),
+    customBaudRow=document.getElementById('customBaudRow'),
+    customBaudInput=document.getElementById('customBaud'),
+    resultsDiv=document.getElementById('results'),
+    timeoutDiv=document.getElementById('timeoutResults'),
+    pollDiv=document.getElementById('pollResults'),
+    toRegInput=document.getElementById('toRegs'),
+    toFCSelect=document.getElementById('toFC'),
+    toMultSelect=document.getElementById('toMult'),
+    prRegsInput=document.getElementById('prRegs'),
+    prDevInput=document.getElementById('prDevices'),
+    prDelayInput=document.getElementById('prDelay');
+
+function getBaud(){
+    if(baudSel.value==='custom')return parseInt(customBaudInput.value)||9600;
+    return parseInt(baudSel.value);
+}
+function getDataBits(){return parseInt(dataBitsSel.value);}
+function getParity(){return paritySel.value;}
+function getStopBits(){return parseInt(stopBitsSel.value);}
+
+function bitsPerChar(){
+    var b=1; // start bit
+    b+=getDataBits();
+    if(getParity()!=='none')b+=1;
+    b+=getStopBits();
+    return b;
+}
+
+function charTime_us(){
+    return(bitsPerChar()/getBaud())*1e6;
+}
+
+function silence15_us(){
+    var baud=getBaud();
+    if(baud>19200)return 750;
+    return 1.5*charTime_us();
+}
+
+function silence35_us(){
+    var baud=getBaud();
+    if(baud>19200)return 1750;
+    return 3.5*charTime_us();
+}
+
+function fmtTime(us){
+    if(us>=1e6)return(us/1e6).toFixed(3)+' s';
+    if(us>=1000)return(us/1000).toFixed(3)+' ms';
+    return us.toFixed(2)+' \u00B5s';
+}
+
+function fmtTimeMs(ms){
+    if(ms>=1000)return(ms/1000).toFixed(3)+' s';
+    return ms.toFixed(2)+' ms';
+}
+
+// Frame sizes: request bytes, response bytes for given register count and FC
+function getFrameSizes(fc,regs){
+    var req,resp;
+    fc=parseInt(fc);
+    if(fc===3||fc===4){
+        req=8; // addr(1)+fc(1)+startAddr(2)+qty(2)+crc(2)
+        resp=5+regs*2; // addr(1)+fc(1)+byteCount(1)+data(regs*2)+crc(2)
+    }else if(fc===1||fc===2){
+        req=8;
+        var dataBytes=Math.ceil(regs/8);
+        resp=5+dataBytes;
+    }else if(fc===16){
+        req=9+regs*2; // addr(1)+fc(1)+startAddr(2)+qty(2)+byteCount(1)+data(regs*2)+crc(2)
+        resp=8; // addr(1)+fc(1)+startAddr(2)+qty(2)+crc(2)
+    }else{
+        req=8;resp=8;
+    }
+    return{req:req,resp:resp};
+}
+
+function frameTime_us(bytes){
+    return bytes*charTime_us();
+}
+
+function recalc(){
+    var baud=getBaud(),
+        bpc=bitsPerChar(),
+        ct=charTime_us(),
+        s15=silence15_us(),
+        s35=silence35_us(),
+        bitTime=1e6/baud,
+        isFixed=baud>19200;
+
+    // Config summary
+    var configStr=baud+'/'+getDataBits()+'-'+(getParity()==='none'?'N':getParity()==='even'?'E':'O')+'-'+getStopBits();
+
+    // Character Timing card
+    var html='<div class="result-card"><h3><span class="card-icon timing">CT</span> Character Timing <span class="status-badge badge-info" style="margin-left:auto;font-size:0.7rem">'+configStr+'</span></h3>';
+    html+='<table class="result-table">';
+    html+='<tr><td>Baud Rate</td><td>'+baud.toLocaleString()+' bps</td><td>Bit rate on the wire</td></tr>';
+    html+='<tr><td>Bit Time</td><td>'+fmtTime(bitTime)+'</td><td>Duration of one bit</td></tr>';
+    html+='<tr><td>Bits per Character</td><td>'+bpc+' bits</td><td>1 start + '+getDataBits()+' data'+(getParity()!=='none'?' + 1 parity':'')+' + '+getStopBits()+' stop</td></tr>';
+    html+='<tr><td>Character Time</td><td>'+fmtTime(ct)+'</td><td>Time to transmit one byte</td></tr>';
+    html+='<tr><td>1.5T Silence</td><td>'+fmtTime(s15)+'</td><td>Max intra-frame gap'+(isFixed?' <span class="status-badge badge-warn">FIXED</span>':'')+'</td></tr>';
+    html+='<tr><td>3.5T Silence</td><td>'+fmtTime(s35)+'</td><td>Inter-frame delimiter'+(isFixed?' <span class="status-badge badge-warn">FIXED</span>':'')+'</td></tr>';
+    html+='</table>';
+    if(isFixed)html+='<div class="note-box">Baud rate > 19200: per Modbus spec, 1.5T is fixed at 750 \u00B5s and 3.5T is fixed at 1.75 ms regardless of actual character time ('+fmtTime(ct)+').</div>';
+    html+='</div>';
+
+    // Frame Timing Table
+    var frameSizes=[
+        {label:'Min (Exception)',bytes:5},
+        {label:'Typical (FC03, 10 regs)',bytes:33},
+        {label:'Max (FC03, 125 regs)',bytes:259},
+        {label:'FC06 Write Single',bytes:16},
+        {label:'FC16 Write 10 Regs',bytes:37}
+    ];
+    html+='<div class="result-card"><h3><span class="card-icon frame">FR</span> Frame Timing</h3>';
+    html+='<table class="result-table">';
+    html+='<tr><th>Frame Type</th><th>Total Bytes</th><th>Transmission Time</th><th>+ Silences</th></tr>';
+    for(var i=0;i<frameSizes.length;i++){
+        var f=frameSizes[i];
+        var txTime=frameTime_us(f.bytes);
+        var totalTime=txTime+2*s35; // 3.5T before + after
+        html+='<tr><td>'+f.label+'</td><td style="color:var(--blue)">'+f.bytes+' bytes</td><td style="color:var(--green)">'+fmtTime(txTime)+'</td><td>'+fmtTime(totalTime)+'</td></tr>';
+    }
+    html+='</table></div>';
+
+    // Throughput card
+    var charsPerSec=baud/bpc;
+    var bytesPerSec=charsPerSec;
+    var effectiveBps=bytesPerSec*8;
+
+    // Registers/sec assuming FC03 read of 10 regs at a time
+    var fs10=getFrameSizes(3,10);
+    var txPerSec_10=1e6/(frameTime_us(fs10.req)+frameTime_us(fs10.resp)+2*s35+10000); // +10ms slave delay
+    var regsPerSec_10=txPerSec_10*10;
+
+    // FC03 read of 125 regs
+    var fs125=getFrameSizes(3,125);
+    var txPerSec_125=1e6/(frameTime_us(fs125.req)+frameTime_us(fs125.resp)+2*s35+10000);
+    var regsPerSec_125=txPerSec_125*125;
+
+    html+='<div class="result-card"><h3><span class="card-icon throughput">TP</span> Throughput Estimates</h3>';
+    html+='<table class="result-table">';
+    html+='<tr><td>Characters/sec</td><td>'+charsPerSec.toFixed(1)+' chars/s</td><td>Raw byte throughput on wire</td></tr>';
+    html+='<tr><td>Effective Data Rate</td><td>'+(effectiveBps/1000).toFixed(1)+' kbps</td><td>Payload bits (excl. start/stop/parity)</td></tr>';
+    html+='<tr><td>Efficiency</td><td>'+(getDataBits()/bpc*100).toFixed(1)+'%</td><td>Data bits vs total bits per char</td></tr>';
+    html+='<tr><td>Registers/sec (10/req)</td><td>'+regsPerSec_10.toFixed(1)+' regs/s</td><td>FC03 reading 10 regs, 10 ms slave delay</td></tr>';
+    html+='<tr><td>Registers/sec (125/req)</td><td>'+regsPerSec_125.toFixed(1)+' regs/s</td><td>FC03 reading 125 regs, 10 ms slave delay</td></tr>';
+    html+='</table></div>';
+
+    resultsDiv.innerHTML=html;
+
+    // Timeout calculator
+    recalcTimeout();
+    // Poll rate calculator
+    recalcPoll();
+}
+
+function recalcTimeout(){
+    var regs=parseInt(toRegInput.value)||10;
+    var fc=parseInt(toFCSelect.value);
+    var mult=parseFloat(toMultSelect.value)||2;
+    var ct=charTime_us();
+    var s35=silence35_us();
+    var fs=getFrameSizes(fc,regs);
+
+    var reqTime_ms=frameTime_us(fs.req)/1000;
+    var respTime_ms=frameTime_us(fs.resp)/1000;
+    var silenceTime_ms=(2*s35)/1000;
+    var slaveDelay_ms=10; // typical
+    var rawTotal_ms=reqTime_ms+respTime_ms+silenceTime_ms+slaveDelay_ms;
+    var recommended_ms=rawTotal_ms*mult;
+
+    var h='<table class="result-table">';
+    h+='<tr><td>Request Frame</td><td>'+fs.req+' bytes / '+fmtTimeMs(reqTime_ms)+'</td><td>Master sends</td></tr>';
+    h+='<tr><td>Response Frame</td><td>'+fs.resp+' bytes / '+fmtTimeMs(respTime_ms)+'</td><td>Slave responds</td></tr>';
+    h+='<tr><td>Silence Intervals</td><td>'+fmtTimeMs(silenceTime_ms)+'</td><td>2 x 3.5T gaps</td></tr>';
+    h+='<tr><td>Slave Processing</td><td>~10 ms</td><td>Typical device latency</td></tr>';
+    h+='<tr><td>Raw Round-Trip</td><td style="color:var(--amber)">'+fmtTimeMs(rawTotal_ms)+'</td><td>Minimum possible</td></tr>';
+    h+='<tr><td>Recommended Timeout</td><td style="color:var(--green);font-weight:700;font-size:1rem">'+fmtTimeMs(recommended_ms)+'</td><td>With '+mult+'x safety margin</td></tr>';
+    h+='</table>';
+
+    if(recommended_ms<50){
+        h+='<div class="note-box">Calculated timeout is very short. Most operating systems and USB-serial adapters add 5-20 ms of jitter. Consider a minimum timeout of 50 ms for reliability.</div>';
+    }
+
+    timeoutDiv.innerHTML=h;
+}
+
+function recalcPoll(){
+    var regs=parseInt(prRegsInput.value)||10;
+    var devices=parseInt(prDevInput.value)||5;
+    var slaveDelay=parseInt(prDelayInput.value)||10;
+    var ct=charTime_us();
+    var s35=silence35_us();
+    var fs=getFrameSizes(3,regs);
+
+    var singleTx_ms=(frameTime_us(fs.req)+frameTime_us(fs.resp)+2*s35)/1000+slaveDelay;
+    var fullScan_ms=singleTx_ms*devices;
+    var maxPollHz=fullScan_ms>0?(1000/fullScan_ms):0;
+    var totalRegsPerScan=regs*devices;
+    var regsPerSec=fullScan_ms>0?(totalRegsPerScan*1000/fullScan_ms):0;
+
+    var h='<table class="result-table">';
+    h+='<tr><td>Single Transaction</td><td>'+fmtTimeMs(singleTx_ms)+'</td><td>'+regs+' regs from 1 device</td></tr>';
+    h+='<tr><td>Full Scan Time</td><td style="color:var(--cyan);font-weight:700">'+fmtTimeMs(fullScan_ms)+'</td><td>'+devices+' devices x '+regs+' regs each</td></tr>';
+    h+='<tr><td>Max Poll Rate</td><td style="color:var(--green);font-weight:700;font-size:1rem">'+maxPollHz.toFixed(2)+' Hz</td><td>Full scans per second</td></tr>';
+    h+='<tr><td>Max Refresh Interval</td><td>'+fmtTimeMs(fullScan_ms)+'</td><td>Best-case update period</td></tr>';
+    h+='<tr><td>Total Registers/sec</td><td>'+regsPerSec.toFixed(1)+' regs/s</td><td>'+totalRegsPerScan+' regs per scan</td></tr>';
+    h+='</table>';
+
+    if(maxPollHz<1){
+        h+='<div class="note-box">Full scan takes over 1 second. Consider increasing baud rate, reducing register count per device, or reading fewer devices per cycle to improve responsiveness.</div>';
+    }
+
+    pollDiv.innerHTML=h;
+}
+
+function applyPreset(baud,data,parity,stop){
+    // Reset custom mode if needed
+    if(baud<=115200){
+        baudSel.value=String(baud);
+        customBaudRow.style.display='none';
+    }else{
+        baudSel.value='custom';
+        customBaudInput.value=baud;
+        customBaudRow.style.display='block';
+    }
+    dataBitsSel.value=String(data);
+    paritySel.value=parity;
+    stopBitsSel.value=String(stop);
+
+    // Highlight active preset button
+    var btns=document.querySelectorAll('.example-btn');
+    var label=baud+'/'+data+'-'+(parity==='none'?'N':parity==='even'?'E':'O')+'-'+stop;
+    for(var i=0;i<btns.length;i++){
+        if(btns[i].textContent===label)btns[i].classList.add('active');
+        else btns[i].classList.remove('active');
+    }
+
+    recalc();
+}
+
+// Toggle custom baud input
+baudSel.addEventListener('change',function(){
+    if(baudSel.value==='custom'){
+        customBaudRow.style.display='block';
+        customBaudInput.focus();
+    }else{
+        customBaudRow.style.display='none';
+    }
+    clearPresetHighlight();
+    recalc();
+});
+
+function clearPresetHighlight(){
+    var btns=document.querySelectorAll('.example-btn');
+    for(var i=0;i<btns.length;i++)btns[i].classList.remove('active');
+}
+
+// Bind all inputs
+dataBitsSel.addEventListener('change',function(){clearPresetHighlight();recalc();});
+paritySel.addEventListener('change',function(){clearPresetHighlight();recalc();});
+stopBitsSel.addEventListener('change',function(){clearPresetHighlight();recalc();});
+customBaudInput.addEventListener('input',function(){clearPresetHighlight();recalc();});
+toRegInput.addEventListener('input',recalcTimeout);
+toFCSelect.addEventListener('change',recalcTimeout);
+toMultSelect.addEventListener('change',recalcTimeout);
+prRegsInput.addEventListener('input',recalcPoll);
+prDevInput.addEventListener('input',recalcPoll);
+prDelayInput.addEventListener('input',recalcPoll);
+
+// Initial calculation
+recalc();
+// Highlight default preset
+applyPreset(9600,8,'none',2);
+})();
+</script>
+</body>
+</html>

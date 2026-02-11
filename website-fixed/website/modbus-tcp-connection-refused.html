@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modbus TCP Connection Refused — Troubleshooting Guide | modbus.app</title>
+    <meta name="description" content="Fix Modbus TCP connection refused errors. IP configuration, port 502, firewall rules, and max connection limits explained.">
+    <meta name="keywords" content="modbus TCP connection refused, modbus TCP not connecting, modbus TCP port 502, modbus TCP troubleshooting">
+    <link rel="canonical" href="https://modbus.app/modbus-tcp-connection-refused.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://modbus.app/modbus-tcp-connection-refused.html">
+    <meta property="og:title" content="Modbus TCP Connection Refused — Troubleshooting Guide | modbus.app">
+    <meta property="og:description" content="Fix Modbus TCP connection refused errors. IP configuration, port 502, firewall rules, and max connection limits explained.">
+    <meta property="og:site_name" content="modbus.app">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+/* modbus.app shared guide styles */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: center;
+}
+.nav-inner {
+    max-width: 1100px; width: 100%; display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--green); }
+.nav-dropdown { position: relative; }
+.nav-dropdown > a::after { content: " \25BE"; font-size: 0.7em; }
+.nav-dropdown-menu {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.5rem 0; min-width: 200px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3); z-index: 200;
+}
+.nav-dropdown-menu a {
+    display: block; padding: 0.5rem 1rem; color: var(--text-dim);
+    text-decoration: none; font-size: 0.85rem; transition: all 0.15s;
+}
+.nav-dropdown-menu a:hover { background: var(--bg-card-hover); color: var(--green); }
+.nav-dropdown:hover .nav-dropdown-menu { display: block; }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+
+/* HERO */
+.guide-hero {
+    padding: 8rem 2rem 4rem;
+    max-width: 860px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.guide-hero .breadcrumb, .guide-hero .breadcrumbs {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.guide-hero .breadcrumb a, .guide-hero .breadcrumbs a { color: var(--green); text-decoration: none; }
+.guide-hero .breadcrumb a:hover, .guide-hero .breadcrumbs a:hover { text-decoration: underline; }
+.guide-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.guide-hero .subtitle {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 640px;
+    line-height: 1.6;
+}
+.guide-hero .meta {
+    display: flex; gap: 1.5rem; margin-top: 1.5rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.guide-hero .meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border);
+}
+.article-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+}
+.article-meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border); font-weight: 600;
+}
+.article-meta .tag-red {
+    background: var(--red-dim); color: var(--red);
+    border-color: var(--red-border);
+}
+
+/* CONTENT */
+.guide-content {
+    max-width: 860px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+}
+.guide-content h2 {
+    font-size: 1.6rem; font-weight: 700; margin: 3rem 0 1rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.guide-content h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.guide-content h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+.guide-content p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-content ul, .guide-content ol {
+    margin: 0 0 1.5rem 1.5rem; color: var(--text-dim);
+}
+.guide-content li { margin-bottom: 0.5rem; }
+.guide-content strong { color: var(--text); font-weight: 600; }
+.guide-content a { color: var(--green); text-decoration: none; }
+.guide-content a:hover { text-decoration: underline; }
+
+/* CODE BLOCKS */
+pre {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    line-height: 1.65; color: var(--text-dim);
+}
+code {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--bg-code); padding: 0.15rem 0.4rem;
+    border-radius: 4px; color: var(--green);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+/* INFO BOXES */
+.info-box {
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; border-left: 3px solid;
+}
+.info-box.tip { background: var(--green-dim); border-color: var(--green); }
+.info-box.warning { background: var(--amber-dim); border-color: var(--amber); }
+.info-box.danger { background: var(--red-dim); border-color: var(--red); }
+.info-box.info { background: var(--blue-dim); border-color: var(--blue); }
+.info-box .box-title {
+    font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.info-box.tip .box-title { color: var(--green); }
+.info-box.warning .box-title { color: var(--amber); }
+.info-box.danger .box-title { color: var(--red); }
+.info-box.info .box-title { color: var(--blue); }
+.info-box p { margin-bottom: 0.5rem; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h3 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; }
+.app-promo .cta-btn {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+
+/* TABLE */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0 1.5rem; font-size: 0.9rem;
+}
+.data-table th {
+    background: var(--bg-card); color: var(--green);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.75rem 1rem;
+    text-align: left; border-bottom: 2px solid var(--green-border);
+}
+.data-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table code { font-size: 0.8rem; }
+
+/* RELATED GUIDES */
+.related-guides {
+    margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+.related-guides h2 { border-top: none; padding-top: 0; }
+.guides-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem; margin-top: 1.5rem;
+}
+.guide-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    text-decoration: none; transition: all 0.2s;
+}
+.guide-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.guide-card .card-title {
+    color: var(--text); font-weight: 600; font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+.guide-card .card-desc {
+    color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.site-footer a { color: var(--green); text-decoration: none; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .guide-hero { padding: 6rem 1rem 3rem; }
+    .guide-content { padding: 2rem 1rem 4rem; }
+    .guide-hero .meta { flex-wrap: wrap; }
+}
+
+</style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "Modbus TCP Connection Refused — Troubleshooting Guide | modbus.app",
+      "description": "Fix Modbus TCP connection refused errors. IP configuration, port 502, firewall rules, and max connection limits explained.",
+      "url": "https://modbus.app/modbus-tcp-connection-refused.html",
+      "publisher": {
+        "@type": "Organization",
+        "name": "modbus.app"
+      },
+      "dateModified": "2026-02-06"
+    }
+    </script>
+</head>
+<body>
+<nav class="site-nav"><div class="nav-inner">
+    <a href="index.html" class="nav-logo">modbus<span class="dot">.</span>app</a>
+    <ul class="nav-links"><li><a href="index.html">Product</a></li><li class="nav-dropdown"><a href="#">Tools</a><div class="nav-dropdown-menu"><a href="number-converter.html">Number Converter</a><a href="modbus-frame-parser.html">Frame Parser</a><a href="modbus-address-calculator.html">Address Calculator</a><a href="modbus-baud-rate-calculator.html">Baud Rate Calculator</a></div></li><li><a href="read-modbus-data.html">Guides</a></li><li><a href="guides.html">Troubleshooting</a></li><li><a href="pricing.html">Pricing</a></li></ul>
+    <a href="index.html#download" class="nav-cta">Download Free &rarr;</a>
+</div></nav>
+<div class="guide-hero">
+    <div class="breadcrumbs"><a href="index.html">Home</a> / <a href="guides.html">Guides</a> / Troubleshooting</div>
+    <h1>Modbus TCP Connection Refused / Can't Connect</h1>
+    <div class="article-meta"><span class="tag tag-red">TROUBLESHOOTING</span><span>Updated Feb 2026</span><span>8 min read</span></div>
+</div>
+<div class="guide-content">
+<article>
+
+    <p>You're trying to connect to a Modbus TCP device and the connection is immediately refused, times out at the TCP level, or connects but gets no Modbus responses. This guide covers the systematic approach to diagnosing TCP-level connection issues.</p>
+
+    <h2 id="what-it-means">Connection Refused vs Timeout</h2>
+    <p><strong>Connection refused</strong> (immediate rejection) means something is actively rejecting your TCP SYN packet. A firewall, the device itself, or the wrong port. <strong>Connection timeout</strong> (slow failure) means your packets aren't reaching the device at all — a routing, VLAN, or physical network problem.</p>
+
+    <h2 id="network-checks">Network Layer Checks</h2>
+    <h3>1. Ping the device</h3>
+    <p>If you can't ping it, Modbus TCP won't work. Check IP address, subnet mask, gateway. Ensure you're on the same subnet or that routing is configured.</p>
+
+    <h3>2. Check VLAN configuration</h3>
+    <p>In SCADA environments, Modbus devices are often on a separate VLAN from the engineering workstation. Verify the switch port configuration and VLAN tagging.</p>
+
+    <h3>3. Check for duplicate IPs</h3>
+    <p>If two devices share the same IP, the ARP table flips between their MAC addresses and connections fail intermittently. Use <code>arp -a</code> to check for multiple MACs on the same IP.</p>
+
+    <h2 id="port-firewall">Port &amp; Firewall Issues</h2>
+    <p>Modbus TCP defaults to port 502. Some devices use non-standard ports. Some firewalls block port 502 by default. Test with: <code>telnet [device-ip] 502</code> — if it connects (even briefly), the TCP path is clear.</p>
+    <p>On Windows, the built-in firewall may block outbound connections to port 502. Check Windows Defender Firewall rules if you're testing from a laptop.</p>
+
+    <h2 id="max-connections">Maximum Connection Limits</h2>
+    <p>Many Modbus TCP devices only support 2-5 simultaneous TCP connections. Common culprits:</p>
+    <ul>
+        <li>Your SCADA system holds a permanent connection</li>
+        <li>A commissioning tool from last week is still connected (and the device never timed it out)</li>
+        <li>Another engineer's laptop has Modbus Poll open</li>
+    </ul>
+    <p>Solution: Power-cycle the device to clear all connections, or check the device's web interface (many have one) to see and kill active connections.</p>
+
+    <h2 id="unit-id">Unit ID Confusion</h2>
+    <p>Even after TCP connects, you need the right Unit ID in the Modbus TCP header. Standalone devices usually expect Unit ID 1 or 255. Modbus TCP gateways (that bridge to RS485 devices behind them) need the actual slave address of the target device as the Unit ID. Getting this wrong results in timeouts or exception responses.</p>
+
+    <div class="app-promo">
+        <div class="app-promo-badge">🌐 Network Scanner</div>
+        <h4>Find every Modbus TCP device on your network</h4>
+        <p>ModBus Pro scans your subnet for devices listening on port 502 and helps you connect to them quickly. With 80+ built-in device register maps, getting started with common devices is fast and easy.</p>
+        <a href="index.html#download" class="app-promo-cta">Download Free</a>
+    </div>
+
+    <div class="related">
+        <h3>More Troubleshooting Guides</h3>
+        <div class="related-grid">
+        <a href="modbus-timeout-no-response.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Timeout &amp; No Response from Slave</h4>
+            <p>Fix Modbus timeout errors and no response from slave devices. Complete diagnosti...</p>
+        </a>
+        <a href="modbus-exception-code-01.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Exception Code 01: Illegal Function</h4>
+            <p>Fix Modbus exception code 01 (Illegal Function). Why your device rejects your fu...</p>
+        </a>
+        <a href="modbus-exception-code-02.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Exception Code 02: Illegal Data Address</h4>
+            <p>Fix Modbus exception code 02 (Illegal Data Address). Register numbering, 0-based...</p>
+        </a>
+        </div>
+    </div>
+</article>
+</div>
+<footer style="border-top: 1px solid rgba(255,255,255,0.06); padding: 4rem 0 2rem; margin-top: 6rem;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #00e5a0, #00c488); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <svg width="18" height="18" fill="none" stroke="#0a0e17" stroke-width="2.5" stroke-linecap="round"><path d="M3 9h12M9 3v12"/></svg>
+                    </div>
+                    <span style="font-weight: 700; font-size: 1.1rem;">ModBus Pro</span>
+                </div>
+                <p style="color: var(--text-muted, #8a94a6); font-size: 0.9rem; line-height: 1.6; max-width: 280px;">The modern Modbus diagnostic tool. Built for engineers who need reliability.</p>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Product</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="index.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Features</a></li>
+                    <li><a href="pricing.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Pricing</a></li>
+                    <li><a href="number-converter.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Number Converter</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Resources</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="guides.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Guides</a></li>
+                    <li><a href="mailto:support@modbus.app" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Support</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Legal</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="#" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Privacy</a></li>
+                    <li><a href="terms.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <p style="color: var(--text-muted, #8a94a6); font-size: 0.8rem;">&copy; 2026 modbus.app &mdash; Built by engineers who debug Modbus for a living.</p>
+            <p style="color: #5a6478; font-size: 0.65rem; margin-top: 0.5rem;">Modbus&reg; is a registered trademark of Schneider Electric. ModBus Pro is not affiliated with or endorsed by Schneider Electric or the Modbus Organization.</p>
+            <div style="display: flex; gap: 1.5rem;">
+                <a href="mailto:support@modbus.app" style="color: var(--text-muted, #8a94a6); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;">support@modbus.app</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body></html>

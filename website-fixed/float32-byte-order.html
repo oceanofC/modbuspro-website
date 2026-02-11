@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modbus Float32 Byte Order & Wrong Values — Fix Guide | modbus.app</title>
+    <meta name="description" content="Fix wrong float values in Modbus. Understand big-endian, little-endian, word swap, and byte swap for IEEE 754 Float32 registers. Interactive byte order visualiser.">
+    <meta name="keywords" content="modbus float32, modbus byte order, modbus wrong values, modbus endian, modbus word swap, IEEE 754 modbus, modbus float conversion">
+    <style>
+/* modbus.app shared guide styles */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+
+/* HERO */
+.guide-hero {
+    padding: 8rem 2rem 4rem;
+    max-width: 860px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.guide-hero .breadcrumb {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.guide-hero .breadcrumb a { color: var(--green); text-decoration: none; }
+.guide-hero .breadcrumb a:hover { text-decoration: underline; }
+.guide-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.guide-hero .subtitle {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 640px;
+    line-height: 1.6;
+}
+.guide-hero .meta {
+    display: flex; gap: 1.5rem; margin-top: 1.5rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.guide-hero .meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border);
+}
+
+/* CONTENT */
+.guide-content {
+    max-width: 860px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+}
+.guide-content h2 {
+    font-size: 1.6rem; font-weight: 700; margin: 3rem 0 1rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.guide-content h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.guide-content h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+.guide-content p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-content ul, .guide-content ol {
+    margin: 0 0 1.5rem 1.5rem; color: var(--text-dim);
+}
+.guide-content li { margin-bottom: 0.5rem; }
+.guide-content strong { color: var(--text); font-weight: 600; }
+.guide-content a { color: var(--green); text-decoration: none; }
+.guide-content a:hover { text-decoration: underline; }
+
+/* CODE BLOCKS */
+pre {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    line-height: 1.65; color: var(--text-dim);
+}
+code {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--bg-code); padding: 0.15rem 0.4rem;
+    border-radius: 4px; color: var(--green);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+/* INFO BOXES */
+.info-box {
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; border-left: 3px solid;
+}
+.info-box.tip { background: var(--green-dim); border-color: var(--green); }
+.info-box.warning { background: var(--amber-dim); border-color: var(--amber); }
+.info-box.danger { background: var(--red-dim); border-color: var(--red); }
+.info-box.info { background: var(--blue-dim); border-color: var(--blue); }
+.info-box .box-title {
+    font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.info-box.tip .box-title { color: var(--green); }
+.info-box.warning .box-title { color: var(--amber); }
+.info-box.danger .box-title { color: var(--red); }
+.info-box.info .box-title { color: var(--blue); }
+.info-box p { margin-bottom: 0.5rem; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h3 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; }
+.app-promo .cta-btn {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+
+/* TABLE */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0 1.5rem; font-size: 0.9rem;
+}
+.data-table th {
+    background: var(--bg-card); color: var(--green);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.75rem 1rem;
+    text-align: left; border-bottom: 2px solid var(--green-border);
+}
+.data-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table code { font-size: 0.8rem; }
+
+/* RELATED GUIDES */
+.related-guides {
+    margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+.related-guides h2 { border-top: none; padding-top: 0; }
+.guides-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem; margin-top: 1.5rem;
+}
+.guide-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    text-decoration: none; transition: all 0.2s;
+}
+.guide-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.guide-card .card-title {
+    color: var(--text); font-weight: 600; font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+.guide-card .card-desc {
+    color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.site-footer a { color: var(--green); text-decoration: none; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .guide-hero { padding: 6rem 1rem 3rem; }
+    .guide-content { padding: 2rem 1rem 4rem; }
+    .guide-hero .meta { flex-wrap: wrap; }
+}
+
+</style>
+</head>
+<body>
+    <nav class="site-nav">
+        <a href="../index.html" class="nav-logo">modbus<span class="dot">.</span>app</a>
+        <ul class="nav-links"><li><a href="../index.html#features">Features</a></li><li><a href="../number-converter.html">Converter</a></li><li><a href="../read-modbus-data.html">Guides</a></li></ul>
+        <a href="../index.html#download" class="nav-cta">Download Free</a>
+    </nav>
+
+    <header class="guide-hero">
+        <div class="breadcrumb"><a href="../index.html">modbus.app</a> / <a href="../read-modbus-data.html">Guides</a> / Float32 Byte Order</div>
+        <h1>Modbus Float32 Byte Order & "Wrong Values"</h1>
+        <p class="subtitle">You're reading a voltage register and getting 3.87×10²⁴ instead of 236V. The data is there — it's just being interpreted in the wrong byte order. Here's how to fix it every time.</p>
+        <div class="meta">
+            <span class="tag">Data Types</span>
+            <span>Updated Feb 2026</span>
+            <span>9 min read</span>
+        </div>
+    </header>
+
+    <article class="guide-content">
+
+        <h2>Why This Happens</h2>
+        <p>Modbus registers are 16 bits (2 bytes) each. A Float32 (IEEE 754 single-precision floating point) needs 32 bits — so it's split across <strong>two consecutive registers</strong>. The problem is that the Modbus specification doesn't define which register holds the high word and which holds the low word.</p>
+        <p>Each register also contains 2 bytes, and while Modbus defines big-endian byte order <em>within</em> a register, the <strong>word order</strong> (which register comes first) is left to the manufacturer. The result: four possible interpretations of the same two registers.</p>
+
+        <h2>The Four Byte Orders</h2>
+        <p>Let's say the float value is <code>236.38</code> (a typical UK mains voltage). In IEEE 754, this is hex <code>43 6C 61 48</code>, which we label as bytes A B C D:</p>
+
+        <table class="data-table">
+            <thead>
+                <tr><th>Order</th><th>Common Name</th><th>Register N</th><th>Register N+1</th><th>Float Result</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>AB CD</code></td><td>Big-Endian (standard)</td><td><code>0x436C</code></td><td><code>0x6148</code></td><td>236.38 ✓</td></tr>
+                <tr><td><code>CD AB</code></td><td>Little-Endian Word Swap</td><td><code>0x6148</code></td><td><code>0x436C</code></td><td>3.08×10²⁰</td></tr>
+                <tr><td><code>BA DC</code></td><td>Big-Endian Byte Swap</td><td><code>0x6C43</code></td><td><code>0x4861</code></td><td>2.45×10²⁷</td></tr>
+                <tr><td><code>DC BA</code></td><td>Little-Endian</td><td><code>0x4861</code></td><td><code>0x6C43</code></td><td>57536.26</td></tr>
+            </tbody>
+        </table>
+
+        <p>Only one of these gives you 236.38V — the rest produce nonsense. This is why byte order matters so much.</p>
+
+        <div class="info-box danger">
+            <div class="box-title">🔥 The Dangerous Case</div>
+            <p>Some wrong byte orders produce values that <em>look</em> plausible but are wrong. If you're reading a temperature and get 25.4°C when the actual value is 42.5°C, the values are in the same ballpark and you might not notice the error for weeks. Always verify against a known reference.</p>
+        </div>
+
+        <h2>How to Identify the Correct Byte Order</h2>
+
+        <h3>Method 1: Read the Documentation</h3>
+        <p>The device's Modbus protocol manual should state the byte order. Look for terms like:</p>
+        <ul>
+            <li>"Big-endian" / "MSB first" / "High word first" → AB CD</li>
+            <li>"Low word first" / "Little-endian word order" → CD AB</li>
+            <li>"Modicon compatible" / "Modicon standard" → CD AB (Modicon PLCs used low-word-first)</li>
+        </ul>
+
+        <h3>Method 2: Use a Known Value</h3>
+        <p>Read the raw register values (as UINT16) for a measurement you can independently verify, then manually decode all four byte orders:</p>
+        <ol>
+            <li>Read register N and N+1 as unsigned integers</li>
+            <li>Convert each to hex (e.g., register N = 17260 → <code>0x436C</code>)</li>
+            <li>Try all four combinations and see which produces the expected value</li>
+        </ol>
+
+        <div class="app-promo">
+            <h3>🔄 Instant Byte Order Detection</h3>
+            <p>ModBus Pro shows <strong>all four interpretations simultaneously</strong> for every Float32 register. See which one matches your expected value and lock in the byte order for the entire device. The <a href="../number-converter.html">online converter</a> does the same thing for manual checks.</p>
+            <a href="../index.html#download" class="cta-btn">Try it Free →</a>
+        </div>
+
+        <h3>Method 3: Look for the Exponent</h3>
+        <p>A quick diagnostic trick: in IEEE 754, the exponent is in bits 23-30, which means it's in the <strong>most significant byte</strong>. For typical industrial values (voltages, currents, temperatures), the MSB is usually in the range <code>0x40</code>-<code>0x47</code>. Whichever byte order puts that byte first is probably correct.</p>
+
+        <h2>Which Manufacturers Use Which Order?</h2>
+        <table class="data-table">
+            <thead>
+                <tr><th>Manufacturer / Device</th><th>Byte Order</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>ABB (REX615, REF615, REM615)</td><td><code>AB CD</code></td><td>Big-endian standard</td></tr>
+                <tr><td>ABB (M4M, EV3 meters)</td><td><code>AB CD</code></td><td>Big-endian standard</td></tr>
+                <tr><td>Schneider (PM5xxx, ION)</td><td><code>AB CD</code></td><td>Big-endian standard</td></tr>
+                <tr><td>Siemens (PAC3200, SENTRON)</td><td><code>AB CD</code></td><td>Big-endian standard</td></tr>
+                <tr><td>Modicon PLCs (legacy)</td><td><code>CD AB</code></td><td>Low word first</td></tr>
+                <tr><td>Allen-Bradley / Rockwell</td><td><code>CD AB</code></td><td>Low word first (check ProSoft config)</td></tr>
+                <tr><td>SMA Inverters</td><td><code>AB CD</code></td><td>Big-endian, but uses UINT32 not float</td></tr>
+                <tr><td>Fronius Inverters</td><td><code>AB CD</code></td><td>SunSpec standard</td></tr>
+            </tbody>
+        </table>
+
+        <div class="info-box info">
+            <div class="box-title">ℹ SunSpec Alliance</div>
+            <p>Solar inverters following the SunSpec standard use big-endian (AB CD) byte order for all Float32 and UINT32 values. If your inverter is SunSpec compliant, you can rely on this.</p>
+        </div>
+
+        <h2>Handling Byte Order in PLC Code</h2>
+        <h3>PLCnext Structured Text (IEC 61131-3)</h3>
+        <pre>// If your device sends CD AB (word-swapped) and your PLC expects AB CD:
+// Swap the two 16-bit words before interpreting as REAL
+
+VAR
+    wRawHigh : WORD;    // Register N   (contains low word CD)
+    wRawLow  : WORD;    // Register N+1 (contains high word AB)
+    dwCombined : DWORD;
+    rResult  : REAL;
+END_VAR
+
+// Swap words: put high word in MSW, low word in LSW
+dwCombined := SHL(WORD_TO_DWORD(wRawLow), 16) OR WORD_TO_DWORD(wRawHigh);
+
+// Interpret the DWORD bits as REAL (type-pun)
+rResult := DWORD_TO_REAL(dwCombined);</pre>
+
+        <h3>Python (pymodbus)</h3>
+        <pre>from pymodbus.payload import BinaryPayloadDecoder
+from pymodbus.constants import Endian
+
+# Read 2 registers
+result = client.read_holding_registers(address=2999, count=2, slave=1)
+
+# Decode as Float32 — try different byte orders if wrong
+decoder = BinaryPayloadDecoder.fromRegisters(
+    result.registers,
+    byteorder=Endian.BIG,    # Byte order within register
+    wordorder=Endian.BIG     # Word order across registers
+)
+voltage = decoder.decode_32bit_float()
+print(f"Voltage: {voltage:.2f} V")</pre>
+
+        <div class="related-guides">
+            <h2>Related Guides</h2>
+            <div class="guides-grid">
+                <a href="../number-converter.html" class="guide-card">
+                    <div class="card-title">Modbus Data Type Converter</div>
+                    <div class="card-desc">Interactive tool to convert between all Modbus data types with all byte orders.</div>
+                </a>
+                <a href="register-address-offset.html" class="guide-card">
+                    <div class="card-title">Register Address Offset</div>
+                    <div class="card-desc">The other common cause of wrong values — 0-based vs 1-based addressing.</div>
+                </a>
+                <a href="exception-codes.html" class="guide-card">
+                    <div class="card-title">Exception Codes Explained</div>
+                    <div class="card-desc">What the error codes mean when your read fails entirely.</div>
+                </a>
+                <a href="rtu-vs-tcp.html" class="guide-card">
+                    <div class="card-title">RTU vs TCP Differences</div>
+                    <div class="card-desc">Understanding the two main Modbus transports.</div>
+                </a>
+            </div>
+        </div>
+    </article>
+
+    <footer class="site-footer"><p>© 2026 <a href="../index.html">modbus.app</a> — Built by engineers who've debugged enough registers for a lifetime.</p></footer>
+</body>
+</html>

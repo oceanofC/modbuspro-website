@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModBus Pro — Master + Slave in One App</title>
+    <meta name="description" content="ModBus Pro is a modern Modbus diagnostic tool with master polling and slave simulation in one app. Supports Modbus RTU and TCP/IP. Windows, macOS, Linux.">
+    <meta name="keywords" content="modbus tool, modbus master, modbus slave simulator, modbus diagnostic software, modbus poll alternative, modbus RTU, modbus TCP, industrial automation tool">
+    <link rel="canonical" href="https://modbus.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://modbus.app/">
+    <meta property="og:title" content="ModBus Pro — Master + Slave in One App">
+    <meta property="og:description" content="Master polling and slave simulation in one modern app. Supports Modbus RTU and TCP/IP.">
+    <meta property="og:site_name" content="modbus.app">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+    [{
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "ModBus Pro",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Windows, macOS, Linux",
+      "description": "Professional Modbus diagnostic tool with master polling and slave simulation.",
+      "url": "https://modbus.app",
+      "offers": { "@type": "Offer", "price": "199", "priceCurrency": "USD" }
+    }]
+    </script>
+    <style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+    --bg:#09090b;
+    --surface:#18181b;
+    --surface-hover:#27272a;
+    --border:#27272a;
+    --text:#fafafa;
+    --text-secondary:#a1a1aa;
+    --text-muted:#71717a;
+    --accent:#10b981;
+    --accent-hover:#34d399;
+    --accent-dim:rgba(16,185,129,0.08);
+    --accent-border:rgba(16,185,129,0.2);
+    --font:'Inter',system-ui,-apple-system,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(9,9,11,0.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:center;padding:0 24px}
+.nav-inner{max-width:1080px;width:100%;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-weight:700;font-size:15px;color:var(--text);text-decoration:none;letter-spacing:-0.02em}
+.nav-brand span{color:var(--accent)}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{color:var(--text-muted);text-decoration:none;font-size:14px;font-weight:500;transition:color 0.15s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{background:var(--text);color:var(--bg);padding:8px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:13px;transition:all 0.15s}
+.nav-cta:hover{opacity:0.9;transform:translateY(-1px)}
+.nav-dropdown{position:relative}
+.nav-dropdown>a{cursor:pointer}
+.nav-dropdown>a::after{content:" \25BE";font-size:0.65em;opacity:0.5}
+.dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px;min-width:200px;box-shadow:0 16px 48px rgba(0,0,0,0.4);z-index:200}
+.nav-dropdown:hover .dropdown-menu{display:block}
+.dropdown-menu a{display:block;padding:8px 12px;color:var(--text-secondary);text-decoration:none;font-size:13px;border-radius:6px;transition:all 0.1s}
+.dropdown-menu a:hover{color:var(--text);background:var(--surface-hover)}
+
+/* ── HERO ── */
+.hero{padding:140px 24px 80px;text-align:center;max-width:800px;margin:0 auto}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid var(--accent-border);color:var(--accent);padding:6px 14px;border-radius:100px;font-size:13px;font-weight:500;margin-bottom:24px}
+.hero-badge::before{content:"";width:6px;height:6px;background:var(--accent);border-radius:50%}
+.hero h1{font-size:clamp(36px,5.5vw,60px);font-weight:700;line-height:1.1;letter-spacing:-0.03em;margin-bottom:20px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{font-size:18px;color:var(--text-secondary);max-width:520px;margin:0 auto 36px;line-height:1.6}
+.hero-actions{display:flex;gap:12px;justify-content:center;margin-bottom:12px}
+.btn-primary{background:var(--accent);color:#fff;padding:12px 28px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;transition:all 0.15s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 8px 24px rgba(16,185,129,0.25)}
+.btn-secondary{background:transparent;border:1px solid var(--border);color:var(--text);padding:12px 28px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;transition:all 0.15s}
+.btn-secondary:hover{background:var(--surface);border-color:var(--text-muted)}
+.hero-meta{font-size:13px;color:var(--text-muted);margin-top:16px}
+
+/* ── SCREENSHOT CAROUSEL ── */
+.screenshot-wrap{max-width:1080px;margin:0 auto 0;padding:0 24px}
+.carousel{position:relative}
+.carousel-viewport{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.4),0 0 0 1px rgba(255,255,255,0.03) inset;position:relative}
+.carousel-track{display:flex;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);will-change:transform}
+.carousel-slide{min-width:100%;position:relative}
+.carousel-slide img{width:100%;display:block}
+.carousel-caption{position:absolute;bottom:0;left:0;right:0;padding:16px 24px;background:linear-gradient(0deg,rgba(0,0,0,0.7) 0%,transparent 100%);font-size:14px;font-weight:500;color:#fff;opacity:0;transition:opacity 0.3s}
+.carousel-viewport:hover .carousel-caption{opacity:1}
+.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:12px;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;z-index:10;opacity:0}
+.carousel:hover .carousel-arrow{opacity:1}
+.carousel-arrow:hover{background:rgba(0,0,0,0.7);border-color:rgba(255,255,255,0.2);transform:translateY(-50%) scale(1.05)}
+.carousel-arrow.prev{left:16px}
+.carousel-arrow.next{right:16px}
+.carousel-dots{display:flex;justify-content:center;gap:8px;margin-top:20px}
+.carousel-dot{width:10px;height:10px;border-radius:50%;background:var(--border);border:1px solid transparent;cursor:pointer;transition:all 0.25s;padding:0}
+.carousel-dot.active{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px rgba(16,185,129,0.4)}
+.carousel-dot:hover:not(.active){background:var(--text-muted)}
+.carousel-labels{display:flex;justify-content:center;gap:6px;margin-top:12px;flex-wrap:wrap}
+.carousel-label{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);color:var(--text-muted);background:transparent}
+.carousel-label.active{background:var(--accent-dim);border-color:var(--accent-border);color:var(--accent)}
+.carousel-label:hover:not(.active){color:var(--text-secondary);border-color:var(--text-muted)}
+
+/* ── SECTION HELPERS ── */
+.section{max-width:1080px;margin:0 auto;padding:100px 24px}
+.section-label{font-size:13px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px}
+.section-title{font-size:clamp(28px,3.5vw,40px);font-weight:700;letter-spacing:-0.02em;line-height:1.15;margin-bottom:16px}
+.section-desc{font-size:16px;color:var(--text-secondary);max-width:540px;line-height:1.6}
+.divider{max-width:1080px;margin:0 auto;padding:0 24px}
+.divider hr{border:0;border-top:1px solid var(--border)}
+
+/* ── FEATURES ── */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:48px}
+.feature{background:var(--bg);padding:36px 32px;transition:background 0.15s}
+.feature:hover{background:var(--surface)}
+.feature-icon{width:40px;height:40px;border-radius:10px;background:var(--accent-dim);border:1px solid var(--accent-border);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:15px;font-weight:700;margin-bottom:16px;font-family:monospace}
+.feature h3{font-size:15px;font-weight:600;margin-bottom:6px;letter-spacing:-0.01em}
+.feature p{font-size:14px;color:var(--text-muted);line-height:1.5;margin:0}
+
+/* ── COMPARISON ── */
+.compare{margin-top:48px;border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.compare table{width:100%;border-collapse:collapse}
+.compare th{background:var(--surface);padding:14px 20px;text-align:left;font-size:13px;font-weight:600;color:var(--text-muted);border-bottom:1px solid var(--border)}
+.compare th.highlight{color:var(--accent)}
+.compare td{padding:14px 20px;border-bottom:1px solid var(--border);font-size:14px;color:var(--text-secondary)}
+.compare tr:last-child td{border-bottom:0}
+.compare td.highlight{background:rgba(16,185,129,0.03)}
+.yes{color:var(--accent);font-weight:600}
+.no{color:#ef4444;opacity:0.7}
+
+/* ── PRICING ── */
+.price-card{max-width:400px;margin:48px auto 0;background:var(--surface);border:1px solid var(--accent-border);border-radius:16px;padding:40px 32px;text-align:center;position:relative;box-shadow:0 0 60px rgba(16,185,129,0.06)}
+.price-amount{font-size:48px;font-weight:700;letter-spacing:-0.03em;margin-bottom:4px}
+.price-period{font-size:14px;color:var(--text-muted);margin-bottom:28px}
+.price-list{list-style:none;text-align:left;margin-bottom:28px}
+.price-list li{padding:8px 0;font-size:14px;color:var(--text-secondary);display:flex;align-items:center;gap:10px}
+.price-list li::before{content:"✓";color:var(--accent);font-weight:700;font-size:13px}
+.price-card .btn-primary{width:100%;justify-content:center;padding:14px}
+
+/* ── DOWNLOAD ── */
+.download-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:640px;margin:48px auto 0}
+.dl-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 20px;text-align:center;transition:all 0.15s}
+.dl-card:hover{border-color:var(--accent-border)}
+.dl-card.active{border-color:var(--accent-border);box-shadow:0 0 24px rgba(16,185,129,0.08)}
+.dl-card .os{font-size:28px;margin-bottom:12px;display:block}
+.dl-card h3{font-size:14px;font-weight:600;margin-bottom:4px}
+.dl-card .meta{font-size:12px;color:var(--text-muted);font-family:monospace;margin-bottom:16px}
+.dl-card a.dl-btn{display:inline-block;background:var(--accent);color:#fff;padding:8px 20px;border-radius:8px;font-weight:600;font-size:13px;text-decoration:none;transition:all 0.15s}
+.dl-card a.dl-btn:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.dl-card.disabled{opacity:0.35;pointer-events:none}
+.dl-version{text-align:center;margin-top:20px;font-size:12px;color:var(--text-muted);font-family:monospace}
+
+/* ── FOOTER ── */
+.footer{border-top:1px solid var(--border);padding:48px 24px 32px}
+.footer-inner{max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;align-items:start}
+.footer-brand p{font-size:13px;color:var(--text-muted);margin-top:6px}
+.footer-cols{display:flex;gap:48px}
+.footer-col h4{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-bottom:12px}
+.footer-col a{display:block;color:var(--text-secondary);text-decoration:none;font-size:13px;padding:3px 0;transition:color 0.1s}
+.footer-col a:hover{color:var(--text)}
+.footer-copy{max-width:1080px;margin:24px auto 0;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted);display:flex;justify-content:space-between}
+
+@media(max-width:768px){
+    .nav-links{display:none}
+    .hero{padding:100px 24px 60px}
+    .features-grid{grid-template-columns:1fr}
+    .download-cards{grid-template-columns:1fr;max-width:280px}
+    .compare th,.compare td{padding:10px 12px;font-size:12px}
+    .footer-inner{flex-direction:column;gap:32px}
+    .footer-cols{flex-direction:column;gap:24px}
+    .footer-copy{flex-direction:column;gap:8px}
+}
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav"><div class="nav-inner">
+    <a href="index.html" class="nav-brand">modbus<span>.</span>app</a>
+    <ul class="nav-links">
+        <li><a href="index.html">Product</a></li>
+        <li class="nav-dropdown"><a href="#">Tools</a><div class="dropdown-menu"><a href="number-converter.html">Number Converter</a><a href="modbus-frame-parser.html">Frame Parser</a><a href="modbus-address-calculator.html">Address Calculator</a><a href="modbus-baud-rate-calculator.html">Baud Rate Calculator</a></div></li>
+        <li><a href="read-modbus-data.html">Guides</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="#book-link">Book</a></li>
+    </ul>
+    <a href="#download" class="nav-cta">Download</a>
+</div></nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-badge">Now available for Windows</div>
+    <h1>Master + Slave.<br><em>One app.</em></h1>
+    <p>ModBus Pro replaces your entire Modbus toolkit. Master polling, slave simulation, and diagnostics in a single modern interface.</p>
+    <div class="hero-actions">
+        <a href="#download" class="btn-primary">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+            Download Free Trial
+        </a>
+        <a href="pricing.html" class="btn-secondary">View Pricing</a>
+    </div>
+    <p class="hero-meta">7-day trial &middot; No credit card &middot; Windows 10/11</p>
+</section>
+
+<!-- SCREENSHOT CAROUSEL -->
+<div class="screenshot-wrap">
+    <div class="carousel" id="heroCarousel">
+        <div class="carousel-viewport">
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-slide">
+                    <img src="Monitor1.png" alt="ModBus Pro master polling with live register data, retro connection graphic and multiple data types" loading="lazy">
+                    <div class="carousel-caption">Master Polling — Live register monitoring with per-register data types and scale overrides</div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="Chart1.png" alt="ModBus Pro real-time monitor with trend chart showing multiple register values" loading="lazy">
+                    <div class="carousel-caption">Real-Time Monitor — Chart up to 16 register trends with live updating values</div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="slavesim1.png" alt="ModBus Pro slave simulator with coil toggles, animated connection graphic and stats" loading="lazy">
+                    <div class="carousel-caption">Slave Simulator — Simulate Modbus devices with automation and per-register controls</div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="Autoscan.png" alt="ModBus Pro auto-discovery scan finding registers on connected devices" loading="lazy">
+                    <div class="carousel-caption">Auto-Discovery — Scan address ranges to find devices and registers automatically</div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="Script1.png" alt="ModBus Pro scripting engine with JavaScript editor and example templates" loading="lazy">
+                    <div class="carousel-caption">Scripting Engine — Automate Modbus operations with JavaScript and built-in templates</div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="Tools3.png" alt="ModBus Pro connection test tool showing response times and success rate" loading="lazy">
+                    <div class="carousel-caption">Engineering Tools — Connection testing, CRC calculator, number converter and more</div>
+                </div>
+            </div>
+            <button class="carousel-arrow prev" onclick="carouselNav(-1)" aria-label="Previous screenshot">&#8249;</button>
+            <button class="carousel-arrow next" onclick="carouselNav(1)" aria-label="Next screenshot">&#8250;</button>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+        <div class="carousel-labels" id="carouselLabels"></div>
+    </div>
+</div>
+
+<!-- DIVIDER -->
+<div class="divider"><hr></div>
+
+<!-- FEATURES -->
+<section class="section">
+    <div class="section-label">Features</div>
+    <div class="section-title">Everything you need.<br>Nothing you don't.</div>
+    <p class="section-desc">Other tools sell master and slave separately, charge twice, and look like Windows XP. ModBus Pro puts it all in one modern app.</p>
+
+    <div class="features-grid">
+        <div class="feature">
+            <div class="feature-icon">Tx</div>
+            <h3>Master Polling</h3>
+            <p>FC01-06, FC15-16, FC22, FC23. Modbus RTU and TCP/IP with configurable poll rates.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">Rx</div>
+            <h3>Slave Simulator</h3>
+            <p>Simulate up to 10 devices. All data formats including float32, int32, uint32.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">&cir;</div>
+            <h3>Live Monitor</h3>
+            <p>Real-time register values in table or chart view. Up to 16 concurrent trend lines.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">&#8635;</div>
+            <h3>Auto-Discovery</h3>
+            <p>Scan address ranges to find devices. 80+ built-in register maps.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">&#9776;</div>
+            <h3>Data Logging</h3>
+            <p>Log register values over time. Export to CSV or JSON for commissioning reports.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">01</div>
+            <h3>Number Converter</h3>
+            <p>Hex, decimal, binary, float32 conversion. All four byte orders side-by-side.</p>
+        </div>
+    </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- COMPARISON -->
+<section class="section">
+    <div class="section-label">Compare</div>
+    <div class="section-title">See how we stack up.</div>
+    <p class="section-desc">One app, one price, every platform.</p>
+
+    <div class="compare">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th class="highlight">ModBus Pro</th>
+                    <th>Modbus Poll + Slave</th>
+                    <th>Simply Modbus</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>What you get</td><td class="highlight"><span class="yes">Master + Slave</span></td><td>Two separate apps</td><td>Three separate apps</td></tr>
+                <tr><td>Price</td><td class="highlight"><span class="yes">$199</span></td><td>$258</td><td>$162</td></tr>
+                <tr><td>Modern UI</td><td class="highlight"><span class="yes">&#10003;</span></td><td><span class="no">&#10007;</span> Win32</td><td><span class="no">&#10007;</span> Legacy</td></tr>
+                <tr><td>Cross-platform</td><td class="highlight"><span class="yes">&#10003;</span></td><td><span class="no">&#10007;</span></td><td><span class="no">&#10007;</span></td></tr>
+                <tr><td>Auto-discovery</td><td class="highlight"><span class="yes">&#10003;</span></td><td><span class="no">&#10007;</span></td><td><span class="no">&#10007;</span></td></tr>
+                <tr><td>Free trial</td><td class="highlight"><span class="yes">7 days, full features</span></td><td>30 days, 10-min limit</td><td>Demo mode</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- PRICING -->
+<section class="section" style="text-align:center">
+    <div class="section-label">Pricing</div>
+    <div class="section-title">Simple, honest pricing.</div>
+    <p class="section-desc" style="margin:0 auto">One payment. Yours forever. No subscriptions.</p>
+
+    <div class="price-card">
+        <div class="price-amount">$199</div>
+        <p class="price-period">One-time payment &mdash; lifetime license</p>
+        <ul class="price-list">
+            <li>Master + Slave in one app</li>
+            <li>All function codes (FC01&ndash;FC23)</li>
+            <li>Windows, macOS, Linux</li>
+            <li>Free updates for life</li>
+            <li>No subscription, no recurring fees</li>
+        </ul>
+        <a href="#download" class="btn-primary">Start Free Trial</a>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:12px">7-day trial. No credit card required.</p>
+    </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- DOWNLOAD -->
+<section class="section" id="download" style="text-align:center">
+    <div class="section-label">Download</div>
+    <div class="section-title">Get started in 60 seconds.</div>
+    <p class="section-desc" style="margin:0 auto">Download, unzip, run. No installer required.</p>
+
+    <div class="download-cards">
+        <div class="dl-card active">
+            <span class="os">&#9634;</span>
+            <h3>Windows</h3>
+            <p class="meta">.zip &middot; 113 MB</p>
+            <a href="https://github.com/oceanofC/ModbusPro/releases/download/v1.0.0/ModBus.Pro-1.0.0-win-x64.zip" class="dl-btn">Download</a>
+        </div>
+        <div class="dl-card disabled">
+            <span class="os">&#9788;</span>
+            <h3>macOS</h3>
+            <p class="meta">Coming soon</p>
+            <a href="#" class="dl-btn">Soon</a>
+        </div>
+        <div class="dl-card disabled">
+            <span class="os">&#9654;</span>
+            <h3>Linux</h3>
+            <p class="meta">Coming soon</p>
+            <a href="#" class="dl-btn">Soon</a>
+        </div>
+    </div>
+    <p class="dl-version">v1.0.0 &middot; February 2026</p>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- BOOK -->
+<section class="section" style="text-align:center">
+    <div class="section-label">Learn</div>
+    <div class="section-title">The Modbus book we wish we had.</div>
+    <p class="section-desc" style="margin:0 auto">95,000 words. 14 chapters. From fundamentals to real-world projects. Written by engineers, for engineers.</p>
+    <div style="max-width:480px;margin:48px auto 0;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;display:flex;align-items:start;gap:24px;text-align:left">
+        <div style="width:80px;height:110px;background:linear-gradient(135deg,#10b981 0%,#059669 100%);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:12px">
+            <span style="font-size:11px;font-weight:700;color:#fff;opacity:0.9;text-transform:uppercase;letter-spacing:0.05em">Mastering</span>
+            <span style="font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.01em;margin-top:2px">Modbus</span>
+            <span style="font-size:8px;color:#fff;opacity:0.6;margin-top:auto">modbus.app</span>
+        </div>
+        <div style="flex:1;min-width:0">
+            <h3 style="font-size:16px;font-weight:600;margin-bottom:4px">Mastering Modbus</h3>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">The complete guide to RTU, TCP, troubleshooting, and real-world implementation.</p>
+            <div style="display:flex;align-items:center;gap:12px">
+                <a href="#" id="book-link" style="display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;padding:8px 16px;border-radius:8px;font-weight:600;font-size:13px;text-decoration:none;transition:all 0.15s">
+                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                    Buy on Amazon
+                </a>
+                <span style="font-size:13px;color:var(--text-muted)">$19.99</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <a href="index.html" class="nav-brand">modbus<span>.</span>app</a>
+            <p>Professional Modbus diagnostic tools.</p>
+        </div>
+        <div class="footer-cols">
+            <div class="footer-col">
+                <h4>Product</h4>
+                <a href="index.html">Overview</a>
+                <a href="pricing.html">Pricing</a>
+                <a href="#download">Download</a>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <a href="read-modbus-data.html">Guides</a>
+                <a href="guides.html">Troubleshooting</a>
+                <a href="#book-link">Modbus Book</a>
+            </div>
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <a href="number-converter.html">Number Converter</a>
+                <a href="modbus-frame-parser.html">Frame Parser</a>
+                <a href="modbus-address-calculator.html">Address Calculator</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copy">
+        <span>&copy; 2026 modbus.app</span>
+        <span style="font-size:11px">Modbus&reg; is a registered trademark of Schneider Electric. ModBus Pro is not affiliated with Schneider Electric.</span>
+    </div>
+</footer>
+
+<script>
+(function(){
+    const track = document.getElementById('carouselTrack');
+    const dotsWrap = document.getElementById('carouselDots');
+    const labelsWrap = document.getElementById('carouselLabels');
+    const slides = track.querySelectorAll('.carousel-slide');
+    const labels = ['Master','Monitor','Slave Sim','Discovery','Scripts','Tools'];
+    let current = 0;
+    let autoTimer = null;
+
+    // Build dots and labels
+    slides.forEach(function(_, i){
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Go to screenshot ' + (i+1));
+        dot.onclick = function(){ goTo(i); };
+        dotsWrap.appendChild(dot);
+
+        const label = document.createElement('button');
+        label.className = 'carousel-label' + (i === 0 ? ' active' : '');
+        label.textContent = labels[i] || 'Screen ' + (i+1);
+        label.onclick = function(){ goTo(i); };
+        labelsWrap.appendChild(label);
+    });
+
+    function goTo(idx){
+        current = ((idx % slides.length) + slides.length) % slides.length;
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+        dotsWrap.querySelectorAll('.carousel-dot').forEach(function(d, i){
+            d.classList.toggle('active', i === current);
+        });
+        labelsWrap.querySelectorAll('.carousel-label').forEach(function(l, i){
+            l.classList.toggle('active', i === current);
+        });
+        resetAuto();
+    }
+
+    window.carouselNav = function(dir){ goTo(current + dir); };
+
+    function resetAuto(){
+        if(autoTimer) clearInterval(autoTimer);
+        autoTimer = setInterval(function(){ goTo(current + 1); }, 6000);
+    }
+
+    // Pause on hover
+    var carousel = document.getElementById('heroCarousel');
+    carousel.addEventListener('mouseenter', function(){ if(autoTimer) clearInterval(autoTimer); });
+    carousel.addEventListener('mouseleave', resetAuto);
+
+    // Touch/swipe support
+    var startX = 0, startY = 0, isDragging = false;
+    var viewport = carousel.querySelector('.carousel-viewport');
+    viewport.addEventListener('touchstart', function(e){
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        isDragging = true;
+    }, {passive:true});
+    viewport.addEventListener('touchend', function(e){
+        if(!isDragging) return;
+        isDragging = false;
+        var dx = e.changedTouches[0].clientX - startX;
+        var dy = e.changedTouches[0].clientY - startY;
+        if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50){
+            goTo(current + (dx < 0 ? 1 : -1));
+        }
+    }, {passive:true});
+
+    // Keyboard navigation
+    carousel.setAttribute('tabindex', '0');
+    carousel.addEventListener('keydown', function(e){
+        if(e.key === 'ArrowLeft') goTo(current - 1);
+        if(e.key === 'ArrowRight') goTo(current + 1);
+    });
+
+    resetAuto();
+})();
+</script>
+</body>
+</html>

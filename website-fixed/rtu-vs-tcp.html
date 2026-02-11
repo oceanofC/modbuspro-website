@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modbus RTU vs TCP — Differences & When to Use Each | modbus.app</title>
+    <meta name="description" content="Compare Modbus RTU and Modbus TCP. Understand the differences in framing, addressing, performance, and when to choose serial vs Ethernet-based Modbus.">
+    <style>
+/* modbus.app shared guide styles */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+
+/* HERO */
+.guide-hero {
+    padding: 8rem 2rem 4rem;
+    max-width: 860px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.guide-hero .breadcrumb {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.guide-hero .breadcrumb a { color: var(--green); text-decoration: none; }
+.guide-hero .breadcrumb a:hover { text-decoration: underline; }
+.guide-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.guide-hero .subtitle {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 640px;
+    line-height: 1.6;
+}
+.guide-hero .meta {
+    display: flex; gap: 1.5rem; margin-top: 1.5rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.guide-hero .meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border);
+}
+
+/* CONTENT */
+.guide-content {
+    max-width: 860px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+}
+.guide-content h2 {
+    font-size: 1.6rem; font-weight: 700; margin: 3rem 0 1rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.guide-content h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.guide-content h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+.guide-content p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-content ul, .guide-content ol {
+    margin: 0 0 1.5rem 1.5rem; color: var(--text-dim);
+}
+.guide-content li { margin-bottom: 0.5rem; }
+.guide-content strong { color: var(--text); font-weight: 600; }
+.guide-content a { color: var(--green); text-decoration: none; }
+.guide-content a:hover { text-decoration: underline; }
+
+/* CODE BLOCKS */
+pre {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    line-height: 1.65; color: var(--text-dim);
+}
+code {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--bg-code); padding: 0.15rem 0.4rem;
+    border-radius: 4px; color: var(--green);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+/* INFO BOXES */
+.info-box {
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; border-left: 3px solid;
+}
+.info-box.tip { background: var(--green-dim); border-color: var(--green); }
+.info-box.warning { background: var(--amber-dim); border-color: var(--amber); }
+.info-box.danger { background: var(--red-dim); border-color: var(--red); }
+.info-box.info { background: var(--blue-dim); border-color: var(--blue); }
+.info-box .box-title {
+    font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.info-box.tip .box-title { color: var(--green); }
+.info-box.warning .box-title { color: var(--amber); }
+.info-box.danger .box-title { color: var(--red); }
+.info-box.info .box-title { color: var(--blue); }
+.info-box p { margin-bottom: 0.5rem; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h3 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; }
+.app-promo .cta-btn {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+
+/* TABLE */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0 1.5rem; font-size: 0.9rem;
+}
+.data-table th {
+    background: var(--bg-card); color: var(--green);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.75rem 1rem;
+    text-align: left; border-bottom: 2px solid var(--green-border);
+}
+.data-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table code { font-size: 0.8rem; }
+
+/* RELATED GUIDES */
+.related-guides {
+    margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+.related-guides h2 { border-top: none; padding-top: 0; }
+.guides-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem; margin-top: 1.5rem;
+}
+.guide-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    text-decoration: none; transition: all 0.2s;
+}
+.guide-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.guide-card .card-title {
+    color: var(--text); font-weight: 600; font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+.guide-card .card-desc {
+    color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.site-footer a { color: var(--green); text-decoration: none; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .guide-hero { padding: 6rem 1rem 3rem; }
+    .guide-content { padding: 2rem 1rem 4rem; }
+    .guide-hero .meta { flex-wrap: wrap; }
+}
+
+</style>
+</head>
+<body>
+    <nav class="site-nav">
+        <a href="../index.html" class="nav-logo">modbus<span class="dot">.</span>app</a>
+        <ul class="nav-links"><li><a href="../index.html#features">Features</a></li><li><a href="../number-converter.html">Converter</a></li><li><a href="../read-modbus-data.html">Guides</a></li></ul>
+        <a href="../index.html#download" class="nav-cta">Download Free</a>
+    </nav>
+
+    <header class="guide-hero">
+        <div class="breadcrumb"><a href="../index.html">modbus.app</a> / <a href="../read-modbus-data.html">Guides</a> / RTU vs TCP</div>
+        <h1>Modbus RTU vs TCP — Differences Explained</h1>
+        <p class="subtitle">Both carry the same register data, but the transport layer is fundamentally different. Understanding these differences prevents misconfigurations and helps you choose the right protocol for your application.</p>
+        <div class="meta">
+            <span class="tag">Fundamentals</span>
+            <span>Updated Feb 2026</span>
+            <span>8 min read</span>
+        </div>
+    </header>
+
+    <article class="guide-content">
+
+        <h2>Side-by-Side Comparison</h2>
+        <table class="data-table">
+            <thead>
+                <tr><th>Aspect</th><th>Modbus RTU</th><th>Modbus TCP</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Physical Layer</strong></td><td>RS-485 (or RS-232)</td><td>Ethernet (10/100/1000)</td></tr>
+                <tr><td><strong>Default Port</strong></td><td>Serial COM port</td><td>TCP port 502</td></tr>
+                <tr><td><strong>Addressing</strong></td><td>Slave address (1-247)</td><td>IP address + Unit ID</td></tr>
+                <tr><td><strong>Error Detection</strong></td><td>CRC-16</td><td>TCP checksum (no Modbus CRC)</td></tr>
+                <tr><td><strong>Frame Delimiting</strong></td><td>Silent interval (3.5 char times)</td><td>MBAP header with length field</td></tr>
+                <tr><td><strong>Topology</strong></td><td>Bus (daisy chain)</td><td>Star (via switches)</td></tr>
+                <tr><td><strong>Max Devices</strong></td><td>32 per segment (247 addressable)</td><td>Unlimited (network capacity)</td></tr>
+                <tr><td><strong>Speed</strong></td><td>Up to 115200 baud (~11.5 KB/s)</td><td>100 Mbps+ (practical: 10K+ msg/s)</td></tr>
+                <tr><td><strong>Max Distance</strong></td><td>1200m (at 9600 baud)</td><td>100m per segment (Ethernet)</td></tr>
+                <tr><td><strong>Simultaneous Requests</strong></td><td>1 (half-duplex)</td><td>Multiple (TCP is full-duplex)</td></tr>
+                <tr><td><strong>Cost per Device</strong></td><td>Lower (simple UART)</td><td>Higher (Ethernet PHY + stack)</td></tr>
+            </tbody>
+        </table>
+
+        <h2>Frame Structure Differences</h2>
+
+        <h3>Modbus RTU Frame</h3>
+        <pre>┌──────────────┬───────────────┬──────────┬─────────┐
+│ Slave Address │ Function Code │ Data     │ CRC-16  │
+│ 1 byte        │ 1 byte        │ N bytes  │ 2 bytes │
+└──────────────┴───────────────┴──────────┴─────────┘
+← Frame bounded by silent intervals (≥3.5 char times) →</pre>
+
+        <h3>Modbus TCP Frame</h3>
+        <pre>┌────────────────────────────── MBAP Header ──────────────────────────────┐
+│ Transaction ID │ Protocol ID │ Length  │ Unit ID │ Function │ Data      │
+│ 2 bytes        │ 2 bytes (0) │ 2 bytes │ 1 byte  │ 1 byte   │ N bytes   │
+└───────────────┴─────────────┴─────────┴─────────┴──────────┴───────────┘
+← No CRC needed — TCP handles error detection →</pre>
+
+        <p>Key differences in the frame:</p>
+        <ul>
+            <li><strong>Transaction ID:</strong> TCP allows multiple requests in-flight simultaneously. The transaction ID lets you match responses to requests. RTU is strictly request-response, one at a time.</li>
+            <li><strong>Protocol ID:</strong> Always <code>0x0000</code> for Modbus. Allows future protocols on the same connection.</li>
+            <li><strong>Length field:</strong> Tells the receiver exactly how many bytes follow. RTU uses timing-based frame delimiting, which is more fragile.</li>
+            <li><strong>No CRC:</strong> TCP/IP has its own checksums at the transport layer, so the Modbus CRC is removed.</li>
+        </ul>
+
+        <h2>When to Choose RTU</h2>
+        <ul>
+            <li>Device only has RS-485 (many legacy instruments, meters, sensors)</li>
+            <li>Simple point-to-point connection with minimal infrastructure</li>
+            <li>Long cable distances (>100m) where Ethernet would need switches/fibre</li>
+            <li>Cost-sensitive applications where Ethernet hardware isn't justified</li>
+            <li>Existing RS-485 infrastructure you don't want to re-cable</li>
+        </ul>
+
+        <h2>When to Choose TCP</h2>
+        <ul>
+            <li>Ethernet infrastructure already exists (most modern sites)</li>
+            <li>Multiple masters need to poll the same devices simultaneously</li>
+            <li>High polling rates required (TCP is orders of magnitude faster)</li>
+            <li>Remote access needed (TCP/IP is routable across networks)</li>
+            <li>Cybersecurity requirements (TCP supports TLS via Modbus Security)</li>
+            <li>New installations where you're choosing the infrastructure</li>
+        </ul>
+
+        <div class="info-box info">
+            <div class="box-title">ℹ TCP-to-RTU Gateways</div>
+            <p>You don't always have to choose one or the other. TCP-to-RTU gateways let your SCADA system use Modbus TCP while the field devices stay on RS-485. The gateway handles the protocol translation transparently. Just remember that the serial bus is still the bottleneck — one request at a time, at the serial baud rate.</p>
+        </div>
+
+        <h2>Common Migration Pitfalls</h2>
+
+        <h3>RTU → TCP: Don't Forget the Unit ID</h3>
+        <p>When migrating from RTU to TCP, the slave address becomes the Unit ID in the MBAP header. Make sure your TCP client sets the correct Unit ID, not just 0 or 1. If you're going through a gateway, the Unit ID routes to the correct downstream serial device.</p>
+
+        <h3>TCP → RTU: Timing Matters</h3>
+        <p>If you're adding RTU devices to a TCP-based system (via gateway), remember that serial is <strong>much slower</strong>. A single register read that takes 2ms on TCP takes 50-200ms on RTU at 9600 baud. Don't set your poll interval to 100ms and expect 50 RTU devices to keep up.</p>
+
+        <div class="app-promo">
+            <h3>🔄 Works with Both</h3>
+            <p>ModBus Pro supports RTU (serial), TCP, and RTU-over-TCP out of the box. Auto-Scan works across all transport types — it'll find devices on your serial bus and your Ethernet network in the same scan.</p>
+            <a href="../index.html#download" class="cta-btn">Download ModBus Pro →</a>
+        </div>
+
+        <div class="related-guides">
+            <h2>Related Guides</h2>
+            <div class="guides-grid">
+                <a href="rs485-wiring.html" class="guide-card"><div class="card-title">RS-485 Wiring</div><div class="card-desc">Getting the RTU physical layer right.</div></a>
+                <a href="tcp-connection-refused.html" class="guide-card"><div class="card-title">TCP Connection Refused</div><div class="card-desc">Troubleshooting Modbus TCP connectivity.</div></a>
+                <a href="crc-errors.html" class="guide-card"><div class="card-title">CRC Errors</div><div class="card-desc">RTU-specific error detection and data integrity.</div></a>
+                <a href="../read-modbus-data.html" class="guide-card"><div class="card-title">How to Read Modbus Data</div><div class="card-desc">End-to-end guide from connection to live data.</div></a>
+            </div>
+        </div>
+    </article>
+
+    <footer class="site-footer"><p>© 2026 <a href="../index.html">modbus.app</a> — Built by engineers who've debugged enough registers for a lifetime.</p></footer>
+</body>
+</html>

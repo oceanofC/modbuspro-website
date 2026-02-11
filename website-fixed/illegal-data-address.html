@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modbus Illegal Data Address (Exception 02) — Deep Dive | modbus.app</title>
+    <meta name="description" content="Fix Modbus Illegal Data Address exception code 02. Covers register offsets, firmware version mismatches, register gaps, and quantity overflow.">
+    <style>
+/* modbus.app shared guide styles */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+
+/* HERO */
+.guide-hero {
+    padding: 8rem 2rem 4rem;
+    max-width: 860px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.guide-hero .breadcrumb {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.guide-hero .breadcrumb a { color: var(--green); text-decoration: none; }
+.guide-hero .breadcrumb a:hover { text-decoration: underline; }
+.guide-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.guide-hero .subtitle {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 640px;
+    line-height: 1.6;
+}
+.guide-hero .meta {
+    display: flex; gap: 1.5rem; margin-top: 1.5rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.guide-hero .meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border);
+}
+
+/* CONTENT */
+.guide-content {
+    max-width: 860px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+}
+.guide-content h2 {
+    font-size: 1.6rem; font-weight: 700; margin: 3rem 0 1rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.guide-content h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.guide-content h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+.guide-content p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-content ul, .guide-content ol {
+    margin: 0 0 1.5rem 1.5rem; color: var(--text-dim);
+}
+.guide-content li { margin-bottom: 0.5rem; }
+.guide-content strong { color: var(--text); font-weight: 600; }
+.guide-content a { color: var(--green); text-decoration: none; }
+.guide-content a:hover { text-decoration: underline; }
+
+/* CODE BLOCKS */
+pre {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    line-height: 1.65; color: var(--text-dim);
+}
+code {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--bg-code); padding: 0.15rem 0.4rem;
+    border-radius: 4px; color: var(--green);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+/* INFO BOXES */
+.info-box {
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; border-left: 3px solid;
+}
+.info-box.tip { background: var(--green-dim); border-color: var(--green); }
+.info-box.warning { background: var(--amber-dim); border-color: var(--amber); }
+.info-box.danger { background: var(--red-dim); border-color: var(--red); }
+.info-box.info { background: var(--blue-dim); border-color: var(--blue); }
+.info-box .box-title {
+    font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.info-box.tip .box-title { color: var(--green); }
+.info-box.warning .box-title { color: var(--amber); }
+.info-box.danger .box-title { color: var(--red); }
+.info-box.info .box-title { color: var(--blue); }
+.info-box p { margin-bottom: 0.5rem; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h3 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; }
+.app-promo .cta-btn {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+
+/* TABLE */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0 1.5rem; font-size: 0.9rem;
+}
+.data-table th {
+    background: var(--bg-card); color: var(--green);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.75rem 1rem;
+    text-align: left; border-bottom: 2px solid var(--green-border);
+}
+.data-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table code { font-size: 0.8rem; }
+
+/* RELATED GUIDES */
+.related-guides {
+    margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+.related-guides h2 { border-top: none; padding-top: 0; }
+.guides-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem; margin-top: 1.5rem;
+}
+.guide-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    text-decoration: none; transition: all 0.2s;
+}
+.guide-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.guide-card .card-title {
+    color: var(--text); font-weight: 600; font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+.guide-card .card-desc {
+    color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.site-footer a { color: var(--green); text-decoration: none; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .guide-hero { padding: 6rem 1rem 3rem; }
+    .guide-content { padding: 2rem 1rem 4rem; }
+    .guide-hero .meta { flex-wrap: wrap; }
+}
+
+</style>
+</head>
+<body>
+    <nav class="site-nav">
+        <a href="../index.html" class="nav-logo">modbus<span class="dot">.</span>app</a>
+        <ul class="nav-links"><li><a href="../index.html#features">Features</a></li><li><a href="../number-converter.html">Converter</a></li><li><a href="../read-modbus-data.html">Guides</a></li></ul>
+        <a href="../index.html#download" class="nav-cta">Download Free</a>
+    </nav>
+
+    <header class="guide-hero">
+        <div class="breadcrumb"><a href="../index.html">modbus.app</a> / <a href="../read-modbus-data.html">Guides</a> / Illegal Data Address</div>
+        <h1>Modbus Exception 02: Illegal Data Address</h1>
+        <p class="subtitle">The most common exception code in practice. The slave is telling you: "that register doesn't exist here." Here's every reason why, and how to fix each one.</p>
+        <div class="meta">
+            <span class="tag">Troubleshooting</span>
+            <span>Updated Feb 2026</span>
+            <span>7 min read</span>
+        </div>
+    </header>
+
+    <article class="guide-content">
+
+        <h2>What Exception 02 Means</h2>
+        <p>Exception code 02 (Illegal Data Address) tells you the slave received your request correctly and understood the function code, but the <strong>register address or address+quantity combination</strong> doesn't map to a valid data point on this device. The good news: your comms link is working perfectly.</p>
+
+        <h2>Cause 1: Address Offset (0 vs 1)</h2>
+        <p>The most frequent cause. See our dedicated guide on <a href="register-address-offset.html">Register Address Offset</a>, but in short: if documentation says "register 40001", the wire address is <code>0</code>, not <code>40001</code>.</p>
+
+        <h2>Cause 2: Wrong Function Code</h2>
+        <p>Register address 100 accessed via FC03 (Holding Registers) and register address 100 via FC04 (Input Registers) are <strong>completely different registers</strong>. The device may have data at address 100 in input registers but nothing at address 100 in holding registers.</p>
+        <p><strong>Fix:</strong> Try switching between FC03 and FC04. Check the documentation for which function code maps to measurement data on your specific device.</p>
+
+        <h2>Cause 3: Quantity Overflow</h2>
+        <p>Your starting address is valid, but address + quantity extends past the end of the device's register map. Example: registers exist from 0-99, you request starting address 90 with quantity 20 — address 100+ doesn't exist.</p>
+        <p><strong>Fix:</strong> Reduce the quantity or split into multiple smaller reads. Try reading just 1 register first to confirm the starting address works.</p>
+
+        <h2>Cause 4: Register Gaps</h2>
+        <p>Not every address between the first and last register is necessarily valid. Some devices have non-contiguous register maps with gaps. If you try to read a block that spans a gap, the device returns exception 02 even though the start and end addresses both exist individually.</p>
+        <p><strong>Fix:</strong> Split your read into smaller contiguous blocks that don't span gaps. Some devices with incomplete Modbus implementations are hardcoded to respond to specific request patterns — try reading the exact blocks shown in the documentation examples.</p>
+
+        <h2>Cause 5: Firmware Version Mismatch</h2>
+        <p>Register maps evolve across firmware versions. A register added in firmware v3.0 won't exist on a device running v2.5. This is especially common with ABB and Schneider devices that get regular firmware updates adding new measurement parameters.</p>
+        <p><strong>Fix:</strong> Check the device firmware version and match it to the correct documentation revision. Consider updating the firmware if the register you need was added in a newer version.</p>
+
+        <h2>Cause 6: Device Configuration</h2>
+        <p>Some registers only exist when certain features are enabled. For example, harmonics analysis registers may only be available when the harmonics module is enabled in the device configuration. Power factor registers may not exist on a device configured for voltage-only measurement.</p>
+
+        <div class="info-box tip">
+            <div class="box-title">💡 Systematic Debug Approach</div>
+            <p>Start by reading just <strong>one register</strong> at the very beginning of the documented map (often address 0 or 1). If that works, gradually increase the quantity and starting address. When you hit exception 02, you've found the boundary of what's actually implemented.</p>
+        </div>
+
+        <div class="app-promo">
+            <h3>🗺️ Never Guess Register Addresses</h3>
+            <p>ModBus Pro's device library contains <strong>verified register maps</strong> with exact addresses, quantities, and notes on firmware requirements. Auto-Scan probes available registers automatically and builds a live map of what actually exists on your device.</p>
+            <a href="../index.html#download" class="cta-btn">Download ModBus Pro →</a>
+        </div>
+
+        <div class="related-guides">
+            <h2>Related Guides</h2>
+            <div class="guides-grid">
+                <a href="register-address-offset.html" class="guide-card"><div class="card-title">Register Address Offset</div><div class="card-desc">The 0 vs 1 trap that causes most Exception 02 errors.</div></a>
+                <a href="exception-codes.html" class="guide-card"><div class="card-title">All Exception Codes</div><div class="card-desc">Complete reference for every Modbus exception code.</div></a>
+                <a href="float32-byte-order.html" class="guide-card"><div class="card-title">Float32 Byte Order</div><div class="card-desc">Once you fix the address, make sure the data decodes correctly.</div></a>
+                <a href="../read-modbus-data.html" class="guide-card"><div class="card-title">How to Read Modbus Data</div><div class="card-desc">End-to-end guide from connection to live data.</div></a>
+            </div>
+        </div>
+    </article>
+
+    <footer class="site-footer"><p>© 2026 <a href="../index.html">modbus.app</a> — Built by engineers who've debugged enough registers for a lifetime.</p></footer>
+</body>
+</html>

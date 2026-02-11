@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modbus Function Codes — Complete Reference Table | modbus.app</title>
+    <meta name="description" content="Complete Modbus function code reference. FC01-FC16 explained with request/response formats, register types, and real device examples.">
+    <meta name="keywords" content="modbus function codes, modbus FC01, modbus FC03, modbus read holding registers, modbus write register, modbus function code list">
+    <link rel="canonical" href="https://modbus.app/modbus-function-codes.html">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Modbus Function Codes — Complete Reference Table">
+    <meta property="og:description" content="Complete Modbus function code reference. FC01-FC16 explained with request/response formats, register types, and real device examples.">
+    <meta property="og:url" content="https://modbus.app/modbus-function-codes.html">
+    <meta property="og:site_name" content="modbus.app">
+    <meta property="og:type" content="article">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Modbus Function Codes — Complete Reference Table">
+    <meta name="twitter:description" content="Complete Modbus function code reference. FC01-FC16 explained with request/response formats, register types, and real device examples.">
+
+    <!-- Schema.org TechArticle -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "Modbus Function Codes — Complete Reference",
+        "description": "Complete Modbus function code reference. FC01-FC16 explained with request/response formats, register types, and real device examples.",
+        "url": "https://modbus.app/modbus-function-codes.html",
+        "datePublished": "2026-02-01",
+        "dateModified": "2026-02-06",
+        "publisher": {
+            "@type": "Organization",
+            "name": "modbus.app"
+        },
+        "author": {
+            "@type": "Organization",
+            "name": "modbus.app"
+        },
+        "proficiencyLevel": "Beginner to Advanced",
+        "dependencies": "Modbus RTU or Modbus TCP compatible device",
+        "articleSection": "Reference"
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+/* modbus.app shared guide styles */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: center;
+}
+.nav-inner {
+    max-width: 1100px; width: 100%; display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--green); }
+.nav-dropdown { position: relative; }
+.nav-dropdown > a::after { content: " \25BE"; font-size: 0.7em; }
+.nav-dropdown-menu {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.5rem 0; min-width: 200px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3); z-index: 200;
+}
+.nav-dropdown-menu a {
+    display: block; padding: 0.5rem 1rem; color: var(--text-dim);
+    text-decoration: none; font-size: 0.85rem; transition: all 0.15s;
+}
+.nav-dropdown-menu a:hover { background: var(--bg-card-hover); color: var(--green); }
+.nav-dropdown:hover .nav-dropdown-menu { display: block; }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+
+/* HERO */
+.guide-hero {
+    padding: 8rem 2rem 4rem;
+    max-width: 860px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.guide-hero .breadcrumb {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.guide-hero .breadcrumb a { color: var(--green); text-decoration: none; }
+.guide-hero .breadcrumb a:hover { text-decoration: underline; }
+.guide-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.guide-hero .subtitle {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 640px;
+    line-height: 1.6;
+}
+.guide-hero .meta {
+    display: flex; gap: 1.5rem; margin-top: 1.5rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.guide-hero .meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border);
+}
+
+/* CONTENT */
+.guide-content {
+    max-width: 860px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+}
+.guide-content h2 {
+    font-size: 1.6rem; font-weight: 700; margin: 3rem 0 1rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.guide-content h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.guide-content h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+.guide-content p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-content ul, .guide-content ol {
+    margin: 0 0 1.5rem 1.5rem; color: var(--text-dim);
+}
+.guide-content li { margin-bottom: 0.5rem; }
+.guide-content strong { color: var(--text); font-weight: 600; }
+.guide-content a { color: var(--green); text-decoration: none; }
+.guide-content a:hover { text-decoration: underline; }
+
+/* CODE BLOCKS */
+pre {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    line-height: 1.65; color: var(--text-dim);
+}
+code {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--bg-code); padding: 0.15rem 0.4rem;
+    border-radius: 4px; color: var(--green);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+/* INFO BOXES */
+.info-box {
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; border-left: 3px solid;
+}
+.info-box.tip { background: var(--green-dim); border-color: var(--green); }
+.info-box.warning { background: var(--amber-dim); border-color: var(--amber); }
+.info-box.danger { background: var(--red-dim); border-color: var(--red); }
+.info-box.info { background: var(--blue-dim); border-color: var(--blue); }
+.info-box .box-title {
+    font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.info-box.tip .box-title { color: var(--green); }
+.info-box.warning .box-title { color: var(--amber); }
+.info-box.danger .box-title { color: var(--red); }
+.info-box.info .box-title { color: var(--blue); }
+.info-box p { margin-bottom: 0.5rem; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h3 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; }
+.app-promo .cta-btn {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+
+/* TABLE */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0 1.5rem; font-size: 0.9rem;
+}
+.data-table th {
+    background: var(--bg-card); color: var(--green);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.75rem 1rem;
+    text-align: left; border-bottom: 2px solid var(--green-border);
+}
+.data-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table code { font-size: 0.8rem; }
+
+/* RELATED GUIDES */
+.related-guides {
+    margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+.related-guides h2 { border-top: none; padding-top: 0; }
+.guides-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem; margin-top: 1.5rem;
+}
+.guide-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    text-decoration: none; transition: all 0.2s;
+}
+.guide-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.guide-card .card-title {
+    color: var(--text); font-weight: 600; font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+.guide-card .card-desc {
+    color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.site-footer a { color: var(--green); text-decoration: none; }
+
+/* LAYOUT */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+.guide-layout { display: grid; grid-template-columns: 1fr 260px; gap: 3rem; padding-top: 2rem; }
+.guide-layout article { min-width: 0; }
+.breadcrumbs { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem; padding-top: 6rem; }
+.breadcrumbs a { color: var(--green); text-decoration: none; }
+.breadcrumbs a:hover { text-decoration: underline; }
+.guide-layout h1 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.article-meta {
+    display: flex; gap: 1.5rem; margin: 1rem 0 2rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.article-meta .tag {
+    background: var(--blue-dim); color: var(--blue);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--blue-border); font-weight: 600;
+}
+.article-meta .tag-red {
+    background: var(--red-dim); color: var(--red);
+    border-color: var(--red-border);
+}
+.guide-layout article h2 {
+    font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 0.75rem;
+    padding-top: 1.5rem; border-top: 1px solid var(--border); color: var(--text);
+}
+.guide-layout article h2:first-of-type { border-top: none; padding-top: 0; }
+.guide-layout article h3 {
+    font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--text);
+}
+.guide-layout article p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-layout article ul, .guide-layout article ol { margin: 0 0 1.5rem 1.5rem; color: var(--text-dim); }
+.guide-layout article li { margin-bottom: 0.5rem; }
+.guide-layout article strong { color: var(--text); font-weight: 600; }
+.guide-layout article a { color: var(--green); text-decoration: none; }
+.guide-layout article a:hover { text-decoration: underline; }
+
+/* SIDEBAR */
+.sidebar { padding-top: 6rem; }
+.toc {
+    position: sticky; top: 80px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem;
+}
+.toc-title {
+    font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-muted); margin-bottom: 0.75rem;
+}
+.toc a {
+    display: block; padding: 0.3rem 0; font-size: 0.85rem;
+    color: var(--text-dim); text-decoration: none;
+    border-left: 2px solid transparent; padding-left: 0.75rem;
+    transition: all 0.2s;
+}
+.toc a:hover { color: var(--green); border-left-color: var(--green); }
+.sidebar-promo {
+    background: var(--bg-card); border: 1px solid var(--green-border);
+    border-radius: 8px; padding: 1.25rem; text-align: center;
+}
+.sidebar-promo .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.sidebar-promo h4 { font-size: 0.95rem; color: var(--text); margin-bottom: 0.5rem; }
+.sidebar-promo p { font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 0.75rem; }
+.app-promo-cta {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.5rem 1.2rem; border-radius: 6px; font-weight: 700;
+    font-size: 0.82rem; text-decoration: none; transition: all 0.2s;
+}
+.app-promo-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+.app-promo-badge {
+    display: inline-block; background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem;
+    font-family: var(--font-mono); font-weight: 600; margin-bottom: 0.5rem;
+    border: 1px solid var(--green-border);
+}
+
+/* RELATED (article-bottom style) */
+.related { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+.related h3 { font-size: 1.2rem; margin-bottom: 1rem; }
+.related-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+.related-card {
+    display: block; background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem; text-decoration: none; transition: all 0.2s;
+}
+.related-card:hover { border-color: var(--green-border); background: var(--bg-card-hover); transform: translateY(-2px); text-decoration: none; }
+.related-card .card-tag {
+    font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+    color: var(--green); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;
+}
+.related-card h4 { color: var(--text); font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+.related-card p { color: var(--text-muted); font-size: 0.8rem; line-height: 1.5; margin: 0; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .guide-hero { padding: 6rem 1rem 3rem; }
+    .guide-content { padding: 2rem 1rem 4rem; }
+    .guide-hero .meta { flex-wrap: wrap; }
+    .container { padding: 0 1rem; }
+    .guide-layout { grid-template-columns: 1fr; gap: 0; }
+    .sidebar { padding-top: 0; }
+    .toc { position: static; }
+}
+
+</style>
+</head>
+<body>
+<nav class="site-nav"><div class="nav-inner">
+    <a href="index.html" class="nav-logo">modbus<span class="dot">.</span>app</a>
+    <ul class="nav-links"><li><a href="index.html">Product</a></li><li class="nav-dropdown"><a href="#">Tools</a><div class="nav-dropdown-menu"><a href="number-converter.html">Number Converter</a><a href="modbus-frame-parser.html">Frame Parser</a><a href="modbus-address-calculator.html">Address Calculator</a><a href="modbus-baud-rate-calculator.html">Baud Rate Calculator</a></div></li><li><a href="read-modbus-data.html">Guides</a></li><li><a href="guides.html">Troubleshooting</a></li><li><a href="pricing.html">Pricing</a></li></ul>
+    <a href="index.html#download" class="nav-cta">Download Free &rarr;</a>
+</div></nav>
+<div class="container"><div class="guide-layout">
+<article>
+    <div class="breadcrumbs"><a href="index.html">Home</a> / <a href="read-modbus-data.html">Guides</a> / Function Codes</div>
+    <h1>Modbus Function Codes &mdash; Complete Reference</h1>
+    <div class="article-meta"><span class="tag">REFERENCE</span><span>Updated Feb 2026</span><span>15 min read</span></div>
+
+    <p>Every Modbus request begins with two bytes: the <strong>slave address</strong> and a <strong>function code</strong> (FC). The function code tells the slave device exactly what operation to perform &mdash; read coils, write a register, read input values, and so on. If you pick the wrong function code, you get Exception Code 01 (Illegal Function). If you pick the right one but address the wrong register type, you get garbage data or Exception Code 02.</p>
+
+    <p>The standard function codes are defined in the Modbus Application Protocol Specification maintained by the Modbus Organization. In practice, most devices only implement a subset of these codes. The eight function codes covered on this page handle the vast majority of real-world Modbus communication.</p>
+
+    <div class="info-box info">
+        <div class="box-title">Key Concept</div>
+        <p>Function codes map directly to <strong>register types</strong>. Coils and Discrete Inputs are 1-bit values. Holding Registers and Input Registers are 16-bit values. Using the wrong function code for a register type is the single most common cause of Exception Code 01.</p>
+    </div>
+
+    <h2 id="summary-table">Function Code Summary Table</h2>
+
+    <table class="data-table">
+        <thead>
+            <tr><th>FC</th><th>Hex</th><th>Name</th><th>Data Type</th><th>Access</th><th>Classic Address Range</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>01</strong></td><td><code>0x01</code></td><td>Read Coils</td><td>1-bit (boolean)</td><td>Read</td><td>00001 &ndash; 09999</td></tr>
+            <tr><td><strong>02</strong></td><td><code>0x02</code></td><td>Read Discrete Inputs</td><td>1-bit (boolean)</td><td>Read-only</td><td>10001 &ndash; 19999</td></tr>
+            <tr><td><strong>03</strong></td><td><code>0x03</code></td><td>Read Holding Registers</td><td>16-bit (word)</td><td>Read/Write</td><td>40001 &ndash; 49999</td></tr>
+            <tr><td><strong>04</strong></td><td><code>0x04</code></td><td>Read Input Registers</td><td>16-bit (word)</td><td>Read-only</td><td>30001 &ndash; 39999</td></tr>
+            <tr><td><strong>05</strong></td><td><code>0x05</code></td><td>Write Single Coil</td><td>1-bit (boolean)</td><td>Write</td><td>00001 &ndash; 09999</td></tr>
+            <tr><td><strong>06</strong></td><td><code>0x06</code></td><td>Write Single Register</td><td>16-bit (word)</td><td>Write</td><td>40001 &ndash; 49999</td></tr>
+            <tr><td><strong>15</strong></td><td><code>0x0F</code></td><td>Write Multiple Coils</td><td>N &times; 1-bit</td><td>Write</td><td>00001 &ndash; 09999</td></tr>
+            <tr><td><strong>16</strong></td><td><code>0x10</code></td><td>Write Multiple Registers</td><td>N &times; 16-bit</td><td>Write</td><td>40001 &ndash; 49999</td></tr>
+        </tbody>
+    </table>
+
+    <h2 id="fc01">FC01 &mdash; Read Coils</h2>
+    <p>Reads the ON/OFF status of discrete coils in the slave. Coils are single-bit outputs that your master can both read and write. Think of them as digital output flags &mdash; relay states, valve positions, motor run/stop commands.</p>
+
+    <h3>Request Frame (RTU)</h3>
+    <pre><code>Slave Addr | FC   | Start Address | Quantity    | CRC
+1 byte     | 0x01 | 2 bytes (Hi-Lo)| 2 bytes    | 2 bytes</code></pre>
+
+    <h3>Response Frame</h3>
+    <pre><code>Slave Addr | FC   | Byte Count | Coil Data   | CRC
+1 byte     | 0x01 | 1 byte     | N bytes     | 2 bytes</code></pre>
+    <p>Coil data is packed as bits, LSB first. If you request 10 coils, you get 2 bytes back (16 bits, with 6 unused bits padded with zeros).</p>
+
+    <h3>Example: Read 8 coils starting at address 0 from slave 1</h3>
+    <pre><code>Request:  01 01 00 00 00 08 3D CC
+Response: 01 01 01 6B 11 C8
+
+Breakdown of response data byte 0x6B = 0110 1011:
+  Coil 0 = ON  (bit 0)
+  Coil 1 = ON  (bit 1)
+  Coil 2 = OFF (bit 2)
+  Coil 3 = ON  (bit 3)
+  Coil 4 = OFF (bit 4)
+  Coil 5 = ON  (bit 5)
+  Coil 6 = ON  (bit 6)
+  Coil 7 = OFF (bit 7)</code></pre>
+
+    <p><strong>Common use cases:</strong> Reading the status of relays on a PLC output module, checking whether a digital output is energised, polling a bank of indicator lamp states.</p>
+
+    <h2 id="fc02">FC02 &mdash; Read Discrete Inputs</h2>
+    <p>Reads the ON/OFF status of discrete input contacts. These are read-only single-bit values representing physical digital inputs &mdash; limit switches, pushbuttons, proximity sensors, door contacts. The frame format is identical to FC01, but the register space is different.</p>
+
+    <h3>Request Frame (RTU)</h3>
+    <pre><code>Slave Addr | FC   | Start Address | Quantity    | CRC
+1 byte     | 0x02 | 2 bytes (Hi-Lo)| 2 bytes    | 2 bytes</code></pre>
+
+    <h3>Response Frame</h3>
+    <pre><code>Slave Addr | FC   | Byte Count | Input Data  | CRC
+1 byte     | 0x02 | 1 byte     | N bytes     | 2 bytes</code></pre>
+
+    <h3>Example: Read 4 discrete inputs starting at address 0 from slave 2</h3>
+    <pre><code>Request:  02 02 00 00 00 04 79 FA
+Response: 02 02 01 05 A1 88
+
+Data byte 0x05 = 0000 0101:
+  Input 0 = ON  (bit 0) - e.g. limit switch closed
+  Input 1 = OFF (bit 1)
+  Input 2 = ON  (bit 2) - e.g. pushbutton pressed
+  Input 3 = OFF (bit 3)</code></pre>
+
+    <p><strong>Common use cases:</strong> Monitoring limit switches, reading door contacts or safety interlocks, checking pushbutton states, polling sensor digital outputs.</p>
+
+    <h2 id="fc03">FC03 &mdash; Read Holding Registers</h2>
+    <p>This is the most widely used function code in Modbus. It reads one or more 16-bit holding registers. Holding registers are the workhorse of Modbus &mdash; they store configuration parameters, setpoints, measurement values, and anything else the device exposes. They are readable and writable (via FC06 or FC16).</p>
+
+    <h3>Request Frame (RTU)</h3>
+    <pre><code>Slave Addr | FC   | Start Address | Quantity    | CRC
+1 byte     | 0x03 | 2 bytes (Hi-Lo)| 2 bytes    | 2 bytes</code></pre>
+
+    <h3>Response Frame</h3>
+    <pre><code>Slave Addr | FC   | Byte Count | Register Data | CRC
+1 byte     | 0x03 | 1 byte     | N x 2 bytes   | 2 bytes</code></pre>
+    <p>Each register is 2 bytes, big-endian (high byte first). If you request 3 registers, you get 6 data bytes back.</p>
+
+    <h3>Example: Read 2 holding registers starting at address 0 from slave 1</h3>
+    <pre><code>Request:  01 03 00 00 00 02 C4 0B
+Response: 01 03 04 01 F4 00 64 FA 6D
+
+Register 0 = 0x01F4 = 500  (e.g. voltage: 500 = 50.0V with scale factor /10)
+Register 1 = 0x0064 = 100  (e.g. current: 100 = 10.0A with scale factor /10)</code></pre>
+
+    <p><strong>Common use cases:</strong> Reading energy meter values (voltage, current, power, kWh), reading PLC holding registers, fetching device configuration parameters, reading setpoints.</p>
+
+    <div class="info-box tip">
+        <div class="box-title">FC03 vs FC04</div>
+        <p>When a device manual says "read register 40001," that usually means FC03 at address 0. When it says "read register 30001," that means FC04 at address 0. If FC03 returns Exception 01, try FC04 &mdash; the device may have implemented measurements as input registers rather than holding registers.</p>
+    </div>
+
+    <h2 id="fc04">FC04 &mdash; Read Input Registers</h2>
+    <p>Reads one or more 16-bit input registers. Input registers are read-only &mdash; they typically represent live measurements or status values that the device updates internally. The frame format is identical to FC03, just with function code <code>0x04</code>.</p>
+
+    <h3>Request Frame (RTU)</h3>
+    <pre><code>Slave Addr | FC   | Start Address | Quantity    | CRC
+1 byte     | 0x04 | 2 bytes (Hi-Lo)| 2 bytes    | 2 bytes</code></pre>
+
+    <h3>Response Frame</h3>
+    <pre><code>Slave Addr | FC   | Byte Count | Register Data | CRC
+1 byte     | 0x04 | 1 byte     | N x 2 bytes   | 2 bytes</code></pre>
+
+    <h3>Example: Read 1 input register at address 5 from slave 3</h3>
+    <pre><code>Request:  03 04 00 05 00 01 21 E8
+Response: 03 04 02 01 A4 99 CA
+
+Register 5 = 0x01A4 = 420  (e.g. temperature: 420 = 42.0 degrees C)</code></pre>
+
+    <p><strong>Common use cases:</strong> Reading temperature sensor values, live measurements from energy meters (some meters use FC04 for measurements and FC03 for configuration), ADC conversion results from I/O modules.</p>
+
+    <h2 id="fc05">FC05 &mdash; Write Single Coil</h2>
+    <p>Forces a single coil to ON or OFF. The value field must be either <code>0xFF00</code> for ON or <code>0x0000</code> for OFF. Any other value triggers Exception Code 03 (Illegal Data Value). The response is an exact echo of the request.</p>
+
+    <h3>Request Frame (RTU)</h3>
+    <pre><code>Slave Addr | FC   | Coil Address  | Value       | CRC
+1 byte     | 0x05 | 2 bytes (Hi-Lo)| 2 bytes    | 2 bytes</code></pre>
+
+    <h3>Response Frame</h3>
+    <pre><code>Slave Addr | FC   | Coil Address  | Value       | CRC
+1 byte     | 0x05 | 2 bytes       | 2 bytes     | 2 bytes
+(exact echo of request)</code></pre>
+
+    <h3>Example: Turn ON coil 0 on slave 1</h3>
+    <pre><code>Request:  01 05 00 00 FF 00 8C 3A
+Response: 01 05 00 00 FF 00 8C 3A  (echo)</code></pre>
+
+    <h3>Example: Turn OFF coil 0 on slave 1</h3>
+    <pre><code>Request:  01 05 00 00 00 00 CD CA
+Response: 01 05 00 00 00 00 CD CA  (echo)</code></pre>
+
+    <p><strong>Common use cases:</strong> Toggling a relay on a remote I/O module, activating a solenoid valve, triggering a reset command, starting or stopping a motor via PLC digital output.</p>
+
+    <div class="info-box warning">
+        <div class="box-title">Only Two Valid Values</div>
+        <p>FC05 only accepts <code>0xFF00</code> (ON) and <code>0x0000</code> (OFF). Sending <code>0x0001</code> or <code>0x00FF</code> will cause Exception Code 03 on a compliant device. Some non-compliant devices accept <code>0x0001</code> as ON, but don't rely on this.</p>
+    </div>
+
+    <h2 id="fc06">FC06 &mdash; Write Single Register</h2>
+    <p>Writes a single 16-bit value to a holding register. Used for setting configuration parameters, changing setpoints, or writing a control value. Like FC05, the response is an exact echo of the request.</p>
+
+    <h3>Request Frame (RTU)</h3>
+    <pre><code>Slave Addr | FC   | Register Addr | Value       | CRC
+1 byte     | 0x06 | 2 bytes (Hi-Lo)| 2 bytes    | 2 bytes</code></pre>
+
+    <h3>Response Frame</h3>
+    <pre><code>Slave Addr | FC   | Register Addr | Value       | CRC
+1 byte     | 0x06 | 2 bytes       | 2 bytes     | 2 bytes
+(exact echo of request)</code></pre>
+
+    <h3>Example: Write value 9600 (0x2580) to register 3 on slave 1</h3>
+    <pre><code>Request:  01 06 00 03 25 80 78 36
+Response: 01 06 00 03 25 80 78 36  (echo)
+
+This might set the device's baud rate register to 9600.</code></pre>
+
+    <p><strong>Common use cases:</strong> Setting a device's slave address, configuring baud rate, writing a temperature setpoint, adjusting PID parameters, setting alarm thresholds on energy meters.</p>
+
+    <h2 id="fc15">FC15 (0x0F) &mdash; Write Multiple Coils</h2>
+    <p>Forces multiple consecutive coils in a single request. The coil values are bit-packed, LSB first, the same format as FC01 response data. Useful when you need to set a bank of digital outputs atomically rather than one at a time with FC05.</p>
+
+    <h3>Request Frame (RTU)</h3>
+    <pre><code>Slave Addr | FC   | Start Address | Quantity    | Byte Count | Coil Data | CRC
+1 byte     | 0x0F | 2 bytes       | 2 bytes     | 1 byte     | N bytes   | 2 bytes</code></pre>
+
+    <h3>Response Frame</h3>
+    <pre><code>Slave Addr | FC   | Start Address | Quantity    | CRC
+1 byte     | 0x0F | 2 bytes       | 2 bytes     | 2 bytes</code></pre>
+
+    <h3>Example: Write coils 0-7 on slave 1 (turn ON coils 0, 1, 3, 5)</h3>
+    <pre><code>Request:  01 0F 00 00 00 08 01 2B BE A6
+Response: 01 0F 00 00 00 08 54 0D
+
+Data byte 0x2B = 0010 1011:
+  Coil 0 = ON  (bit 0)
+  Coil 1 = ON  (bit 1)
+  Coil 2 = OFF (bit 2)
+  Coil 3 = ON  (bit 3)
+  Coil 4 = OFF (bit 4)
+  Coil 5 = ON  (bit 5)
+  Coil 6 = OFF (bit 6)
+  Coil 7 = OFF (bit 7)</code></pre>
+
+    <p><strong>Common use cases:</strong> Setting an entire bank of relay outputs at once, initialising all digital outputs on a PLC module during startup, batch-writing output states for coordinated control.</p>
+
+    <h2 id="fc16">FC16 (0x10) &mdash; Write Multiple Registers</h2>
+    <p>Writes to multiple consecutive holding registers in a single request. This is essential for writing 32-bit float values (which span two consecutive 16-bit registers) and for batch configuration updates. Most devices support writing up to 123 registers per request (the maximum that fits in a single Modbus RTU frame).</p>
+
+    <h3>Request Frame (RTU)</h3>
+    <pre><code>Slave Addr | FC   | Start Address | Quantity    | Byte Count | Register Data | CRC
+1 byte     | 0x10 | 2 bytes       | 2 bytes     | 1 byte     | N x 2 bytes   | 2 bytes</code></pre>
+
+    <h3>Response Frame</h3>
+    <pre><code>Slave Addr | FC   | Start Address | Quantity    | CRC
+1 byte     | 0x10 | 2 bytes       | 2 bytes     | 2 bytes</code></pre>
+
+    <h3>Example: Write two registers (a 32-bit float) starting at address 10 on slave 1</h3>
+    <pre><code>Request:  01 10 00 0A 00 02 04 42 C8 00 00 2B 05
+Response: 01 10 00 0A 00 02 01 C9
+
+Register 10 = 0x42C8, Register 11 = 0x0000
+As a 32-bit float (Big Endian): 100.0</code></pre>
+
+    <p><strong>Common use cases:</strong> Writing 32-bit float setpoints (temperature, pressure), batch-writing PLC configuration, writing multi-register values like date/time, updating firmware data blocks.</p>
+
+    <div class="app-promo">
+        <div class="app-promo-badge">All Function Codes</div>
+        <h4>No Manual Hex Calculation Needed</h4>
+        <p>ModBus Pro supports all standard function codes out of the box. Select your register type and the correct FC is automatically chosen &mdash; no manual hex calculation needed. Raw frame view shows every byte for debugging.</p>
+        <a href="index.html#download" class="app-promo-cta">Download Free</a>
+    </div>
+
+    <h2 id="exception-codes">Exception Codes Quick Reference</h2>
+    <p>When a slave cannot fulfil a request, it returns an exception response. The function code in the response has bit 7 set (e.g., FC03 becomes <code>0x83</code>), followed by an exception code byte.</p>
+
+    <table class="data-table">
+        <thead>
+            <tr><th>Code</th><th>Hex</th><th>Name</th><th>Common Trigger</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>01</strong></td><td><code>0x01</code></td><td>Illegal Function</td><td>Device does not support this function code (e.g., using FC03 when only FC04 is implemented)</td></tr>
+            <tr><td><strong>02</strong></td><td><code>0x02</code></td><td>Illegal Data Address</td><td>Register address does not exist on this device, or address + quantity exceeds valid range</td></tr>
+            <tr><td><strong>03</strong></td><td><code>0x03</code></td><td>Illegal Data Value</td><td>Value in write request is out of range (e.g., FC05 with a value other than 0x0000 or 0xFF00)</td></tr>
+            <tr><td><strong>04</strong></td><td><code>0x04</code></td><td>Slave Device Failure</td><td>Unrecoverable internal error on the slave while processing the request</td></tr>
+            <tr><td><strong>05</strong></td><td><code>0x05</code></td><td>Acknowledge</td><td>Slave accepted request but needs time to process (e.g., firmware update, EEPROM write)</td></tr>
+            <tr><td><strong>06</strong></td><td><code>0x06</code></td><td>Slave Device Busy</td><td>Slave is currently processing another long-duration command; retry after a delay</td></tr>
+        </tbody>
+    </table>
+
+    <p>For detailed troubleshooting of each exception code, see the dedicated guides: <a href="modbus-exception-code-01.html">Exception 01 (Illegal Function)</a> and <a href="modbus-exception-code-02.html">Exception 02 (Illegal Data Address)</a>.</p>
+
+    <h2 id="register-mapping">Register Type Mapping &amp; The 40001 Offset</h2>
+    <p>The classic Modbus addressing convention uses a numeric prefix to indicate the register type:</p>
+
+    <table class="data-table">
+        <thead>
+            <tr><th>Prefix</th><th>Range</th><th>Register Type</th><th>Function Codes</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>0xxxx</strong></td><td>00001 &ndash; 09999</td><td>Coils (1-bit, R/W)</td><td>FC01 (read), FC05 (write one), FC15 (write many)</td></tr>
+            <tr><td><strong>1xxxx</strong></td><td>10001 &ndash; 19999</td><td>Discrete Inputs (1-bit, read-only)</td><td>FC02 (read)</td></tr>
+            <tr><td><strong>3xxxx</strong></td><td>30001 &ndash; 39999</td><td>Input Registers (16-bit, read-only)</td><td>FC04 (read)</td></tr>
+            <tr><td><strong>4xxxx</strong></td><td>40001 &ndash; 49999</td><td>Holding Registers (16-bit, R/W)</td><td>FC03 (read), FC06 (write one), FC16 (write many)</td></tr>
+        </tbody>
+    </table>
+
+    <h3>The 40001 Confusion</h3>
+    <p>A device manual says "read register 40001." What Modbus address do you actually send on the wire? The answer is <strong>address 0</strong> using function code 03. The "4" prefix just tells you this is a holding register, and the numbering starts at 1 (not 0). So:</p>
+    <ul>
+        <li><strong>40001</strong> in documentation = FC03, address <code>0x0000</code> on the wire</li>
+        <li><strong>40100</strong> in documentation = FC03, address <code>0x0063</code> (99 decimal) on the wire</li>
+        <li><strong>30001</strong> in documentation = FC04, address <code>0x0000</code> on the wire</li>
+    </ul>
+
+    <div class="info-box warning">
+        <div class="box-title">Tool Differences</div>
+        <p>Not all Modbus tools handle this offset the same way. Some expect you to enter the wire address (0-based), while others expect the documentation address (40001-style). If you enter 40001 in a tool that expects wire addresses, you'll be reading address 40001 (0x9C41) &mdash; almost certainly an invalid register. Check your tool's documentation to know which convention it uses.</p>
+    </div>
+
+    <p>For a deep dive into addressing, see the <a href="modbus-register-offset.html">Register Offset guide</a>.</p>
+
+    <div class="related">
+        <h3>Related Guides</h3>
+        <div class="related-grid">
+        <a href="modbus-exception-code-01.html" class="related-card">
+            <div class="card-tag">TROUBLESHOOTING</div>
+            <h4>Modbus Exception Code 01: Illegal Function</h4>
+            <p>Why your device rejects your function code and how to find the right one.</p>
+        </a>
+        <a href="modbus-exception-code-02.html" class="related-card">
+            <div class="card-tag">TROUBLESHOOTING</div>
+            <h4>Modbus Exception Code 02: Illegal Data Address</h4>
+            <p>Register numbering, 0-based vs 1-based, and fixing address errors.</p>
+        </a>
+        <a href="modbus-register-offset.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Register Offset Explained</h4>
+            <p>0-based vs 1-based addressing and the 40001 prefix convention.</p>
+        </a>
+        <a href="modbus-crc-error.html" class="related-card">
+            <div class="card-tag">TROUBLESHOOTING</div>
+            <h4>Modbus CRC Errors: Causes &amp; Fixes</h4>
+            <p>Wiring, termination, grounding, and noise issues explained with solutions.</p>
+        </a>
+        <a href="rtu-vs-tcp.html" class="related-card">
+            <div class="card-tag">FUNDAMENTALS</div>
+            <h4>Modbus RTU vs TCP &mdash; Differences Explained</h4>
+            <p>Frame structure, addressing, and performance differences between serial and Ethernet Modbus.</p>
+        </a>
+        </div>
+    </div>
+</article>
+<aside class="sidebar">
+    <div class="toc"><div class="toc-title">On this page</div>
+        <a href="#summary-table">Summary Table</a>
+        <a href="#fc01">FC01 &mdash; Read Coils</a>
+        <a href="#fc02">FC02 &mdash; Read Discrete Inputs</a>
+        <a href="#fc03">FC03 &mdash; Read Holding Registers</a>
+        <a href="#fc04">FC04 &mdash; Read Input Registers</a>
+        <a href="#fc05">FC05 &mdash; Write Single Coil</a>
+        <a href="#fc06">FC06 &mdash; Write Single Register</a>
+        <a href="#fc15">FC15 &mdash; Write Multiple Coils</a>
+        <a href="#fc16">FC16 &mdash; Write Multiple Registers</a>
+        <a href="#exception-codes">Exception Codes</a>
+        <a href="#register-mapping">Register Mapping</a>
+    </div>
+    <div class="sidebar-promo"><div class="icon">&#128268;</div><h4>All FCs, zero guesswork</h4>
+        <p>ModBus Pro auto-selects the correct function code based on your register type. Built-in device profiles, raw frame inspection, and real-time exception decoding.</p>
+        <a href="index.html#download" class="app-promo-cta" style="font-size:.82rem;padding:.5rem 1.2rem;">Download Free</a>
+    </div>
+</aside>
+</div></div>
+<footer style="border-top: 1px solid rgba(255,255,255,0.06); padding: 4rem 0 2rem; margin-top: 6rem;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #00e5a0, #00c488); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <svg width="18" height="18" fill="none" stroke="#0a0e17" stroke-width="2.5" stroke-linecap="round"><path d="M3 9h12M9 3v12"/></svg>
+                    </div>
+                    <span style="font-weight: 700; font-size: 1.1rem;">ModBus Pro</span>
+                </div>
+                <p style="color: var(--text-muted, #8a94a6); font-size: 0.9rem; line-height: 1.6; max-width: 280px;">The modern Modbus diagnostic tool. Built for engineers who need reliability.</p>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Product</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="index.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Features</a></li>
+                    <li><a href="pricing.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Pricing</a></li>
+                    <li><a href="number-converter.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Number Converter</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Resources</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="guides.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Guides</a></li>
+                    <li><a href="mailto:support@modbus.app" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Support</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Legal</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="#" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Privacy</a></li>
+                    <li><a href="terms.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <p style="color: var(--text-muted, #8a94a6); font-size: 0.8rem;">&copy; 2026 modbus.app &mdash; Built by engineers who debug Modbus for a living.</p>
+            <p style="color: #5a6478; font-size: 0.65rem; margin-top: 0.5rem;">Modbus&reg; is a registered trademark of Schneider Electric. ModBus Pro is not affiliated with or endorsed by Schneider Electric or the Modbus Organization.</p>
+            <div style="display: flex; gap: 1.5rem;">
+                <a href="mailto:support@modbus.app" style="color: var(--text-muted, #8a94a6); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;">support@modbus.app</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

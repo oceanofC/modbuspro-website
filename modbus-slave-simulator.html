@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Simulate a Modbus Slave Device — Complete Guide | modbus.app</title>
+    <meta name="description" content="Set up a Modbus slave simulator for testing. Configure virtual registers, simulate sensor data, and test your SCADA/PLC integration without hardware.">
+    <meta name="keywords" content="modbus slave simulator, modbus server simulator, modbus test slave, simulate modbus device, modbus device emulator">
+    <link rel="canonical" href="https://modbus.app/modbus-slave-simulator.html">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://modbus.app/modbus-slave-simulator.html">
+    <meta property="og:title" content="How to Simulate a Modbus Slave Device — Complete Guide | modbus.app">
+    <meta property="og:description" content="Set up a Modbus slave simulator for testing. Configure virtual registers, simulate sensor data, and test your SCADA/PLC integration without hardware.">
+    <meta property="og:site_name" content="modbus.app">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+/* modbus.app shared guide styles */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: center;
+}
+.nav-inner {
+    max-width: 1100px; width: 100%; display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--green); }
+.nav-dropdown { position: relative; }
+.nav-dropdown > a::after { content: " \25BE"; font-size: 0.7em; }
+.nav-dropdown-menu {
+    display: none; position: absolute; top: 100%; left: 0;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.5rem 0; min-width: 200px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3); z-index: 200;
+}
+.nav-dropdown-menu a {
+    display: block; padding: 0.5rem 1rem; color: var(--text-dim);
+    text-decoration: none; font-size: 0.85rem; transition: all 0.15s;
+}
+.nav-dropdown-menu a:hover { background: var(--bg-card-hover); color: var(--green); }
+.nav-dropdown:hover .nav-dropdown-menu { display: block; }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+
+/* HERO */
+.guide-hero {
+    padding: 8rem 2rem 4rem;
+    max-width: 860px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.guide-hero .breadcrumb {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.guide-hero .breadcrumb a { color: var(--green); text-decoration: none; }
+.guide-hero .breadcrumb a:hover { text-decoration: underline; }
+.guide-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.guide-hero .subtitle {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 640px;
+    line-height: 1.6;
+}
+.guide-hero .meta {
+    display: flex; gap: 1.5rem; margin-top: 1.5rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.guide-hero .meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border);
+}
+.article-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+}
+.article-meta .tag, .article-meta .tag-green {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border); font-weight: 600;
+}
+.article-meta .tag-red {
+    background: var(--red-dim); color: var(--red);
+    border-color: var(--red-border);
+}
+
+/* CONTENT */
+.guide-content {
+    max-width: 860px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+}
+.guide-content h2 {
+    font-size: 1.6rem; font-weight: 700; margin: 3rem 0 1rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.guide-content h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.guide-content h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+.guide-content p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-content ul, .guide-content ol {
+    margin: 0 0 1.5rem 1.5rem; color: var(--text-dim);
+}
+.guide-content li { margin-bottom: 0.5rem; }
+.guide-content strong { color: var(--text); font-weight: 600; }
+.guide-content a { color: var(--green); text-decoration: none; }
+.guide-content a:hover { text-decoration: underline; }
+
+/* CODE BLOCKS */
+pre {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    line-height: 1.65; color: var(--text-dim);
+}
+code {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--bg-code); padding: 0.15rem 0.4rem;
+    border-radius: 4px; color: var(--green);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+/* INFO BOXES */
+.info-box {
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; border-left: 3px solid;
+}
+.info-box.tip { background: var(--green-dim); border-color: var(--green); }
+.info-box.warning { background: var(--amber-dim); border-color: var(--amber); }
+.info-box.danger { background: var(--red-dim); border-color: var(--red); }
+.info-box.info { background: var(--blue-dim); border-color: var(--blue); }
+.info-box .box-title {
+    font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.info-box.tip .box-title { color: var(--green); }
+.info-box.warning .box-title { color: var(--amber); }
+.info-box.danger .box-title { color: var(--red); }
+.info-box.info .box-title { color: var(--blue); }
+.info-box p { margin-bottom: 0.5rem; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h3 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo h4 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; }
+.app-promo .cta-btn {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+.app-promo .app-promo-badge {
+    display: inline-block; background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.8rem; border-radius: 4px; font-size: 0.8rem;
+    font-weight: 600; margin-bottom: 0.75rem; border: 1px solid var(--green-border);
+}
+.app-promo .app-promo-cta {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .app-promo-cta:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+
+/* TABLE */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0 1.5rem; font-size: 0.9rem;
+}
+.data-table th {
+    background: var(--bg-card); color: var(--green);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.75rem 1rem;
+    text-align: left; border-bottom: 2px solid var(--green-border);
+}
+.data-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table code { font-size: 0.8rem; }
+
+/* RELATED GUIDES */
+.related-guides {
+    margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+.related-guides h2 { border-top: none; padding-top: 0; }
+.guides-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem; margin-top: 1.5rem;
+}
+.guide-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    text-decoration: none; transition: all 0.2s;
+}
+.guide-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.guide-card .card-title {
+    color: var(--text); font-weight: 600; font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+.guide-card .card-desc {
+    color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.site-footer a { color: var(--green); text-decoration: none; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .guide-hero { padding: 6rem 1rem 3rem; }
+    .guide-content { padding: 2rem 1rem 4rem; }
+    .guide-hero .meta { flex-wrap: wrap; }
+}
+
+</style>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "How to Simulate a Modbus Slave Device — Complete Guide",
+    "description": "Set up a Modbus slave simulator for testing. Configure virtual registers, simulate sensor data, and test your SCADA/PLC integration without hardware.",
+    "datePublished": "2026-01-15",
+    "dateModified": "2026-02-06",
+    "author": {
+        "@type": "Organization",
+        "name": "modbus.app"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "modbus.app",
+        "url": "https://modbus.app"
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://modbus.app/modbus-slave-simulator.html"
+    },
+    "proficiencyLevel": "Beginner to Advanced",
+    "dependencies": "Modbus TCP/RTU capable software or hardware",
+    "about": {
+        "@type": "Thing",
+        "name": "Modbus Slave Simulation"
+    }
+}
+</script>
+</head>
+<body>
+<nav class="site-nav"><div class="nav-inner">
+    <a href="index.html" class="nav-logo">modbus<span class="dot">.</span>app</a>
+    <ul class="nav-links"><li><a href="index.html">Product</a></li><li class="nav-dropdown"><a href="#">Tools</a><div class="nav-dropdown-menu"><a href="number-converter.html">Number Converter</a><a href="modbus-frame-parser.html">Frame Parser</a><a href="modbus-address-calculator.html">Address Calculator</a><a href="modbus-baud-rate-calculator.html">Baud Rate Calculator</a></div></li><li><a href="read-modbus-data.html">Guides</a></li><li><a href="guides.html">Troubleshooting</a></li><li><a href="pricing.html">Pricing</a></li></ul>
+    <a href="index.html#download" class="nav-cta">Download Free &rarr;</a>
+</div></nav>
+<div class="container"><div class="guide-layout">
+<article>
+    <div class="breadcrumbs"><a href="index.html">Home</a> / <a href="read-modbus-data.html">Guides</a> / Modbus Slave Simulator</div>
+    <h1>How to Simulate a Modbus Slave Device</h1>
+    <div class="article-meta"><span class="tag tag-green">GUIDE</span><span>Updated Feb 2026</span><span>12 min read</span></div>
+
+    <p>A Modbus slave simulator is a software tool that pretends to be a real Modbus device. It listens for incoming requests from a master (client) and responds exactly the way a physical device would &mdash; with register values, coil states, and proper exception codes. This lets you develop, test, and debug your SCADA, HMI, or PLC integration without needing the actual field hardware connected.</p>
+
+    <h2 id="why-simulate">Why You Need a Slave Simulator</h2>
+
+    <p>If you have ever waited three weeks for a power meter to arrive before you could start writing your polling logic, you already know why slave simulators exist. Here are the scenarios where they save real time and money:</p>
+
+    <ul>
+        <li><strong>Testing SCADA/HMI without field hardware</strong> &mdash; Your SCADA project is due in two weeks but the site hasn't been built yet. A simulator lets you develop and validate every screen, alarm, and data point against a virtual device that behaves identically to the real one.</li>
+        <li><strong>Developing PLC programs before devices arrive</strong> &mdash; You can write and test your PLC's Modbus master logic in the office, weeks before commissioning. When you arrive on site, the code already works.</li>
+        <li><strong>Regression testing after firmware updates</strong> &mdash; A device vendor ships a firmware update that changes register behaviour. Before deploying, run your full test suite against a simulator configured with the new register map to catch breaking changes.</li>
+        <li><strong>Training new engineers on Modbus</strong> &mdash; Let trainees experiment with reading registers, writing coils, and deliberately triggering exception codes without any risk to production equipment.</li>
+        <li><strong>Load testing and performance benchmarking</strong> &mdash; Spin up 10 or 50 simulated slaves to see how your master handles high device counts, concurrent connections, or fast polling intervals.</li>
+    </ul>
+
+    <h2 id="what-it-does">What a Slave Simulator Does</h2>
+
+    <p>At a protocol level, a Modbus slave simulator does four things:</p>
+
+    <ol>
+        <li><strong>Listens for connections</strong> &mdash; On TCP port 502 (or a serial port for RTU), it waits for incoming Modbus requests from a master.</li>
+        <li><strong>Parses standard function codes</strong> &mdash; It handles the core read functions (<code>FC01</code> Read Coils, <code>FC02</code> Read Discrete Inputs, <code>FC03</code> Read Holding Registers, <code>FC04</code> Read Input Registers) and write functions (<code>FC05</code> Write Single Coil, <code>FC06</code> Write Single Register, <code>FC15</code> Write Multiple Coils, <code>FC16</code> Write Multiple Registers).</li>
+        <li><strong>Maintains a register space</strong> &mdash; It holds four data blocks in memory: coils (1-bit read/write), discrete inputs (1-bit read-only), holding registers (16-bit read/write), and input registers (16-bit read-only). You set initial values, and the simulator serves them on request.</li>
+        <li><strong>Lets you modify values dynamically</strong> &mdash; You can change register values at any time to simulate different device states: normal operation, alarm conditions, sensor drift, or counter rollover.</li>
+    </ol>
+
+    <table class="data-table">
+        <thead>
+            <tr><th>Function Code</th><th>Name</th><th>Data Block</th><th>Operation</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>FC01</code></td><td>Read Coils</td><td>Coils (0xxxx)</td><td>Read</td></tr>
+            <tr><td><code>FC02</code></td><td>Read Discrete Inputs</td><td>Discrete Inputs (1xxxx)</td><td>Read</td></tr>
+            <tr><td><code>FC03</code></td><td>Read Holding Registers</td><td>Holding Registers (4xxxx)</td><td>Read</td></tr>
+            <tr><td><code>FC04</code></td><td>Read Input Registers</td><td>Input Registers (3xxxx)</td><td>Read</td></tr>
+            <tr><td><code>FC05</code></td><td>Write Single Coil</td><td>Coils (0xxxx)</td><td>Write</td></tr>
+            <tr><td><code>FC06</code></td><td>Write Single Register</td><td>Holding Registers (4xxxx)</td><td>Write</td></tr>
+            <tr><td><code>FC15</code></td><td>Write Multiple Coils</td><td>Coils (0xxxx)</td><td>Write</td></tr>
+            <tr><td><code>FC16</code></td><td>Write Multiple Registers</td><td>Holding Registers (4xxxx)</td><td>Write</td></tr>
+        </tbody>
+    </table>
+
+    <h2 id="tcp-setup">Setting Up a TCP Slave Simulator</h2>
+
+    <h3>Choosing a tool</h3>
+    <p>Three widely-used options for Modbus TCP slave simulation:</p>
+    <ul>
+        <li><strong>Modbus Slave by modbustools.com</strong> &mdash; A mature Windows GUI tool. Supports up to 247 slave IDs simultaneously, with direct register editing. The free version is fully functional with some limitations.</li>
+        <li><strong>diagslave</strong> &mdash; A lightweight command-line tool by Modbuspal. Runs on Windows, Linux, and macOS. Ideal for headless servers and CI/CD pipelines where you need a slave in a Docker container or automated test environment.</li>
+        <li><strong>ModRSsim2</strong> &mdash; An open-source Windows simulator that supports all four data blocks with a spreadsheet-like register editor. Good for quick testing but no longer actively maintained.</li>
+    </ul>
+
+    <h3>Port considerations</h3>
+    <p>The standard Modbus TCP port is <code>502</code>. On both Windows and Linux, binding to any port below 1024 requires elevated privileges (Administrator on Windows, root or <code>CAP_NET_BIND_SERVICE</code> on Linux). For development and testing, use a high port like <code>5020</code> and configure your master to connect there instead.</p>
+
+    <div class="info-box warning">
+        <div class="box-title">Port 502 requires elevation</div>
+        <p>If your simulator fails to start with "address already in use" or "permission denied", either run it as Administrator/root or switch to a port above 1024. Port <code>5020</code> is a common convention for Modbus testing.</p>
+    </div>
+
+    <h3>diagslave example (TCP)</h3>
+    <p>Start a TCP slave on port 5020, responding to slave ID 1, with all registers initialized to zero:</p>
+<pre><code># Linux / macOS
+./diagslave -m tcp -p 5020 -a 1
+
+# Windows
+diagslave.exe -m tcp -p 5020 -a 1</code></pre>
+    <p>Your master can now connect to <code>localhost:5020</code> (or your machine's IP) and poll slave ID 1. Every register will return <code>0x0000</code> until you write values to them from a master.</p>
+
+    <h3>Firewall rules</h3>
+    <p>If the master is on a different machine, you need to open the port:</p>
+<pre><code># Windows (PowerShell as Administrator)
+New-NetFirewallRule -DisplayName "Modbus Slave Simulator" `
+    -Direction Inbound -Protocol TCP -LocalPort 5020 -Action Allow
+
+# Linux (iptables)
+sudo iptables -A INPUT -p tcp --dport 5020 -j ACCEPT
+
+# Linux (firewalld)
+sudo firewall-cmd --add-port=5020/tcp --permanent
+sudo firewall-cmd --reload</code></pre>
+
+    <h2 id="rtu-setup">Setting Up an RTU Slave Simulator</h2>
+
+    <h3>Physical serial port</h3>
+    <p>If you have a USB-to-RS485 adapter, you can run an RTU slave directly on a physical serial port. The setup is the same as TCP, but you specify the COM port (Windows) or device path (Linux) instead of a TCP port:</p>
+<pre><code># Linux &mdash; diagslave on /dev/ttyUSB0 at 9600 baud, 8N1, slave ID 1
+./diagslave -m rtu -a 1 -b 9600 -d 8 -s 1 -p none /dev/ttyUSB0
+
+# Windows &mdash; diagslave on COM3
+diagslave.exe -m rtu -a 1 -b 9600 -d 8 -s 1 -p none COM3</code></pre>
+
+    <h3>Virtual COM ports</h3>
+    <p>When you don't have physical hardware, use virtual serial port pairs. A virtual COM port pair creates two connected ports: what you write to one appears on the other. Your slave simulator listens on one end, and your master connects to the other.</p>
+
+    <ul>
+        <li><strong>Windows &mdash; com0com:</strong> Install <a href="https://sourceforge.net/projects/com0com/">com0com</a>, create a pair (e.g., <code>COM10</code> &harr; <code>COM11</code>). Run the slave on <code>COM10</code>, point your master at <code>COM11</code>.</li>
+        <li><strong>Linux &mdash; socat:</strong> Create a virtual pair with <code>socat</code>:</li>
+    </ul>
+<pre><code># Create virtual serial pair
+socat -d -d pty,raw,echo=0,link=/tmp/vcom0 pty,raw,echo=0,link=/tmp/vcom1
+
+# In another terminal, start the slave on one end
+./diagslave -m rtu -a 1 -b 9600 /tmp/vcom0
+
+# Point your master at the other end: /tmp/vcom1</code></pre>
+
+    <div class="info-box tip">
+        <div class="box-title">Match your parameters</div>
+        <p>Baud rate, parity, data bits, and stop bits must be identical on both master and slave. If the master is set to <code>19200/8/E/1</code> and the slave is at <code>9600/8/N/1</code>, you will get complete silence &mdash; no errors, no data, just timeouts.</p>
+    </div>
+
+    <h2 id="simulate-real-device">Simulating Real Device Behaviour</h2>
+
+    <p>A blank simulator that returns zeros on every register is useful for connectivity testing, but to actually validate your integration, you need the simulator to behave like the real device.</p>
+
+    <h3>Mapping register addresses to match a real device</h3>
+    <p>Start with the device's register map (from its datasheet). For example, the Eastron SDM630 energy meter has this layout:</p>
+
+    <table class="data-table">
+        <thead>
+            <tr><th>Register</th><th>Description</th><th>Type</th><th>Unit</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>30001</code></td><td>Phase 1 Line to Neutral Voltage</td><td>Float32</td><td>V</td></tr>
+            <tr><td><code>30007</code></td><td>Phase 1 Current</td><td>Float32</td><td>A</td></tr>
+            <tr><td><code>30013</code></td><td>Phase 1 Active Power</td><td>Float32</td><td>W</td></tr>
+            <tr><td><code>30071</code></td><td>Frequency</td><td>Float32</td><td>Hz</td></tr>
+            <tr><td><code>30343</code></td><td>Total Active Energy</td><td>Float32</td><td>kWh</td></tr>
+        </tbody>
+    </table>
+
+    <p>Configure your simulator's input registers starting at address 0 (protocol-level) to hold these Float32 values. Remember: each Float32 occupies two consecutive 16-bit registers.</p>
+
+    <h3>Setting realistic initial values</h3>
+    <p>Don't leave everything at zero. Populate the simulator with values that match what you'd see in the field:</p>
+<pre><code># Example: Set realistic values for an SDM630 simulator
+Register 30001-30002: 230.5  (V)   &rarr; Phase 1 voltage
+Register 30007-30008: 12.3   (A)   &rarr; Phase 1 current
+Register 30013-30014: 2835.2 (W)   &rarr; Phase 1 power
+Register 30071-30072: 50.01  (Hz)  &rarr; Frequency
+Register 30343-30344: 15482.7 (kWh) &rarr; Total energy</code></pre>
+
+    <h3>Auto-changing values</h3>
+    <p>Static values are fine for basic tests, but real devices have values that change over time. Good simulators let you apply value patterns:</p>
+    <ul>
+        <li><strong>Sine wave</strong> &mdash; Ideal for simulating AC voltage (230V &plusmn; 5V) or temperature fluctuations. Set centre value, amplitude, and period.</li>
+        <li><strong>Auto-increment</strong> &mdash; Perfect for energy counters (kWh) that increase monotonically. Set the increment per second to match realistic consumption.</li>
+        <li><strong>Random walk</strong> &mdash; Simulates noisy sensor data like current draw or environmental sensors. Set a base value with a random deviation range.</li>
+        <li><strong>Step function</strong> &mdash; Toggles between two values on a timer, useful for simulating on/off states or alarm conditions.</li>
+    </ul>
+
+    <h3>Simulating exception responses</h3>
+    <p>A good simulator doesn't just return data &mdash; it also returns errors when appropriate. Configure it to return exception codes for:</p>
+    <ul>
+        <li><strong>Illegal Function (0x01)</strong> &mdash; When the master sends a function code the device doesn't support (e.g., FC05 write to a read-only device)</li>
+        <li><strong>Illegal Data Address (0x02)</strong> &mdash; When the master reads a register address outside the device's valid range</li>
+        <li><strong>Slave Device Failure (0x04)</strong> &mdash; To simulate a device in fault state</li>
+    </ul>
+    <p>This lets you verify that your master handles errors correctly instead of crashing or displaying stale data when a device faults.</p>
+
+    <h2 id="testing-scenarios">Testing Scenarios</h2>
+
+    <p>Once your simulator is running, work through these scenarios systematically. Each one catches a different class of bug in your master implementation.</p>
+
+    <h3>1. Normal operation</h3>
+    <p>Poll all configured registers and verify the values appear correctly in your SCADA/HMI. Check that Float32 values decode with the right byte order, that units and scaling are correct, and that data updates at the expected polling interval.</p>
+
+    <h3>2. Communication failure</h3>
+    <p>Stop the simulator mid-poll and observe your master's behaviour. Does it display a timeout alarm? Does it freeze? Does it show stale data without any indication? A well-written master should flag the communication loss within one or two poll cycles and clearly mark the affected data as stale or unknown.</p>
+
+    <h3>3. Slave address conflict</h3>
+    <p>Start two simulators with the same slave ID on the same bus or TCP port. On RS485, this causes garbled responses (both devices talk simultaneously). On TCP, most implementations will connect to whichever resolves first. Verify that your master detects corrupted responses instead of silently accepting bad data.</p>
+
+    <h3>4. Boundary testing</h3>
+    <p>Read registers at the edges of the valid address range. Request register 65535, request a read of 125 registers (the max per FC03 request), or request zero registers. Your master should handle these edge cases without crashing, and the slave should return appropriate exception codes for invalid addresses.</p>
+
+    <h3>5. Performance testing</h3>
+    <p>Reduce your polling interval to 50ms or 100ms and monitor response times. How fast can your master cycle through all registers before timeouts start appearing? This is critical for systems with many devices &mdash; if you have 50 meters on a single RS485 bus at 9600 baud, polling all of them in under 5 seconds requires careful register grouping and request batching.</p>
+
+    <div class="info-box info">
+        <div class="box-title">Test with realistic latency</div>
+        <p>Some simulators can add artificial response delay (e.g., 50-200ms) to mimic real device behaviour. A local simulator responds in under 1ms, which is unrealistically fast. Adding delay catches timing bugs that only appear in the field.</p>
+    </div>
+
+    <h2 id="modbus-pro">Built-in Slave Simulation with ModBus Pro</h2>
+
+    <div class="app-promo">
+        <div class="app-promo-badge">Built-in Slave Simulator</div>
+        <h4>No separate tool needed</h4>
+        <p>ModBus Pro includes a built-in Modbus slave simulator. Configure up to 10 slave devices with configurable register spaces, auto-changing values (sine wave, random walk, auto-increment), and a live request log showing every incoming master request. Test your SCADA, PLC, or HMI against realistic virtual devices without installing anything else.</p>
+        <a href="index.html#download" class="app-promo-cta">Download Free</a>
+    </div>
+
+    <h2 id="common-pitfalls">Common Pitfalls</h2>
+
+    <h3>1. Port 502 requires elevated privileges</h3>
+    <p>On every operating system, binding to port 502 (or any port below 1024) needs admin/root permissions. If your simulator silently fails to start, check if it's running elevated. Better yet, use port 5020 for development and save 502 for production deployments.</p>
+
+    <h3>2. Forgetting to set the correct slave ID</h3>
+    <p>Many simulators default to slave ID 1, but your master may be configured to poll ID 3 or ID 10. Verify that the simulator's slave ID matches what the master expects. On Modbus TCP, the slave ID is the "Unit Identifier" in the MBAP header &mdash; it still matters, especially with gateways.</p>
+
+    <h3>3. Register numbering: 0-based protocol vs 1-based documentation</h3>
+    <p>This is the single most common source of "off by one" bugs in Modbus. The Modbus protocol uses <strong>0-based addressing</strong> on the wire. Register 0 is the first holding register. But device documentation traditionally uses <strong>1-based numbering</strong> with a prefix: holding register 0 is documented as "40001". When your datasheet says register 40001, you must request address 0 in the protocol frame.</p>
+
+    <div class="info-box danger">
+        <div class="box-title">The 40001 trap</div>
+        <p>If your simulator puts voltage data at address 0 but your master requests address 40001 (because that's what the datasheet says), the master is actually asking for protocol address 40001 &mdash; which is 40,000 registers past where your data is. You'll either get zeros or an exception code 02. Always check whether your tool applies the offset automatically or expects raw protocol addresses.</p>
+    </div>
+
+    <h3>4. Byte order mismatch between simulator and master</h3>
+    <p>Float32 values occupy two 16-bit registers, and the byte order varies between devices. The four possibilities are ABCD (Big Endian), CDAB (Big Endian word swap), BADC (Little Endian word swap), and DCBA (Little Endian). If your simulator uses ABCD but your master expects CDAB, every floating-point value will be wrong. Configure both to use the same byte order as the real device you're simulating.</p>
+
+    <h3>5. Not testing write operations</h3>
+    <p>Most testing focuses on reads. But if your system writes setpoints, control commands, or configuration values, you need to verify those too. Write a value via FC06 or FC16, then read it back with FC03 to confirm the simulator accepted it correctly. Test writing out-of-range values to verify your master gets the expected exception.</p>
+
+    <div class="related">
+        <h3>Related Guides</h3>
+        <div class="related-grid">
+        <a href="modbus-timeout-no-response.html" class="related-card">
+            <div class="card-tag">TROUBLESHOOTING</div>
+            <h4>Modbus Timeout &amp; No Response from Slave</h4>
+            <p>Fix Modbus timeout errors and no response from slave devices. Complete diagnostic flowchart for RS485 RTU and TCP/IP.</p>
+        </a>
+        <a href="modbus-register-offset.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Register Offset: 0-Based vs 1-Based</h4>
+            <p>Understand Modbus register addressing. The 40001 prefix convention and how different tools handle offsets.</p>
+        </a>
+        <a href="modbus-exception-code-01.html" class="related-card">
+            <div class="card-tag">TROUBLESHOOTING</div>
+            <h4>Modbus Exception Code 01: Illegal Function</h4>
+            <p>Fix Modbus exception code 01 (Illegal Function). Why your device rejects your function code and how to fix it.</p>
+        </a>
+        <a href="rtu-vs-tcp.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus RTU vs TCP &mdash; Differences &amp; When to Use Each</h4>
+            <p>Compare Modbus RTU and Modbus TCP. Framing, addressing, performance, and when to choose serial vs Ethernet.</p>
+        </a>
+        </div>
+    </div>
+</article>
+<aside class="sidebar">
+    <div class="toc"><div class="toc-title">On this page</div>
+        <a href="#why-simulate">Why You Need a Simulator</a>
+        <a href="#what-it-does">What It Does</a>
+        <a href="#tcp-setup">TCP Slave Setup</a>
+        <a href="#rtu-setup">RTU Slave Setup</a>
+        <a href="#simulate-real-device">Simulating Real Devices</a>
+        <a href="#testing-scenarios">Testing Scenarios</a>
+        <a href="#common-pitfalls">Common Pitfalls</a>
+    </div>
+    <div class="sidebar-promo"><div class="icon">&#9881;</div><h4>Simulate without extra tools</h4>
+        <p>ModBus Pro has a built-in slave simulator with auto-changing values and a live request log.</p>
+        <a href="index.html#download" class="app-promo-cta" style="font-size:.82rem;padding:.5rem 1.2rem;">Download Free</a>
+    </div>
+</aside>
+</div></div>
+<footer style="border-top: 1px solid rgba(255,255,255,0.06); padding: 4rem 0 2rem; margin-top: 6rem;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #00e5a0, #00c488); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <svg width="18" height="18" fill="none" stroke="#0a0e17" stroke-width="2.5" stroke-linecap="round"><path d="M3 9h12M9 3v12"/></svg>
+                    </div>
+                    <span style="font-weight: 700; font-size: 1.1rem;">ModBus Pro</span>
+                </div>
+                <p style="color: var(--text-muted, #8a94a6); font-size: 0.9rem; line-height: 1.6; max-width: 280px;">The modern Modbus diagnostic tool. Built for engineers who need reliability.</p>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Product</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="index.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Features</a></li>
+                    <li><a href="pricing.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Pricing</a></li>
+                    <li><a href="number-converter.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Number Converter</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Resources</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="guides.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Guides</a></li>
+                    <li><a href="mailto:support@modbus.app" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Support</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted, #8a94a6); margin-bottom: 1rem;">Legal</h4>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem;">
+                    <li><a href="#" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Privacy</a></li>
+                    <li><a href="terms.html" style="color: var(--text-secondary, #c1c9d4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <p style="color: var(--text-muted, #8a94a6); font-size: 0.8rem;">&copy; 2026 modbus.app &mdash; Built by engineers who debug Modbus for a living.</p>
+            <p style="color: #5a6478; font-size: 0.65rem; margin-top: 0.5rem;">Modbus&reg; is a registered trademark of Schneider Electric. ModBus Pro is not affiliated with or endorsed by Schneider Electric or the Modbus Organization.</p>
+            <div style="display: flex; gap: 1.5rem;">
+                <a href="mailto:support@modbus.app" style="color: var(--text-muted, #8a94a6); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;">support@modbus.app</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "dependencies": {
+    "stripe": "^17.0.0",
+    "@vercel/postgres": "^0.10.0",
+    "resend": "^4.0.0"
+  }
+}

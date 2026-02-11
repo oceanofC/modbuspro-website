@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modbus CRC Error — Causes and Fixes | Troubleshooting Guide | modbus.app</title>
+    <meta name="description" content="Fix Modbus CRC errors on RS485 networks. Wiring, termination, grounding, and noise issues explained with solutions.">
+    <meta name="keywords" content="modbus CRC error, modbus checksum error, modbus data corruption, RS485 CRC error, modbus noise">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+/* modbus.app shared guide styles */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #0a0e17;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2235;
+    --bg-code: #0d1117;
+    --green: #00e5a0;
+    --green-dim: rgba(0,229,160,0.1);
+    --green-border: rgba(0,229,160,0.2);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.08);
+    --red-border: rgba(255,77,106,0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.08);
+    --amber-border: rgba(245,166,35,0.15);
+    --blue: #4da6ff;
+    --blue-dim: rgba(77,166,255,0.08);
+    --blue-border: rgba(77,166,255,0.15);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255,255,255,0.06);
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.site-nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    text-decoration: none; color: var(--text);
+    font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem;
+}
+.nav-logo .dot { color: var(--green); }
+.nav-links { display:flex; gap:1.5rem; list-style:none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration:none; font-size:0.9rem;
+    font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-cta {
+    background: var(--green); color: #0a0e17; padding: 0.5rem 1.2rem;
+    border-radius: 6px; text-decoration: none; font-weight: 600;
+    font-size: 0.85rem; transition: all 0.2s;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); }
+
+/* HERO */
+.guide-hero {
+    padding: 8rem 2rem 4rem;
+    max-width: 860px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.guide-hero .breadcrumb {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.guide-hero .breadcrumb a { color: var(--green); text-decoration: none; }
+.guide-hero .breadcrumb a:hover { text-decoration: underline; }
+.guide-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+    line-height: 1.15; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.guide-hero .subtitle {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 640px;
+    line-height: 1.6;
+}
+.guide-hero .meta {
+    display: flex; gap: 1.5rem; margin-top: 1.5rem;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.guide-hero .meta .tag {
+    background: var(--green-dim); color: var(--green);
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    border: 1px solid var(--green-border);
+}
+
+/* CONTENT */
+.guide-content {
+    max-width: 860px; margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+}
+.guide-content h2 {
+    font-size: 1.6rem; font-weight: 700; margin: 3rem 0 1rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+    color: var(--text);
+}
+.guide-content h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.guide-content h3 {
+    font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.75rem;
+    color: var(--text);
+}
+.guide-content p { margin-bottom: 1rem; color: var(--text-dim); }
+.guide-content ul, .guide-content ol {
+    margin: 0 0 1.5rem 1.5rem; color: var(--text-dim);
+}
+.guide-content li { margin-bottom: 0.5rem; }
+.guide-content strong { color: var(--text); font-weight: 600; }
+.guide-content a { color: var(--green); text-decoration: none; }
+.guide-content a:hover { text-decoration: underline; }
+
+/* CODE BLOCKS */
+pre {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    line-height: 1.65; color: var(--text-dim);
+}
+code {
+    font-family: var(--font-mono); font-size: 0.85em;
+    background: var(--bg-code); padding: 0.15rem 0.4rem;
+    border-radius: 4px; color: var(--green);
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+/* INFO BOXES */
+.info-box {
+    border-radius: 8px; padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; border-left: 3px solid;
+}
+.info-box.tip { background: var(--green-dim); border-color: var(--green); }
+.info-box.warning { background: var(--amber-dim); border-color: var(--amber); }
+.info-box.danger { background: var(--red-dim); border-color: var(--red); }
+.info-box.info { background: var(--blue-dim); border-color: var(--blue); }
+.info-box .box-title {
+    font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.5rem;
+}
+.info-box.tip .box-title { color: var(--green); }
+.info-box.warning .box-title { color: var(--amber); }
+.info-box.danger .box-title { color: var(--red); }
+.info-box.info .box-title { color: var(--blue); }
+.info-box p { margin-bottom: 0.5rem; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* APP PROMO */
+.app-promo {
+    background: linear-gradient(135deg, rgba(0,229,160,0.08) 0%, rgba(0,229,160,0.02) 100%);
+    border: 1px solid var(--green-border);
+    border-radius: 12px; padding: 2rem;
+    margin: 2.5rem 0; text-align: center;
+}
+.app-promo h3 { color: var(--green); margin-bottom: 0.5rem; }
+.app-promo p { color: var(--text-dim); max-width: 540px; margin: 0 auto 1.25rem; }
+.app-promo .cta-btn {
+    display: inline-block; background: var(--green); color: #0a0e17;
+    padding: 0.65rem 1.8rem; border-radius: 6px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+}
+.app-promo .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,229,160,0.3); text-decoration: none; }
+
+/* TABLE */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0 1.5rem; font-size: 0.9rem;
+}
+.data-table th {
+    background: var(--bg-card); color: var(--green);
+    font-family: var(--font-mono); font-weight: 600;
+    font-size: 0.8rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.75rem 1rem;
+    text-align: left; border-bottom: 2px solid var(--green-border);
+}
+.data-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+}
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table code { font-size: 0.8rem; }
+
+/* RELATED GUIDES */
+.related-guides {
+    margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+.related-guides h2 { border-top: none; padding-top: 0; }
+.guides-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem; margin-top: 1.5rem;
+}
+.guide-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem;
+    text-decoration: none; transition: all 0.2s;
+}
+.guide-card:hover {
+    border-color: var(--green-border);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.guide-card .card-title {
+    color: var(--text); font-weight: 600; font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+.guide-card .card-desc {
+    color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;
+}
+
+/* FOOTER */
+.site-footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem; text-align: center;
+    font-size: 0.8rem; color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+.site-footer a { color: var(--green); text-decoration: none; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .site-nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .guide-hero { padding: 6rem 1rem 3rem; }
+    .guide-content { padding: 2rem 1rem 4rem; }
+    .guide-hero .meta { flex-wrap: wrap; }
+}
+
+</style>
+</head>
+<body>
+<nav><div class="nav-inner">
+    <a href="../index.html" class="logo"><div class="logo-mark">M</div><div class="logo-text">modbus<span>.app</span></div></a>
+    <ul class="nav-links"><li><a href="../index.html">Product</a></li><li><a href="../number-converter.html">Converter</a></li><li><a href="../read-modbus-data.html">Guides</a></li><li><a href="./">Troubleshooting</a></li></ul>
+    <a href="../index.html#download" class="nav-cta">Download Free →</a>
+</div></nav>
+<div class="container"><div class="guide-layout">
+<article>
+    <div class="breadcrumbs"><a href="../index.html">Home</a> / <a href="../read-modbus-data.html">Guides</a> / <a href="./">Troubleshooting</a></div>
+    <h1>Modbus CRC Errors: Causes &amp; Fixes</h1>
+    <div class="article-meta"><span class="tag tag-red">TROUBLESHOOTING</span><span>Updated Feb 2026</span><span>10 min read</span></div>
+
+    <p>A CRC (Cyclic Redundancy Check) error means the Modbus frame arrived but was corrupted in transit. The master calculates a CRC from the received bytes and compares it to the CRC appended by the sender — if they don't match, something changed the data between sender and receiver. This is always a physical layer or electrical noise problem.</p>
+
+    <h2 id="what-is-crc">How CRC Works in Modbus</h2>
+    <p>Every Modbus RTU frame ends with a 2-byte CRC-16 checksum. The sender calculates it from all preceding bytes using a standard polynomial (0xA001). The receiver does the same calculation and compares. If even a single bit is flipped during transmission, the CRC won't match.</p>
+    <p>Modbus TCP uses TCP's own checksumming and doesn't have this issue — if you're seeing data corruption over TCP, your problem is at the application layer (byte order, data types), not the transport layer.</p>
+
+    <h2 id="causes">Common Causes</h2>
+    <h3>1. Missing termination resistors</h3>
+    <p>Without 120Ω terminators at both ends of the RS485 bus, signal reflections corrupt frames. This is the #1 cause of intermittent CRC errors, especially on cable runs over 10 metres.</p>
+
+    <h3>2. Incorrect wiring</h3>
+    <p>RS485 needs twisted pair cable. Running Modbus over untwisted cable alongside power cables introduces electromagnetic interference that flips bits.</p>
+
+    <h3>3. Missing ground reference</h3>
+    <p>Without a common ground between nodes, the differential voltage reference drifts and bit decisions become unreliable. This causes random CRC failures that are maddening to debug.</p>
+
+    <h3>4. Baud rate too high for cable length</h3>
+    <p>At 115200 baud over 500m of cable, you're asking for trouble. RS485 can do 1200m at 9600 baud, but the maximum distance drops as baud rate increases.</p>
+
+    <h3>5. Electromagnetic interference</h3>
+    <p>Running RS485 cables near VFDs, transformers, or high-current power cables introduces noise. BESS sites and generator installations are particularly bad for this.</p>
+
+    <h2 id="wiring-fixes">Wiring Fixes</h2>
+    <ul>
+        <li>Use shielded twisted pair cable (STP) — minimum Cat5e quality</li>
+        <li>Install 120Ω terminators at <em>both</em> physical ends of the bus</li>
+        <li>Keep RS485 cable at least 300mm from power cables</li>
+        <li>Use metal conduit for RS485 in electrically noisy environments</li>
+        <li>Connect shield to earth ground at one end only (to avoid ground loops)</li>
+    </ul>
+
+    <h2 id="grounding">Grounding &amp; Shielding</h2>
+    <p>Connect a dedicated signal ground wire between all nodes on the RS485 bus. This is the third wire that manufacturers like Phoenix Contact and Wago correctly include in their RS485 connectors but that gets forgotten in field wiring.</p>
+
+    <h2 id="software">Software-Side Fixes</h2>
+    <p>While CRC errors are fundamentally a hardware problem, you can improve resilience:</p>
+    <ul>
+        <li>Implement retry logic (3 retries with 50ms delay is standard)</li>
+        <li>Reduce baud rate if you can tolerate slower polling</li>
+        <li>Increase inter-frame delay (some devices need 50-100ms between requests)</li>
+        <li>Log CRC error rates over time — if they correlate with equipment starting (VFDs, pumps), the cause is EMI</li>
+    </ul>
+
+    <div class="app-promo">
+        <div class="app-promo-badge">📊 Communication Log</div>
+        <h4>Track &amp; diagnose CRC errors over time</h4>
+        <p>ModBus Pro's communication log records every request, response, and error with precise timestamps. Filter by error type, search for specific registers, and spot patterns in your communication history.</p>
+        <a href="../index.html#download" class="app-promo-cta">Download Free →</a>
+    </div>
+
+    <div class="related">
+        <h3>More Troubleshooting Guides</h3>
+        <div class="related-grid">
+        <a href="modbus-timeout-no-response.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Timeout &amp; No Response from Slave</h4>
+            <p>Fix Modbus timeout errors and no response from slave devices. Complete diagnosti...</p>
+        </a>
+        <a href="modbus-exception-code-01.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Exception Code 01: Illegal Function</h4>
+            <p>Fix Modbus exception code 01 (Illegal Function). Why your device rejects your fu...</p>
+        </a>
+        <a href="modbus-exception-code-02.html" class="related-card">
+            <div class="card-tag">GUIDE</div>
+            <h4>Modbus Exception Code 02: Illegal Data Address</h4>
+            <p>Fix Modbus exception code 02 (Illegal Data Address). Register numbering, 0-based...</p>
+        </a>
+        </div>
+    </div>
+</article>
+<aside class="sidebar">
+    <div class="toc"><div class="toc-title">On this page</div>
+        <a href="#what-is-crc">What is CRC?</a>
+        <a href="#causes">Common Causes</a>
+        <a href="#wiring-fixes">Wiring Fixes</a>
+        <a href="#grounding">Grounding & Shielding</a>
+        <a href="#software">Software-Side Fixes</a>
+    </div>
+    <div class="sidebar-promo"><div class="icon">🔌</div><h4>Fix it faster with ModBus Pro</h4>
+        <p>Auto-scan, built-in device maps, and diagnostic tools that turn hours of troubleshooting into minutes.</p>
+        <a href="../index.html#download" class="app-promo-cta" style="font-size:.82rem;padding:.5rem 1.2rem;">Download Free →</a>
+    </div>
+</aside>
+</div></div>
+<footer><div class="container"><p>© 2026 modbus.app — Built by engineers who debug Modbus for a living.</p></div></footer>
+</body></html>
