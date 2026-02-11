@@ -129,13 +129,22 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .no{color:#ef4444;opacity:0.7}
 
 /* ── PRICING ── */
-.price-card{max-width:400px;margin:48px auto 0;background:var(--surface);border:1px solid var(--accent-border);border-radius:16px;padding:40px 32px;text-align:center;position:relative;box-shadow:0 0 60px rgba(16,185,129,0.06)}
-.price-amount{font-size:48px;font-weight:700;letter-spacing:-0.03em;margin-bottom:4px}
-.price-period{font-size:14px;color:var(--text-muted);margin-bottom:28px}
-.price-list{list-style:none;text-align:left;margin-bottom:28px}
-.price-list li{padding:8px 0;font-size:14px;color:var(--text-secondary);display:flex;align-items:center;gap:10px}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:960px;margin:48px auto 0;align-items:stretch}
+.price-card{background:var(--surface);border:1px solid var(--accent-border);border-radius:16px;padding:32px 24px;text-align:center;position:relative;box-shadow:0 0 60px rgba(16,185,129,0.06);display:flex;flex-direction:column}
+.price-card.featured{border-color:rgba(16,185,129,0.4);box-shadow:0 0 40px rgba(16,185,129,0.08)}
+.price-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent);color:#0a0e17;padding:0.25rem 1rem;border-radius:20px;font-size:0.7rem;font-weight:700;white-space:nowrap}
+.price-tier{font-size:15px;font-weight:700;margin-bottom:2px}
+.price-tier-desc{font-size:12px;color:var(--text-muted);margin-bottom:16px}
+.price-amount{font-size:40px;font-weight:700;letter-spacing:-0.03em;margin-bottom:4px}
+.price-period{font-size:12px;color:var(--text-muted);margin-bottom:20px}
+.price-list{list-style:none;text-align:left;margin-bottom:20px;flex-grow:1}
+.price-list li{padding:6px 0;font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:10px}
 .price-list li::before{content:"✓";color:var(--accent);font-weight:700;font-size:13px}
-.price-card .btn-primary{width:100%;justify-content:center;padding:14px}
+.price-card .btn-primary,.price-card .btn-outline{width:100%;justify-content:center;padding:14px;display:flex;text-decoration:none;border-radius:8px;font-weight:700;font-size:0.85rem;transition:all 0.2s}
+.price-card .btn-primary{background:var(--accent);color:#0a0e17}
+.price-card .btn-outline{background:transparent;color:var(--accent);border:1px solid rgba(16,185,129,0.3)}
+.price-small{font-size:11px;color:var(--text-muted);margin-top:10px}
+@media(max-width:768px){.pricing-grid{grid-template-columns:1fr;max-width:400px;margin-left:auto;margin-right:auto}}
 
 /* ── DOWNLOAD ── */
 .download-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:640px;margin:48px auto 0}
@@ -321,18 +330,59 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
     <div class="section-title">Simple, honest pricing.</div>
     <p class="section-desc" style="margin:0 auto">One payment. Yours forever. No subscriptions.</p>
 
-    <div class="price-card">
-        <div class="price-amount">$199</div>
-        <p class="price-period">One-time payment &mdash; lifetime license</p>
-        <ul class="price-list">
-            <li>Master + Slave in one app</li>
-            <li>All function codes (FC01&ndash;FC23)</li>
-            <li>Windows, macOS, Linux</li>
-            <li>Free updates for life</li>
-            <li>No subscription, no recurring fees</li>
-        </ul>
-        <a href="#download" class="btn-primary">Start Free Trial</a>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:12px">7-day trial. No credit card required.</p>
+    <div class="pricing-grid">
+        <!-- PERSONAL -->
+        <div class="price-card">
+            <div class="price-tier">Personal</div>
+            <p class="price-tier-desc">For individual engineers</p>
+            <div class="price-amount">$199</div>
+            <p class="price-period">One-time payment, yours forever</p>
+            <ul class="price-list">
+                <li>Master + Slave in one app</li>
+                <li>All function codes (FC01&ndash;FC23)</li>
+                <li>Auto-discovery &amp; scripting</li>
+                <li>Data logging &amp; CSV export</li>
+                <li>1 machine activation</li>
+                <li>Free updates for life</li>
+            </ul>
+            <a href="#download" class="btn-primary">Start Free Trial</a>
+            <p class="price-small">7-day trial. No credit card required.</p>
+        </div>
+
+        <!-- TEAM -->
+        <div class="price-card featured">
+            <div class="price-badge">Most Popular</div>
+            <div class="price-tier">Team</div>
+            <p class="price-tier-desc">For teams up to 5 engineers</p>
+            <div class="price-amount">$749</div>
+            <p class="price-period">One-time &mdash; $150/engineer</p>
+            <ul class="price-list">
+                <li>Everything in Personal</li>
+                <li>5 machine activations</li>
+                <li>Priority email support</li>
+                <li>Shared device libraries</li>
+                <li>Team license management</li>
+            </ul>
+            <a href="https://buy.stripe.com/dRm5kvfS0fwRbaO3zI4AU01" class="btn-primary">Buy Team License</a>
+            <p class="price-small">Instant delivery &mdash; license key via email</p>
+        </div>
+
+        <!-- SITE -->
+        <div class="price-card">
+            <div class="price-tier">Site License</div>
+            <p class="price-tier-desc">Up to 10 engineers, one company</p>
+            <div class="price-amount">$1,699</div>
+            <p class="price-period">One-time &mdash; deploy across your team</p>
+            <ul class="price-list">
+                <li>Everything in Team</li>
+                <li>10 machine activations</li>
+                <li>Dedicated support channel</li>
+                <li>Custom device library setup</li>
+                <li>Volume discounts available</li>
+            </ul>
+            <a href="https://buy.stripe.com/14A6oz9tCgAVdiWfiq4AU02" class="btn-outline">Buy Site License</a>
+            <p class="price-small">Instant delivery &mdash; license key via email</p>
+        </div>
     </div>
 </section>
 

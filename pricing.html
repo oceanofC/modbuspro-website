@@ -64,8 +64,9 @@ body { font-family:var(--font-sans); background:var(--bg); color:var(--text); li
 .price-hero .sub { font-size:1.15rem; color:var(--text-dim); max-width:600px; margin:0 auto; }
 
 /* PRICING CARDS */
-.pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin:3rem 0 4rem; align-items:start; }
-.price-card { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:2rem; position:relative; }
+.pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin:3rem 0 4rem; align-items:stretch; }
+.price-card { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:2rem; position:relative; display:flex; flex-direction:column; }
+.feature-list { flex-grow:1; }
 .price-card.featured { border-color:var(--green-border); box-shadow:0 0 40px rgba(0,229,160,0.08); }
 .price-badge { position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--green); color:#0a0e17; padding:0.25rem 1rem; border-radius:20px; font-size:0.75rem; font-weight:700; white-space:nowrap; }
 .price-card h3 { font-size:1.1rem; font-weight:700; margin-bottom:0.25rem; }
