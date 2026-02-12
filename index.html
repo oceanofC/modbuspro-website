@@ -170,8 +170,24 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .footer-col a:hover{color:var(--text)}
 .footer-copy{max-width:1080px;margin:24px auto 0;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted);display:flex;justify-content:space-between}
 
+/* Hamburger button */
+.nav-hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;z-index:201}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--text);margin:5px 0;transition:all 0.3s;border-radius:2px}
+.nav-hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.nav-hamburger.active span:nth-child(2){opacity:0}
+.nav-hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
 @media(max-width:768px){
-    .nav-links{display:none}
+    .nav-links{display:none;position:fixed;top:56px;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--border);flex-direction:column;padding:16px 24px;gap:0;z-index:199;box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+    .nav-links.mobile-open{display:flex}
+    .nav-links li{list-style:none}
+    .nav-links a{display:block;padding:12px 0;font-size:15px;color:var(--text-secondary);border-bottom:1px solid var(--border)}
+    .nav-links li:last-child a{border-bottom:none}
+    .nav-dropdown .dropdown-menu{position:static;transform:none;background:transparent;border:none;box-shadow:none;padding:0 0 0 16px;min-width:0;display:none;margin-top:0;padding-top:0}
+    .nav-dropdown.mobile-dropdown-open .dropdown-menu{display:block}
+    .nav-dropdown .dropdown-menu a{padding:8px 0;font-size:14px;border-radius:0;border-bottom:1px solid rgba(255,255,255,0.03)}
+    .nav-hamburger{display:block}
+    .nav-cta{display:none}
     .hero{padding:100px 24px 60px}
     .features-grid{grid-template-columns:1fr}
     .download-cards{grid-template-columns:1fr;max-width:280px}
@@ -195,6 +211,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
         <li><a href="#book-link">Book</a></li>
     </ul>
     <a href="#download" class="nav-cta">Download</a>
+    <button class="nav-hamburger" onclick="this.classList.toggle('active');document.querySelector('.nav-links').classList.toggle('mobile-open')"><span></span><span></span><span></span></button>
 </div></nav>
 
 <!-- HERO -->
@@ -554,6 +571,25 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 
     resetAuto();
 })();
+
+// Mobile nav: toggle dropdown on tap
+document.querySelectorAll('.nav-dropdown > a').forEach(function(a){
+    a.addEventListener('click', function(e){
+        if(window.innerWidth <= 768){
+            e.preventDefault();
+            this.parentElement.classList.toggle('mobile-dropdown-open');
+        }
+    });
+});
+// Close mobile menu when clicking a link
+document.querySelectorAll('.nav-links a').forEach(function(a){
+    a.addEventListener('click', function(){
+        if(window.innerWidth <= 768 && !this.parentElement.classList.contains('nav-dropdown')){
+            document.querySelector('.nav-links').classList.remove('mobile-open');
+            document.querySelector('.nav-hamburger').classList.remove('active');
+        }
+    });
+});
 </script>
 </body>
 </html>
