@@ -196,6 +196,14 @@
     <priority>0.6</priority>
   </url>
 
+  <!-- Contact -->
+  <url>
+    <loc>https://modbus.app/contact.html</loc>
+    <lastmod>2026-02-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Legal -->
   <url>
     <loc>https://modbus.app/terms.html</loc>
