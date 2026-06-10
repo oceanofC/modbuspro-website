@@ -1,4 +1,14 @@
 {
+  "redirects": [
+    { "source": "/crc-errors.html", "destination": "/modbus-crc-error.html", "permanent": true },
+    { "source": "/timeout-errors.html", "destination": "/modbus-timeout-no-response.html", "permanent": true },
+    { "source": "/no-response.html", "destination": "/modbus-timeout-no-response.html", "permanent": true },
+    { "source": "/tcp-connection-refused.html", "destination": "/modbus-tcp-connection-refused.html", "permanent": true },
+    { "source": "/rs485-wiring.html", "destination": "/modbus-rs485-wiring-problems.html", "permanent": true },
+    { "source": "/float32-byte-order.html", "destination": "/modbus-wrong-values-byte-order.html", "permanent": true },
+    { "source": "/register-address-offset.html", "destination": "/modbus-register-offset.html", "permanent": true },
+    { "source": "/illegal-data-address.html", "destination": "/modbus-exception-code-02.html", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",

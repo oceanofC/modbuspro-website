@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>ModBus Pro — Modbus Master & Slave Tool for RTU and TCP/IP</title>
     <meta name="description" content="Professional Modbus tool with master polling and slave simulation in one app. Modern alternative to Modbus Poll with auto-discovery and scripting. Download free trial.">
+=======
+    <title>ModBus Pro — Master + Slave in One App</title>
+    <meta name="description" content="ModBus Pro is a modern Modbus diagnostic tool with master polling and slave simulation in one app. Supports Modbus RTU and TCP/IP. For Windows 10/11 — macOS coming soon.">
+>>>>>>> 64fa0d5 (Add GA4 analytics, favicon, proper 301 redirects, and site cleanup)
     <meta name="keywords" content="modbus tool, modbus master, modbus slave simulator, modbus diagnostic software, modbus poll alternative, modbus RTU, modbus TCP, industrial automation tool">
     <link rel="canonical" href="https://modbus.app/">
     <meta property="og:type" content="website">
@@ -23,7 +28,7 @@
       "@type": "SoftwareApplication",
       "name": "ModBus Pro",
       "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "Windows, macOS, Linux",
+      "operatingSystem": "Windows",
       "description": "Professional Modbus diagnostic tool with master polling and slave simulation.",
       "url": "https://modbus.app",
       "offers": { "@type": "Offer", "price": "199", "priceCurrency": "USD" }
@@ -199,6 +204,28 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
     .footer-copy{flex-direction:column;gap:8px}
 }
     </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JT00FNF69"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-5JT00FNF69');
+      document.addEventListener('click', function(e){
+        var a = e.target && e.target.closest ? e.target.closest('a') : null;
+        if (!a) return;
+        var href = a.getAttribute('href') || '';
+        if (href.indexOf('/releases/download/') !== -1) {
+          gtag('event', 'download_click', { link_url: href, file_name: href.split('/').pop() });
+        } else if (href.indexOf('buy.stripe.com') !== -1) {
+          gtag('event', 'begin_checkout', { link_url: href, link_text: (a.textContent || '').trim() });
+        } else if (href.indexOf('amazon.co') !== -1) {
+          gtag('event', 'book_click', { link_url: href });
+        }
+      }, true);
+    </script>
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
 <body>
 
@@ -318,7 +345,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 <section class="section">
     <div class="section-label">Compare</div>
     <div class="section-title">See how we stack up.</div>
-    <p class="section-desc">One app, one price, every platform.</p>
+    <p class="section-desc">One app, one price, no subscriptions.</p>
 
     <div class="compare">
         <table>
@@ -334,7 +361,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
                 <tr><td>What you get</td><td class="highlight"><span class="yes">Master + Slave</span></td><td>Two separate apps</td><td>Three separate apps</td></tr>
                 <tr><td>Price</td><td class="highlight"><span class="yes">$199</span></td><td>$258</td><td>$162</td></tr>
                 <tr><td>Modern UI</td><td class="highlight"><span class="yes">&#10003;</span></td><td><span class="no">&#10007;</span> Win32</td><td><span class="no">&#10007;</span> Legacy</td></tr>
-                <tr><td>Cross-platform</td><td class="highlight"><span class="yes">&#10003;</span></td><td><span class="no">&#10007;</span></td><td><span class="no">&#10007;</span></td></tr>
+                <tr><td>Device library (84 devices)</td><td class="highlight"><span class="yes">&#10003;</span></td><td><span class="no">&#10007;</span></td><td><span class="no">&#10007;</span></td></tr>
                 <tr><td>Auto-discovery</td><td class="highlight"><span class="yes">&#10003;</span></td><td><span class="no">&#10007;</span></td><td><span class="no">&#10007;</span></td></tr>
                 <tr><td>Free trial</td><td class="highlight"><span class="yes">7 days, full features</span></td><td>30 days, 10-min limit</td><td>Demo mode</td></tr>
             </tbody>

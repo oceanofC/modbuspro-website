@@ -29,6 +29,28 @@
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Modbus Frame Parser","url":"https://modbus.app/modbus-frame-parser.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://modbus.app/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://modbus.app/#"},{"@type":"ListItem","position":3,"name":"Frame Parser"}]}</script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JT00FNF69"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-5JT00FNF69');
+      document.addEventListener('click', function(e){
+        var a = e.target && e.target.closest ? e.target.closest('a') : null;
+        if (!a) return;
+        var href = a.getAttribute('href') || '';
+        if (href.indexOf('/releases/download/') !== -1) {
+          gtag('event', 'download_click', { link_url: href, file_name: href.split('/').pop() });
+        } else if (href.indexOf('buy.stripe.com') !== -1) {
+          gtag('event', 'begin_checkout', { link_url: href, link_text: (a.textContent || '').trim() });
+        } else if (href.indexOf('amazon.co') !== -1) {
+          gtag('event', 'book_click', { link_url: href });
+        }
+      }, true);
+    </script>
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
 <body>
 <nav class="site-nav"><div class="nav-inner"><a href="index.html" class="nav-logo">modbus<span class="dot">.</span>app</a><ul class="nav-links"><li><a href="index.html">Product</a></li><li class="nav-dropdown"><a href="#" class="active">Tools</a><div class="nav-dropdown-menu"><a href="number-converter.html">Number Converter</a><a href="modbus-frame-parser.html">Frame Parser</a><a href="modbus-address-calculator.html">Address Calculator</a><a href="modbus-baud-rate-calculator.html">Baud Rate Calculator</a></div></li><li><a href="read-modbus-data.html">Guides</a></li><li><a href="guides.html">Troubleshooting</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="contact.html">Contact</a></li></ul><a href="index.html#download" class="nav-cta">Download Free</a><button class="nav-hamburger" onclick="this.classList.toggle('active');document.querySelector('.nav-links').classList.toggle('mobile-open')"><span></span><span></span><span></span></button></div></nav>
