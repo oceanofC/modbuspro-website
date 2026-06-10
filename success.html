@@ -92,6 +92,13 @@ h1 span { color:var(--green); }
         <h1>Thank you for your <span>purchase!</span></h1>
         <p class="sub">Your license key has been sent to your email address.</p>
 
+        <div id="license-box" style="display:none;background:var(--bg-card);border:1px solid var(--green-border);border-radius:12px;padding:1.5rem;margin-bottom:2rem">
+            <h3 style="font-size:0.85rem;font-weight:700;color:var(--green);font-family:var(--font-mono);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em">Your License Key</h3>
+            <div id="license-key" style="font-family:var(--font-mono);font-size:1.05rem;font-weight:600;color:var(--text);word-break:break-all;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;margin-bottom:0.75rem">Loading&hellip;</div>
+            <button id="copy-key" style="background:var(--green);color:#0a0e17;border:0;padding:0.5rem 1.4rem;border-radius:8px;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font-sans)">Copy Key</button>
+            <p style="color:var(--text-muted);font-size:0.8rem;margin-top:0.75rem">Save this key &mdash; you&rsquo;ll also find it in your email.</p>
+        </div>
+
         <div class="steps">
             <h3>What's next?</h3>
             <ol>
@@ -109,6 +116,43 @@ h1 span { color:var(--green); }
         <p class="help">Didn't get the email? Check your spam folder, or contact <a href="mailto:support@modbus.app">support@modbus.app</a></p>
     </div>
 </div>
+
+<script>
+(function(){
+    var sessionId = new URLSearchParams(window.location.search).get('session_id');
+    if (!sessionId || sessionId.indexOf('cs_') !== 0) return;
+
+    var box = document.getElementById('license-box');
+    var keyEl = document.getElementById('license-key');
+    var copyBtn = document.getElementById('copy-key');
+    box.style.display = 'block';
+
+    var attempts = 0;
+    function fetchKey() {
+        attempts++;
+        fetch('/api/license-lookup?session_id=' + encodeURIComponent(sessionId))
+            .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+            .then(function(data){
+                keyEl.textContent = data.license_key;
+                copyBtn.onclick = function(){
+                    navigator.clipboard.writeText(data.license_key).then(function(){
+                        copyBtn.textContent = 'Copied!';
+                        setTimeout(function(){ copyBtn.textContent = 'Copy Key'; }, 2000);
+                    });
+                };
+            })
+            .catch(function(){
+                if (attempts < 6) {
+                    keyEl.textContent = 'Generating your key…';
+                    setTimeout(fetchKey, 3000);
+                } else {
+                    box.style.display = 'none'; // fall back to the email instructions
+                }
+            });
+    }
+    fetchKey();
+})();
+</script>
 
 </body>
 </html>
