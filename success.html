@@ -52,24 +52,41 @@ h1 span { color:var(--green); }
 .help { color:var(--text-muted); font-size:0.85rem; margin-top:2rem; }
 .help a { color:var(--green); text-decoration:none; }
     </style>
-    <!-- Google tag (gtag.js) -->
+        <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JT00FNF69"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-5JT00FNF69');
-      gtag('event', 'purchase_complete');
+      gtag('config', 'G-5JT00FNF69', { transport_type: 'beacon' });
+      // Stripe payment-link id -> tier/value for ecommerce tracking
+      var MBP_PRICE = {
+        'cNi7sDfS04Sd0wa3zI4AU00': { tier: 'personal', value: 199 },
+        'dRm5kvfS0fwRbaO3zI4AU01': { tier: 'team', value: 749 },
+        '14A6oz9tCgAVdiWfiq4AU02': { tier: 'site', value: 1699 }
+      };
+      function mbpTrack(name, params){ params = params || {}; params.transport_type = 'beacon'; gtag('event', name, params); }
+      function mbpLoc(a){
+        if (a.closest('nav')) return 'nav';
+        if (a.closest('.hero')) return 'hero';
+        if (a.closest('#download')) return 'download_section';
+        if (a.closest('[class*=price]')) return 'pricing';
+        return 'other';
+      }
       document.addEventListener('click', function(e){
         var a = e.target && e.target.closest ? e.target.closest('a') : null;
         if (!a) return;
         var href = a.getAttribute('href') || '';
+        var loc = mbpLoc(a);
         if (href.indexOf('/releases/download/') !== -1) {
-          gtag('event', 'download_click', { link_url: href, file_name: href.split('/').pop() });
+          mbpTrack('download_click', { link_url: href, file_name: href.split('/').pop(), location: loc });
         } else if (href.indexOf('buy.stripe.com') !== -1) {
-          gtag('event', 'begin_checkout', { link_url: href, link_text: (a.textContent || '').trim() });
+          var p = MBP_PRICE[href.split('/').pop()] || {};
+          mbpTrack('begin_checkout', { link_url: href, link_text: (a.textContent || '').trim(), location: loc, currency: 'USD', value: p.value, items: p.tier ? [{ item_id: p.tier, item_name: 'ModBus Pro ' + p.tier, price: p.value, quantity: 1 }] : undefined });
         } else if (href.indexOf('amazon.co') !== -1) {
-          gtag('event', 'book_click', { link_url: href });
+          mbpTrack('book_click', { link_url: href, location: loc });
+        } else if (href.indexOf('#download') !== -1) {
+          mbpTrack('download_intent', { location: loc });
         }
       }, true);
     </script>
@@ -127,6 +144,23 @@ h1 span { color:var(--green); }
     var copyBtn = document.getElementById('copy-key');
     box.style.display = 'block';
 
+    // GA4 ecommerce purchase event. transaction_id = Stripe session (GA dedupes
+    // by it, so a page refresh won't double-count). Fire once; enrich with the
+    // tier's value when license-lookup resolves, otherwise fall back after 6s.
+    var TIER_VALUE = { personal: 199, team: 749, site: 1699 };
+    var purchaseFired = false;
+    function firePurchase(value) {
+        if (purchaseFired || typeof gtag !== 'function') return;
+        purchaseFired = true;
+        gtag('event', 'purchase', {
+            transaction_id: sessionId,
+            currency: 'USD',
+            value: value || 0,
+            transport_type: 'beacon'
+        });
+    }
+    setTimeout(function(){ firePurchase(0); }, 6000); // ensure the conversion logs even if lookup fails
+
     var attempts = 0;
     function fetchKey() {
         attempts++;
@@ -134,6 +168,7 @@ h1 span { color:var(--green); }
             .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
             .then(function(data){
                 keyEl.textContent = data.license_key;
+                firePurchase(TIER_VALUE[data.tier]);
                 copyBtn.onclick = function(){
                     navigator.clipboard.writeText(data.license_key).then(function(){
                         copyBtn.textContent = 'Copied!';

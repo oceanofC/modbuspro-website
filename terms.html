@@ -118,23 +118,41 @@ body { font-family: var(--font-sans); background: var(--bg); color: var(--text);
 .nav-hamburger.active span:nth-child(2){opacity:0}
 .nav-hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
 </style>
-    <!-- Google tag (gtag.js) -->
+        <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JT00FNF69"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-5JT00FNF69');
+      gtag('config', 'G-5JT00FNF69', { transport_type: 'beacon' });
+      // Stripe payment-link id -> tier/value for ecommerce tracking
+      var MBP_PRICE = {
+        'cNi7sDfS04Sd0wa3zI4AU00': { tier: 'personal', value: 199 },
+        'dRm5kvfS0fwRbaO3zI4AU01': { tier: 'team', value: 749 },
+        '14A6oz9tCgAVdiWfiq4AU02': { tier: 'site', value: 1699 }
+      };
+      function mbpTrack(name, params){ params = params || {}; params.transport_type = 'beacon'; gtag('event', name, params); }
+      function mbpLoc(a){
+        if (a.closest('nav')) return 'nav';
+        if (a.closest('.hero')) return 'hero';
+        if (a.closest('#download')) return 'download_section';
+        if (a.closest('[class*=price]')) return 'pricing';
+        return 'other';
+      }
       document.addEventListener('click', function(e){
         var a = e.target && e.target.closest ? e.target.closest('a') : null;
         if (!a) return;
         var href = a.getAttribute('href') || '';
+        var loc = mbpLoc(a);
         if (href.indexOf('/releases/download/') !== -1) {
-          gtag('event', 'download_click', { link_url: href, file_name: href.split('/').pop() });
+          mbpTrack('download_click', { link_url: href, file_name: href.split('/').pop(), location: loc });
         } else if (href.indexOf('buy.stripe.com') !== -1) {
-          gtag('event', 'begin_checkout', { link_url: href, link_text: (a.textContent || '').trim() });
+          var p = MBP_PRICE[href.split('/').pop()] || {};
+          mbpTrack('begin_checkout', { link_url: href, link_text: (a.textContent || '').trim(), location: loc, currency: 'USD', value: p.value, items: p.tier ? [{ item_id: p.tier, item_name: 'ModBus Pro ' + p.tier, price: p.value, quantity: 1 }] : undefined });
         } else if (href.indexOf('amazon.co') !== -1) {
-          gtag('event', 'book_click', { link_url: href });
+          mbpTrack('book_click', { link_url: href, location: loc });
+        } else if (href.indexOf('#download') !== -1) {
+          mbpTrack('download_intent', { location: loc });
         }
       }, true);
     </script>

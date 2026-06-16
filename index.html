@@ -199,23 +199,41 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
     .footer-copy{flex-direction:column;gap:8px}
 }
     </style>
-    <!-- Google tag (gtag.js) -->
+        <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JT00FNF69"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-5JT00FNF69');
+      gtag('config', 'G-5JT00FNF69', { transport_type: 'beacon' });
+      // Stripe payment-link id -> tier/value for ecommerce tracking
+      var MBP_PRICE = {
+        'cNi7sDfS04Sd0wa3zI4AU00': { tier: 'personal', value: 199 },
+        'dRm5kvfS0fwRbaO3zI4AU01': { tier: 'team', value: 749 },
+        '14A6oz9tCgAVdiWfiq4AU02': { tier: 'site', value: 1699 }
+      };
+      function mbpTrack(name, params){ params = params || {}; params.transport_type = 'beacon'; gtag('event', name, params); }
+      function mbpLoc(a){
+        if (a.closest('nav')) return 'nav';
+        if (a.closest('.hero')) return 'hero';
+        if (a.closest('#download')) return 'download_section';
+        if (a.closest('[class*=price]')) return 'pricing';
+        return 'other';
+      }
       document.addEventListener('click', function(e){
         var a = e.target && e.target.closest ? e.target.closest('a') : null;
         if (!a) return;
         var href = a.getAttribute('href') || '';
+        var loc = mbpLoc(a);
         if (href.indexOf('/releases/download/') !== -1) {
-          gtag('event', 'download_click', { link_url: href, file_name: href.split('/').pop() });
+          mbpTrack('download_click', { link_url: href, file_name: href.split('/').pop(), location: loc });
         } else if (href.indexOf('buy.stripe.com') !== -1) {
-          gtag('event', 'begin_checkout', { link_url: href, link_text: (a.textContent || '').trim() });
+          var p = MBP_PRICE[href.split('/').pop()] || {};
+          mbpTrack('begin_checkout', { link_url: href, link_text: (a.textContent || '').trim(), location: loc, currency: 'USD', value: p.value, items: p.tier ? [{ item_id: p.tier, item_name: 'ModBus Pro ' + p.tier, price: p.value, quantity: 1 }] : undefined });
         } else if (href.indexOf('amazon.co') !== -1) {
-          gtag('event', 'book_click', { link_url: href });
+          mbpTrack('book_click', { link_url: href, location: loc });
+        } else if (href.indexOf('#download') !== -1) {
+          mbpTrack('download_intent', { location: loc });
         }
       }, true);
     </script>
@@ -244,13 +262,13 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
     <h1>Master + Slave.<br><em>One app.</em></h1>
     <p>ModBus Pro replaces your entire Modbus toolkit. Master polling, slave simulation, and diagnostics in a single modern interface.</p>
     <div class="hero-actions">
-        <a href="#download" class="btn-primary">
+        <a href="https://github.com/oceanofC/ModbusPro/releases/download/v1.0.0/ModBus.Pro-1.0.0-win-x64.exe" class="btn-primary">
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
             Download Free Trial
         </a>
         <a href="pricing.html" class="btn-secondary">View Pricing</a>
     </div>
-    <p class="hero-meta">7-day trial &middot; No credit card &middot; Windows 10/11</p>
+    <p class="hero-meta">7-day trial &middot; No credit card &middot; Windows 10/11 &middot; <a href="#download" style="color:var(--text-secondary);text-decoration:underline">portable &amp; other options</a></p>
 </section>
 
 <!-- SCREENSHOT CAROUSEL -->
