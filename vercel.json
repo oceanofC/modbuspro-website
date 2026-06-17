@@ -1,4 +1,7 @@
 {
+  "crons": [
+    { "path": "/api/trial-nurture", "schedule": "0 9 * * *" }
+  ],
   "redirects": [
     { "source": "/crc-errors.html", "destination": "/modbus-crc-error.html", "permanent": true },
     { "source": "/timeout-errors.html", "destination": "/modbus-timeout-no-response.html", "permanent": true },
