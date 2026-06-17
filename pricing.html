@@ -179,14 +179,19 @@ footer a { color:var(--green); text-decoration:none; }
 </script>
 <meta property="og:image" content="https://modbus.app/modbuspro-screenshot.png">
 <meta name="twitter:image" content="https://modbus.app/modbuspro-screenshot.png">
-        <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JT00FNF69"></script>
+            <!-- Google tag (gtag.js) -->
     <script>
+    (function(){
+      var h = location.hostname;
+      if (h !== 'modbus.app' && h.slice(-11) !== '.modbus.app') return; // skip vercel.app previews, localhost, etc.
+      var s = document.createElement('script'); s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-5JT00FNF69';
+      document.head.appendChild(s);
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
       gtag('js', new Date());
       gtag('config', 'G-5JT00FNF69', { transport_type: 'beacon' });
-      // Stripe payment-link id -> tier/value for ecommerce tracking
       var MBP_PRICE = {
         'cNi7sDfS04Sd0wa3zI4AU00': { tier: 'personal', value: 199 },
         'dRm5kvfS0fwRbaO3zI4AU01': { tier: 'team', value: 749 },
@@ -216,6 +221,7 @@ footer a { color:var(--green); text-decoration:none; }
           mbpTrack('download_intent', { location: loc });
         }
       }, true);
+    })();
     </script>
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
