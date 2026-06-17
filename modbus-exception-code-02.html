@@ -312,6 +312,10 @@ pre code { background: none; padding: 0; color: inherit; }
 .nav-hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
 .nav-hamburger.active span:nth-child(2){opacity:0}
 .nav-hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+.app-promo .app-promo-badge{display:inline-block;background:rgba(0,229,160,0.1);color:var(--green);padding:0.2rem 0.8rem;border-radius:4px;font-size:0.8rem;font-weight:600;margin-bottom:0.75rem;border:1px solid var(--green-border)}
+.app-promo .app-promo-cta{display:inline-block;background:var(--green);color:#0a0e17;padding:0.65rem 1.8rem;border-radius:6px;font-weight:700;text-decoration:none;transition:all 0.2s}
+.app-promo .app-promo-cta:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,229,160,0.3);text-decoration:none}
 </style>
     <script type="application/ld+json">
     {
@@ -386,6 +390,8 @@ pre code { background: none; padding: 0; color: inherit; }
 
     <p>Exception Code 02 means the slave understood your request but the register address you asked for <strong>doesn't exist</strong> on that device. This is the second most common Modbus error after timeouts, and it's almost always caused by an addressing offset mistake.</p>
 
+    <div class="app-promo inline-cta" style="text-align:left;margin:1.5rem 0;padding:1.25rem 1.5rem;"><h4 style="color:var(--green);margin-bottom:0.4rem;font-size:1.05rem;">Stop guessing which address your device accepts.</h4><p style="max-width:none;margin-bottom:1rem;">ModBus Pro flags illegal data addresses instantly and maps the valid register ranges your slave actually responds to.</p><a href="https://github.com/oceanofC/ModbusPro/releases/download/v1.0.0/ModBus.Pro-1.0.0-win-x64.exe" class="app-promo-cta" style="padding:0.55rem 1.4rem;">Download free trial &rarr;</a></div>
+
     <h2 id="what-it-means">What It Actually Means</h2>
     <p>The slave received a valid Modbus frame with a valid function code, but the combination of starting register address + quantity of registers references an address range that the device hasn't implemented. Either the starting address is wrong, or the quantity extends past the end of the device's register map.</p>
 
@@ -425,7 +431,7 @@ Rule: Strip type prefix, subtract 1.</div></div>
         <div class="app-promo-badge">✨ No more offset maths</div>
         <h4>ModBus Pro handles addressing automatically</h4>
         <p>Built-in device profiles use verified, tested addresses — no mental arithmetic required. 80+ built-in register maps mean the correct addresses are already configured for common devices.</p>
-        <a href="index.html#download" class="app-promo-cta">Download Free</a>
+        <a href="https://github.com/oceanofC/ModbusPro/releases/download/v1.0.0/ModBus.Pro-1.0.0-win-x64.exe" class="app-promo-cta">Download Free</a>
     </div>
 
     <div class="related">
