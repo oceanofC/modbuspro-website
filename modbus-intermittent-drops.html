@@ -393,6 +393,8 @@ pre code { background: none; padding: 0; color: inherit; }
         <p>On a BESS site, a Modbus signal (shutdown_complete_ems_a) was dropping out for exactly 500ms every 60-120 seconds. This was tied to a physical output, causing relay chatter. The cause: the EMS was periodically refreshing its register table, clearing the value briefly during the update cycle. The fix was a Turn-Off Delay (TOF) timer in the PLC code that rode through the dropout.</p>
     </div>
 
+    <div class="app-promo inline-cta" style="text-align:left;margin:1.5rem 0;padding:1.25rem 1.5rem;"><h4 style="color:var(--green);margin-bottom:0.4rem;font-size:1.05rem;">Connection dropping at random?</h4><p style="max-width:none;margin-bottom:1rem;">ModBus Pro timestamps every request and response, so you can correlate drops with timing, specific devices, or equipment cycling.</p><a href="https://github.com/oceanofC/ModbusPro/releases/download/v1.0.0/ModBus.Pro-1.0.0-win-x64.exe" class="app-promo-cta" style="padding:0.55rem 1.4rem;">Download free trial &rarr;</a></div>
+
     <h2 id="the-problem">Diagnosing the Pattern</h2>
     <p>Intermittent problems always have a pattern — you just need to find it. Start by logging every communication failure with a timestamp. Then look for correlations:</p>
     <ul>

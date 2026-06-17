@@ -390,6 +390,8 @@ pre code { background: none; padding: 0; color: inherit; }
 
     <p>Your Modbus communication is working — you're getting responses, no exceptions, no timeouts. But the values make no sense. Voltage reads as 2.84×10⁻²⁹ instead of 236.4V. Power shows 1.23×10³⁸ instead of 150kW. <strong>This is almost always a byte order (endianness) problem.</strong></p>
 
+    <div class="app-promo inline-cta" style="text-align:left;margin:1.5rem 0;padding:1.25rem 1.5rem;"><h4 style="color:var(--green);margin-bottom:0.4rem;font-size:1.05rem;">Values look garbled?</h4><p style="max-width:none;margin-bottom:1rem;">ModBus Pro decodes float32 and int32 in every byte order at once, so the correct word order is obvious at a glance.</p><a href="https://github.com/oceanofC/ModbusPro/releases/download/v1.0.0/ModBus.Pro-1.0.0-win-x64.exe" class="app-promo-cta" style="padding:0.55rem 1.4rem;">Download free trial &rarr;</a></div>
+
     <h2 id="the-problem">Why This Happens</h2>
     <p>A Modbus register is 16 bits (2 bytes). But a FLOAT32 (IEEE 754) value needs 32 bits — two consecutive registers. The Modbus specification says each 16-bit register is big-endian (high byte first). But it says <em>nothing</em> about how to order the two registers relative to each other. So manufacturers choose their own convention.</p>
     <p>The same 4 bytes — say <code>0x43 0x6C 0xC2 0x8F</code> — produce completely different float values depending on the order you read them:</p>
@@ -453,6 +455,8 @@ rVoltage_L1 := DWORD_TO_REAL(dwCombined);</div></div>
         <p>ModBus Pro shows ABCD, CDAB, BADC, and DCBA interpretations simultaneously for any register value. No more guessing — just pick the one that matches your expected reading. The <a href="number-converter.html" style="color:var(--bg);">Converter tool</a> on this site also lets you test all 4 orders instantly.</p>
         <a href="https://github.com/oceanofC/ModbusPro/releases/download/v1.0.0/ModBus.Pro-1.0.0-win-x64.exe" class="app-promo-cta">Download Free</a>
     </div>
+
+    <!-- mbp-tool --><p style="margin:1.75rem 0;padding:0.9rem 1.2rem;border:1px solid var(--border);border-radius:8px;background:rgba(0,229,160,0.04);font-size:0.9rem;color:var(--text-dim)">&#128295; <strong style="color:var(--text)">Related tool:</strong> Convert raw registers to float32, int32 and more in any byte order with our free <a href="number-converter.html" style="color:var(--green)">Number Converter</a>.</p>
 
     <div class="related">
         <h3>More Troubleshooting Guides</h3>
