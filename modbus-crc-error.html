@@ -391,7 +391,7 @@ pre code { background: none; padding: 0; color: inherit; }
 
     <p>A CRC (Cyclic Redundancy Check) error means the Modbus frame arrived but was corrupted in transit. The master calculates a CRC from the received bytes and compares it to the CRC appended by the sender — if they don't match, something changed the data between sender and receiver. This is always a physical layer or electrical noise problem.</p>
 
-    <div class="app-promo inline-cta" style="text-align:left;margin:1.5rem 0;padding:1.25rem 1.5rem;"><h4 style="color:var(--green);margin-bottom:0.4rem;font-size:1.05rem;">Chasing intermittent CRC errors?</h4><p style="max-width:none;margin-bottom:1rem;">ModBus Pro logs every request and response with CRC status and timing, so you can see exactly when and why the corruption happens.</p><a href="https://github.com/oceanofC/ModbusPro/releases/download/v1.0.0/ModBus.Pro-1.0.0-win-x64.exe" class="app-promo-cta" style="padding:0.55rem 1.4rem;">Download free trial &rarr;</a></div>
+    <div class="app-promo inline-cta" style="text-align:left;margin:1.5rem 0;padding:1.25rem 1.5rem;"><h4 style="color:var(--green);margin-bottom:0.4rem;font-size:1.05rem;">Chasing intermittent CRC errors?</h4><p style="max-width:none;margin-bottom:1rem;">ModBus Pro logs every request and response with CRC status and timing, so you can see exactly when and why the corruption happens.</p><a href="https://github.com/oceanofC/ModbusPro/releases/download/v1.0.2/ModBus-Pro-1.0.2-win-x64.exe" class="app-promo-cta" style="padding:0.55rem 1.4rem;">Download free trial &rarr;</a></div>
 
     <h2 id="what-is-crc">How CRC Works in Modbus</h2>
     <p>Every Modbus RTU frame ends with a 2-byte CRC-16 checksum. The sender calculates it from all preceding bytes using a standard polynomial (0xA001). The receiver does the same calculation and compares. If even a single bit is flipped during transmission, the CRC won't match.</p>
@@ -438,7 +438,7 @@ pre code { background: none; padding: 0; color: inherit; }
         <div class="app-promo-badge">📊 Request Logging</div>
         <h4>Track &amp; diagnose CRC errors over time</h4>
         <p>ModBus Pro's built-in request logging records every request and response with timestamps. Spot patterns in communication failures — turning random errors into actionable diagnostics.</p>
-        <a href="https://github.com/oceanofC/ModbusPro/releases/download/v1.0.0/ModBus.Pro-1.0.0-win-x64.exe" class="app-promo-cta">Download Free</a>
+        <a href="https://github.com/oceanofC/ModbusPro/releases/download/v1.0.2/ModBus-Pro-1.0.2-win-x64.exe" class="app-promo-cta">Download Free</a>
     </div>
 
     <!-- mbp-tool --><p style="margin:1.75rem 0;padding:0.9rem 1.2rem;border:1px solid var(--border);border-radius:8px;background:rgba(0,229,160,0.04);font-size:0.9rem;color:var(--text-dim)">&#128295; <strong style="color:var(--text)">Related tool:</strong> Build and verify Modbus frames with automatic CRC in our free <a href="modbus-frame-parser.html" style="color:var(--green)">Frame Parser</a>.</p>
