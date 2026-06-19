@@ -376,6 +376,18 @@ pre code { background: none; padding: 0; color: inherit; }
 
     <article class="guide-content">
 
+        <!-- mbp-hero-cta -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:1.25rem;background:rgba(0,229,160,0.07);border:1px solid rgba(0,229,160,0.25);border-radius:10px;padding:1rem 1.25rem;margin:1.75rem 0;flex-wrap:wrap;">
+          <div style="min-width:220px;flex:1;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <strong style="font-size:1rem;color:var(--text);">Hitting these exceptions on real hardware?</strong>
+            </div>
+            <p style="font-size:0.85rem;color:var(--text-dim);margin:0;line-height:1.5;">ModBus Pro shows the raw request and response and flags the exact cause. Free 7-day trial, no signup.</p>
+          </div>
+          <a href="https://github.com/oceanofC/ModbusPro/releases/download/v1.0.2/ModBus-Pro-1.0.2-win-x64.exe" style="display:inline-flex;align-items:center;gap:0.4rem;white-space:nowrap;background:var(--green);color:#0a0e17;font-weight:700;font-size:0.9rem;padding:0.6rem 1.2rem;border-radius:8px;text-decoration:none;">Download free trial &rarr;</a>
+        </div>
+
         <h2>How Exception Responses Work</h2>
         <p>When a Modbus slave can't process a request, it doesn't just stay silent — it sends back an <strong>exception response</strong>. You can identify this because the function code in the response has bit 7 set (0x80 added). So if you sent function code <code>0x03</code> (Read Holding Registers), the exception response has function code <code>0x83</code>.</p>
         <p>The next byte is the exception code, which tells you the specific problem.</p>
