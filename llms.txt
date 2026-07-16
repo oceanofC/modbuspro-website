@@ -1,0 +1,40 @@
+# ModBus Pro (modbus.app)
+
+> ModBus Pro is a Modbus diagnostic tool for Windows that combines a master (client) poller and a multi-device slave simulator in one desktop app, alongside free online Modbus reference guides, troubleshooting articles, and calculators.
+
+Key product facts: supports Modbus RTU, TCP/IP, RTU-over-TCP and ASCII; function codes FC01-06, FC15, FC16, FC22, FC23; simulates up to 10 slave devices with all data formats (float32/int32/uint32 in every byte order); auto-discovery scans address ranges for live registers; built-in register maps for 84 industrial devices; request/response logging with timestamps and charts; scripting engine for automated test sequences. Runs on Windows 10/11. Free full-featured 7-day trial (no signup). One-time purchase from $199 (Personal), $749 (Team, 5 machines), $1,699 (Site, 10 machines) — no subscription. Download: https://modbus.app/#download
+
+## Product
+
+- [ModBus Pro overview](https://modbus.app/): master polling + slave simulation in one app, screenshots and download
+- [Pricing](https://modbus.app/pricing.html): one-time license tiers and FAQ
+- [User manual](https://modbus.app/user-manual.html): full documentation
+- [ModBus Pro vs Modbus Poll](https://modbus.app/modbus-poll-alternative.html): feature and price comparison with Modbus Poll + Modbus Slave
+
+## Free online tools
+
+- [Modbus address calculator](https://modbus.app/modbus-address-calculator.html): convert between 0-based, 1-based and 4xxxx register addressing
+- [Number converter](https://modbus.app/number-converter.html): decimal, hex, binary and float32 conversion in every byte order
+- [Frame parser](https://modbus.app/modbus-frame-parser.html): decode raw Modbus RTU/TCP frames with CRC check
+- [Baud rate calculator](https://modbus.app/modbus-baud-rate-calculator.html): RS-485 character timing and timeout calculation
+
+## Reference
+
+- [Modbus function codes](https://modbus.app/modbus-function-codes.html): complete FC01-FC23 reference with request/response byte layouts
+- [Modbus exception codes](https://modbus.app/exception-codes.html): all exception codes, meanings and fixes
+- [Register offset and 40001 addressing](https://modbus.app/modbus-register-offset.html): 0-based vs 1-based addressing explained
+- [Modbus RTU vs TCP](https://modbus.app/rtu-vs-tcp.html): differences and when to use each
+- [How to read Modbus data](https://modbus.app/read-modbus-data.html): step-by-step beginner guide
+
+## Troubleshooting guides
+
+- [Timeout / no response](https://modbus.app/modbus-timeout-no-response.html)
+- [Exception code 01 — illegal function](https://modbus.app/modbus-exception-code-01.html)
+- [Exception code 02 — illegal data address](https://modbus.app/modbus-exception-code-02.html)
+- [Exception code 03 — illegal data value](https://modbus.app/modbus-exception-code-03.html)
+- [CRC errors](https://modbus.app/modbus-crc-error.html)
+- [Wrong values / float byte order](https://modbus.app/modbus-wrong-values-byte-order.html)
+- [TCP connection refused](https://modbus.app/modbus-tcp-connection-refused.html)
+- [RS485 wiring problems](https://modbus.app/modbus-rs485-wiring-problems.html)
+- [Intermittent communication drops](https://modbus.app/modbus-intermittent-drops.html)
+- [All troubleshooting guides](https://modbus.app/guides.html)
