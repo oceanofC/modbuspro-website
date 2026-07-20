@@ -3,11 +3,20 @@ const { sql } = require('./_lib/db');
 const { generateLicenseKey } = require('./_lib/keys');
 const { sendLicenseEmail } = require('./_lib/email');
 
-// Map Stripe price IDs to tiers
-const PRICE_TO_TIER = {
-  [process.env.STRIPE_PRICE_PERSONAL]: { tier: 'personal', maxActivations: 1 },
-  [process.env.STRIPE_PRICE_TEAM]:     { tier: 'team',     maxActivations: 5 },
-  [process.env.STRIPE_PRICE_SITE]:     { tier: 'site',     maxActivations: 10 },
+// Map Stripe price IDs to tiers — only add entries whose env var is actually
+// set, otherwise all unset vars collapse onto the literal key "undefined" and
+// an unresolvable price silently matches the wrong tier.
+const PRICE_TO_TIER = {};
+if (process.env.STRIPE_PRICE_PERSONAL) PRICE_TO_TIER[process.env.STRIPE_PRICE_PERSONAL] = { tier: 'personal', maxActivations: 1 };
+if (process.env.STRIPE_PRICE_TEAM)     PRICE_TO_TIER[process.env.STRIPE_PRICE_TEAM]     = { tier: 'team',     maxActivations: 5 };
+if (process.env.STRIPE_PRICE_SITE)     PRICE_TO_TIER[process.env.STRIPE_PRICE_SITE]     = { tier: 'site',     maxActivations: 10 };
+
+// Ground truth by amount actually paid (in cents): a $199 payment can only
+// ever be a personal license. If the price-ID map disagrees, the money wins.
+const AMOUNT_TO_TIER = {
+  19900:  { tier: 'personal', maxActivations: 1 },
+  74900:  { tier: 'team',     maxActivations: 5 },
+  169900: { tier: 'site',     maxActivations: 10 },
 };
 
 // Disable Vercel's default body parser — Stripe needs the raw body for signature verification
@@ -63,10 +72,16 @@ module.exports = async function handler(req, res) {
       console.error('Failed to fetch line items:', err.message);
     }
 
-    const tierInfo = priceId ? PRICE_TO_TIER[priceId] : null;
+    const byPrice = priceId ? PRICE_TO_TIER[priceId] : null;
+    const byAmount = AMOUNT_TO_TIER[session.amount_total] || null;
+    let tierInfo = byPrice || byAmount;
+    if (byPrice && byAmount && byPrice.tier !== byAmount.tier) {
+      console.error(`Tier mismatch for session ${session.id}: price map says ${byPrice.tier}, amount ${session.amount_total} says ${byAmount.tier} — trusting the amount`);
+      tierInfo = byAmount;
+    }
 
     if (!tierInfo) {
-      console.error('Unknown price ID:', priceId, '— session:', session.id);
+      console.error('Unknown price ID and amount:', priceId, session.amount_total, '— session:', session.id);
       // Acknowledge the webhook (don't retry) but skip license creation
       return res.status(200).json({ received: true, warning: 'Unknown price ID' });
     }
